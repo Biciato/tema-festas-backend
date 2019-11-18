@@ -1,0 +1,14 @@
+h5 {
+    font-style: normal !important;
+    font-weight: bold !important;
+    font-size: 20px !important;
+    line-height: 27px !important;
+    text-align: center;
+    color: #32338D;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin: 1em !important;
+}
