@@ -15,7 +15,6 @@ const e = React.createElement
 export default class ProductComponent extends React.Component {
   constructor(props) {
     super(props)
-    this.handleMakeOrderClick = this.handleMakeOrderClick.bind(this)
     this.handleProductChange = this.handleProductChange.bind(this)
     this.handleSizeChange = this.handleSizeChange.bind(this)
     this.handleSubtypeSet = this.handleSubtypeSet.bind(this)
@@ -28,19 +27,6 @@ export default class ProductComponent extends React.Component {
     this.state = {
       mdShow: false,
       prods: {},
-      cpts: [
-        {
-          name: ClientComponent,
-          key: 'cc',
-          props: {
-            onMakeOrderClick: this.handleMakeOrderClick
-          }
-        }
-      ] 
-    }
-  }
-  handleMakeOrderClick() {
-    this.setState({
       cpts: [
         {
           name: 'div',
@@ -81,8 +67,9 @@ export default class ProductComponent extends React.Component {
           }
         }
       ] 
-    })
+    }
   }
+  
   handleProductChange(prodName) {
     const prevProds = this.state.prods[prodName] 
       ? this.state.prods[prodName]

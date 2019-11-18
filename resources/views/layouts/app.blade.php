@@ -22,10 +22,6 @@
 </head>
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="app">
-        <main>
-            @yield('content')
-        </main>
-    </div>
+    <div id="app">@yield('content')</div>
 </body>
 </html>

@@ -1,24 +1,29 @@
 import React from 'react';
 import './App.css';
+import ClientComponent from './ClientComponent/ClientComponent'
 import ProductComponent from './ProductComponent/ProductComponent';
-import Login from './LoginComponent/Login'
+import CartComponent from './CartComponent/CartComponent';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+  } from "react-router-dom"
 
-export default class App extends React.Component { 
-    constructor(props) {
-        super(props)
-        this.handleLoginChange = this.handleLoginChange.bind(this)
-        this.state = {
-            cpt: {name: Login, props: { onLoginChange: this.handleLoginChange }}
-        }
-    }
-    handleLoginChange() {
-        this.setState({
-            cpt: {
-                name: ProductComponent
-            }
-        })
-    }
-    render() {
-        return React.createElement(this.state.cpt.name, this.state.cpt.props) 
-    }    
-}
+export default function App() { 
+    return (
+        <Router>
+            <Switch>
+            <Route path="/clientes">
+                <ClientComponent />
+            </Route>
+            <Route path="/pedido">
+                <ProductComponent />
+            </Route>
+            <Route path="/resumo">
+                <CartComponent />
+            </Route>
+            </Switch>
+        </Router>
+    ) 
+}    
+

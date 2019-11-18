@@ -34,7 +34,7 @@ export default class ClientComponent extends React.Component {
                         Clientes
                     </h5>
                     <ClientSelect  key={2} onClientSelect={this.handleClientSelect}/>
-                    <div className="footer"  key={3} onClick={this.handleClick}>
+                    <div className="footer text-center"  key={3} onClick={this.handleClick}>
                         Fazer Pedido
                     </div>
                 </Col>
