@@ -87227,8 +87227,9 @@ function (_React$Component) {
   }, {
     key: "getTotalPricePerProduct",
     value: function getTotalPricePerProduct(item, price) {
-      console.log(price);
-      return this.getTotalQtyPerProduct(item) * parseFloat(price);
+      var priceNorm = price.replace('R$', '');
+      var priceNorm2 = priceNorm.replace(',', '.').trim();
+      return this.getTotalQtyCat0(item) * parseFloat(priceNorm2);
     }
   }, {
     key: "getTotalQtyCat2",
@@ -87244,15 +87245,21 @@ function (_React$Component) {
     value: function getTotalPriceCat2(item) {
       if (item !== undefined) {
         return Object.keys(item).reduce(function (o, k) {
-          return parseInt(item[k].quantidade) * parseFloat(item[k].valor_unitario.replace(',', '.')) + o;
-        }, 0);
+          var priceNorm = item[k].valor_unitario.replace('R$', '');
+          var priceNorm2 = priceNorm.replace(',', '.').trim();
+          return parseInt(item[k].quantidade) * parseFloat(priceNorm2) + o;
+        }, 0).toLocaleString('pt-br', {
+          minimumFractionDigits: 2
+        });
       }
     }
   }, {
     key: "getTotalQtyCat0",
     value: function getTotalQtyCat0(item) {
       if (item !== undefined) {
-        return Object.keys(item).reduce(function (o, k) {
+        return Object.keys(item).filter(function (el) {
+          return el !== 'valor_unitario';
+        }).reduce(function (o, k) {
           return Object.keys(item[k]).reduce(function (old, key) {
             return parseInt(item[k][key]) + old;
           }, 0) + o;
@@ -87274,29 +87281,35 @@ function (_React$Component) {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
               marginTop: '1em'
-            }
+            },
+            key: 'cat0-' + i
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
               padding: '0.1em',
               height: '2em',
               marginLeft: '0.8em'
-            }
+            },
+            key: "cat0-div1"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontSize: '16px',
               fontWeight: 'bold',
               padding: '0.4em'
-            }
-          }, item + ' ' + i), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            },
+            key: "cat0-div1-s1"
+          }, item + ' ' + i), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
             style: {
               "float": 'right',
               border: '1px solid silver',
               borderRadius: '5px',
               padding: '0.4em',
               color: 'darkgray',
-              marginRight: '1.5em'
-            }
-          }, "R$ ", _this3.props.prods[item].dados[i].valor_unitario)), Object.keys(_this3.props.prods[item].dados[i]).filter(function (i) {
+              marginRight: '1.5em',
+              width: '30%',
+              textAlign: 'center'
+            },
+            value: _this3.props.prods[item].dados[i].valor_unitario
+          })), Object.keys(_this3.props.prods[item].dados[i]).filter(function (i) {
             return i !== 'valor_unitario';
           }).map(function (el) {
             return Object.keys(_this3.props.prods[item].dados[i][el]).map(function (e, idx) {
@@ -87306,7 +87319,8 @@ function (_React$Component) {
                   height: '4em',
                   fontSize: '14px',
                   backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
-                }
+                },
+                key: "cat0-div2-" + e
               }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
                 style: {
                   fontWeight: 600,
@@ -87314,15 +87328,18 @@ function (_React$Component) {
                   marginLeft: '1em',
                   display: 'inline-block',
                   width: '56%'
-                }
+                },
+                key: "cat0-div2-s1"
               }, el + ' ' + e), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
                 style: {
                   fontSize: '30px',
                   display: 'inline-block',
                   verticalAlign: 'sub',
                   color: '#32338D',
+                  cursor: 'pointer',
                   marginLeft: '5%'
-                }
+                },
+                key: "cat0-div2-s2"
               }, "-"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
                 style: {
                   border: 'none',
@@ -87331,6 +87348,7 @@ function (_React$Component) {
                   backgroundColor: 'inherit',
                   textAlign: 'center'
                 },
+                key: "cat0-div2-i1",
                 value: _this3.props.prods[item].dados[i][el][e]
               }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
                 style: {
@@ -87341,7 +87359,8 @@ function (_React$Component) {
                   cursor: 'pointer',
                   margin: 0,
                   padding: 0
-                }
+                },
+                key: "cat0-div2-s3"
               }, "+"));
             });
           }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -87351,24 +87370,30 @@ function (_React$Component) {
               margin: '0px 2em 0 1em',
               borderBottom: '1px solid #D7D7D7',
               fontSize: '14px'
-            }
+            },
+            key: "cat0-div3"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontWeight: 'bold',
               padding: '0.4em'
-            }
-          }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, _this3.getTotalQtyPerProduct(_this3.props.prods[item].dados[i])), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            },
+            key: "cat0-div3-s1"
+          }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            key: "cat0-div3-s2"
+          }, _this3.getTotalQtyCat0(_this3.props.prods[item].dados[i])), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontWeight: 'bold',
               padding: '0.4em'
-            }
+            },
+            key: "cat0-div3-s3"
           }, "Total: R$"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               "float": 'right',
               padding: '0.4em',
               color: 'darkgray',
               marginLeft: '1em'
-            }
+            },
+            key: "cat0-div3-s4"
           }, _this3.getTotalPricePerProduct(_this3.props.prods[item].dados[i], _this3.props.prods[item].dados[i].valor_unitario))));
         });
       } else {
@@ -87385,36 +87410,42 @@ function (_React$Component) {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
               marginTop: '1em'
-            }
+            },
+            key: 'cat1' + i
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
               padding: '0.1em',
               height: '2em',
               marginLeft: '0.8em'
-            }
+            },
+            key: "cat1-div1"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontSize: '16px',
               fontWeight: 'bold',
               padding: '0.4em'
             }
-          }, item + ' ' + i), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          }, item + ' ' + i), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
             style: {
               "float": 'right',
               border: '1px solid silver',
               borderRadius: '5px',
               padding: '0.4em',
               color: 'darkgray',
-              marginRight: '1.5em'
-            }
-          }, "R$ ", _this4.props.prods[item].dados[i].valor_unitario)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, Object.keys(_this4.props.prods[item].dados[i]).map(function (el, idx) {
+              marginRight: '1.5em',
+              width: '30%',
+              textAlign: 'center'
+            },
+            value: _this4.props.prods[item].valor_unitario
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, Object.keys(_this4.props.prods[item].dados[i]).map(function (el, idx) {
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
               style: {
                 padding: '0.7em 0.1em',
                 height: '4em',
                 fontSize: '14px',
                 backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
-              }
+              },
+              key: 'cat1-div2' + el
             }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
               style: {
                 fontWeight: 600,
@@ -87422,15 +87453,18 @@ function (_React$Component) {
                 marginLeft: '1em',
                 width: '56%',
                 display: 'inline-block'
-              }
+              },
+              key: "cat1-div2-s1"
             }, el), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
               style: {
                 fontSize: '30px',
                 display: 'inline-block',
                 verticalAlign: 'sub',
                 color: '#32338D',
-                marginLeft: '5%'
-              }
+                marginLeft: '5%',
+                cursor: 'pointer'
+              },
+              key: "cat1-div2-s2"
             }, "-"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
               style: {
                 border: 'none',
@@ -87439,6 +87473,7 @@ function (_React$Component) {
                 backgroundColor: 'inherit',
                 textAlign: 'center'
               },
+              key: "cat1-div2-i",
               value: _this4.props.prods[item].dados[i][el]
             }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
               style: {
@@ -87449,7 +87484,8 @@ function (_React$Component) {
                 cursor: 'pointer',
                 margin: 0,
                 padding: 0
-              }
+              },
+              key: "cat1-div2-s3"
             }, "+"));
           })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
@@ -87458,25 +87494,31 @@ function (_React$Component) {
               margin: '0px 2em 0 1em',
               borderBottom: '1px solid #D7D7D7',
               fontSize: '14px'
-            }
+            },
+            key: "cat1-div3"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontWeight: 'bold',
               padding: '0.4em'
-            }
-          }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, _this4.getTotalQtyPerProduct(_this4.props.prods[item].dados[i])), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            },
+            key: "cat1-div3-s1"
+          }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            key: "cat1-div3-s2"
+          }, _this4.getTotalQtyPerProduct(_this4.props.prods[item].dados[i])), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontWeight: 'bold',
               padding: '0.4em'
-            }
+            },
+            key: "cat1-div3-s3"
           }, "Total: R$"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               "float": 'right',
               padding: '0.4em',
               color: 'darkgray',
               marginLeft: '1em'
-            }
-          }, _this4.getTotalPricePerProduct(_this4.props.prods[item].dados[i], _this4.props.prods[item].dados[i].valor_unitario))));
+            },
+            key: "cat1-div3-s3"
+          }, _this4.getTotalPricePerProduct(_this4.props.prods[item].dados[i], _this4.props.prods[item].valor_unitario))));
         });
       } else {
         return this.mountCat2List(item);
@@ -87491,13 +87533,15 @@ function (_React$Component) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
             marginTop: '1em'
-          }
+          },
+          key: item
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
             padding: '0.1em',
             height: '2em',
             marginLeft: '0.8em'
-          }
+          },
+          key: "cat2-div1"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
             fontSize: '16px',
@@ -87509,13 +87553,15 @@ function (_React$Component) {
             style: {
               padding: '0 1em 1em 0',
               backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
-            }
+            },
+            key: "cat2-div2"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
               padding: '0.7em 0.1em',
               height: '3em',
               fontSize: '14px'
-            }
+            },
+            key: "cat2-item-div1"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontWeight: 600,
@@ -87524,15 +87570,18 @@ function (_React$Component) {
               display: 'inline-block',
               width: '60%',
               borderBottom: '1px solid #D7D7D7'
-            }
+            },
+            key: "cat2-div2-s1"
           }, i), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontSize: '30px',
               display: 'inline-block',
               verticalAlign: 'sub',
               color: '#32338D',
+              cursor: 'pointer',
               marginLeft: '5%'
-            }
+            },
+            key: "cat2-div2-s2"
           }, "-"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
             style: {
               border: 'none',
@@ -87541,7 +87590,8 @@ function (_React$Component) {
               backgroundColor: 'inherit',
               textAlign: 'center'
             },
-            value: _this5.props.prods[item].dados[i].quantidade
+            value: _this5.props.prods[item].dados[i].quantidade,
+            key: "cat2-div2-i1"
           }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontSize: '30px',
@@ -87551,14 +87601,16 @@ function (_React$Component) {
               cursor: 'pointer',
               margin: 0,
               padding: 0
-            }
+            },
+            key: "cat2-div2-s2"
           }, "+")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
               padding: '0.7em 0.1em',
               height: '3em',
               fontSize: '14px',
               backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
-            }
+            },
+            key: "cat2-item-div2"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               padding: '0.4em',
@@ -87588,25 +87640,29 @@ function (_React$Component) {
             margin: '0px 2em 0 1em',
             borderBottom: '1px solid #D7D7D7',
             fontSize: '14px'
-          }
+          },
+          key: "cat2-div3"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
             fontWeight: 'bold',
             padding: '0.4em'
-          }
-        }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, this.getTotalQtyPerProduct(this.props.prods[item].dados)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          },
+          key: "cat2-div3-s1"
+        }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, this.getTotalQtyCat2(this.props.prods[item].dados)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
             fontWeight: 'bold',
             padding: '0.4em'
-          }
+          },
+          key: "cat2-div3-s2"
         }, "Total: R$"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
             "float": 'right',
             padding: '0.4em',
             color: 'darkgray',
             marginLeft: '1em'
-          }
-        }, this.getTotalPricePerProduct(this.props.prods[item].dados))));
+          },
+          key: "cat2-div3-s2"
+        }, this.getTotalPriceCat2(this.props.prods[item].dados))));
       } else {
         return this.mountCat3List(item);
       }
@@ -87619,13 +87675,15 @@ function (_React$Component) {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
           marginTop: '1em'
-        }
+        },
+        key: item
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
           padding: '0.1em',
           height: '2em',
           marginLeft: '0.8em'
-        }
+        },
+        key: "cat3-div1"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: {
           fontSize: '16px',
@@ -87639,13 +87697,11 @@ function (_React$Component) {
           borderRadius: '5px',
           padding: '0.4em',
           color: 'darkgray',
-          marginRight: '1.5em'
+          marginRight: '1.5em',
+          width: '30%',
+          textAlign: 'center'
         },
-        value: this.props.prods[item].valor_unitario.toLocaleString('pt-br', {
-          minimumFractionDigits: 2,
-          currency: 'BRL',
-          style: 'currency'
-        })
+        value: this.props.prods[item].valor_unitario
       })), Object.keys(this.props.prods[item].dados).map(function (el, idx) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
@@ -87653,7 +87709,8 @@ function (_React$Component) {
             height: '4em',
             fontSize: '14px',
             backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
-          }
+          },
+          key: "cat3-div3"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
             fontWeight: 600,
@@ -87661,15 +87718,18 @@ function (_React$Component) {
             marginLeft: '1em',
             display: 'inline-block',
             width: '56%'
-          }
+          },
+          key: "cat3-s1"
         }, el), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
             fontSize: '30px',
             display: 'inline-block',
             verticalAlign: 'sub',
             color: '#32338D',
+            cursor: 'pointer',
             marginLeft: '5%'
-          }
+          },
+          key: "cat3-s2"
         }, "-"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           style: {
             border: 'none',
@@ -87678,7 +87738,8 @@ function (_React$Component) {
             backgroundColor: 'inherit',
             textAlign: 'center'
           },
-          value: _this6.props.prods[item].dados[el]
+          value: _this6.props.prods[item].dados[el],
+          key: "cat3-i1"
         }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
             fontSize: '30px',
@@ -87688,7 +87749,8 @@ function (_React$Component) {
             cursor: 'pointer',
             margin: 0,
             padding: 0
-          }
+          },
+          key: "cat3-s3"
         }, "+"));
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
@@ -87697,7 +87759,8 @@ function (_React$Component) {
           margin: '0 2em 0 1em',
           borderBottom: '1px solid #D7D7D7',
           fontSize: '14px'
-        }
+        },
+        key: "cat3-div3"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: {
           fontWeight: 'bold',
@@ -87737,6 +87800,7 @@ function (_React$Component) {
           margin: 0
         }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        key: "cart-div1",
         style: _objectSpread({}, successDivStyle, {
           display: this.state.showSuccess ? 'block' : 'none'
         })
@@ -87746,20 +87810,23 @@ function (_React$Component) {
         style: {
           width: '15%',
           margin: '5em auto 1em 0'
-        }
+        },
+        key: "cart-div1-img"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
         style: {
           width: '65%',
           margin: 'auto'
-        }
+        },
+        key: "cart-div1-p"
       }, "Pedido Realizado com sucesso!")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        key: "cart-div2",
         style: {
           display: this.state.showSuccess ? 'none' : 'flex',
           flexDirection: 'column'
         }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", {
         className: "text-left mt-3",
-        key: "1",
+        key: "cart-h5-1",
         style: {
           padding: '0 0.5em'
         }
@@ -87772,7 +87839,7 @@ function (_React$Component) {
         }
       }), "Seus itens"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h6", {
         className: "text-left ml-3 px-1",
-        key: "2",
+        key: "cart-h6-1",
         style: {
           padding: '0 0.5em',
           fontSize: '14px'
@@ -87784,8 +87851,12 @@ function (_React$Component) {
           color: '#32338D',
           fontWeight: 'bold',
           margin: '0px 2em 0 1em'
-        }
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Quantidade:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        },
+        key: "cart-div2-div1"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        key: "cart-div2-div1-s1"
+      }, "Quantidade:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        key: "cart-div2-div1-s2",
         style: {
           "float": 'right'
         }
@@ -87795,19 +87866,24 @@ function (_React$Component) {
           height: '2em',
           color: '#32338D',
           fontWeight: 'bold',
-          margin: '0px 2em 0 1em'
-        }
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Valor:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          margin: '0px 2em 4em 1em'
+        },
+        key: "cart-div2-div2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        key: "cart-div2-div2-s1"
+      }, "Valor:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        key: "cart-div2-div2-s2",
         style: {
           "float": 'right'
         }
       }, "R$ ", this.props.totalPrice))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "footer",
+        className: "footer text-center",
         style: {
           backgroundColor: this.state.showSuccess ? 'white' : '#32338D',
           color: this.state.showSuccess ? '#32A1DD' : 'white'
         },
-        onClick: this.handleFinishOrder
+        onClick: this.handleFinishOrder,
+        key: "cart-div-3"
       }, this.state.showSuccess ? 'Novo Pedido' : 'Finalizar a Compra'));
     }
   }]);
@@ -87866,7 +87942,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ClientSelect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ClientSelect */ "./resources/js/components/ClientComponent/ClientSelect.js");
 /* harmony import */ var _ClientComponent_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ClientComponent.css */ "./resources/js/components/ClientComponent/ClientComponent.css");
 /* harmony import */ var _ClientComponent_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_ClientComponent_css__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -87883,6 +87966,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -87920,12 +88004,14 @@ function (_React$Component) {
     key: "handleClick",
     value: function handleClick() {
       if (this.state.client !== null) {
-        this.props.onMakeOrderClick();
+        window.location = '/pedido';
       }
     }
   }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_1__["default"], {
         bsPrefix: "row m-1"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_2__["default"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", {
@@ -87941,10 +88027,14 @@ function (_React$Component) {
       }), "Clientes"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ClientSelect__WEBPACK_IMPORTED_MODULE_3__["default"], {
         key: 2,
         onClientSelect: this.handleClientSelect
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Link"], {
         className: "footer text-center",
         key: 3,
-        onClick: this.handleClick
+        to: function to(location) {
+          return _objectSpread({}, location, {
+            pathname: _this2.state.client ? '/pedido' : '/clientes'
+          });
+        }
       }, "Fazer Pedido")));
     }
   }]);
@@ -88077,11 +88167,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _TypeComponent_TypeComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../TypeComponent/TypeComponent */ "./resources/js/components/TypeComponent/TypeComponent.js");
 /* harmony import */ var _TotalComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./TotalComponent */ "./resources/js/components/ProductComponent/TotalComponent.js");
 /* harmony import */ var _resources_products__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../resources/products */ "./resources/js/components/resources/products.js");
-/* harmony import */ var _ClientComponent_ClientComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../ClientComponent/ClientComponent */ "./resources/js/components/ClientComponent/ClientComponent.js");
-/* harmony import */ var react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-bootstrap/Row */ "./node_modules/react-bootstrap/esm/Row.js");
-/* harmony import */ var react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-bootstrap/Col */ "./node_modules/react-bootstrap/esm/Col.js");
-/* harmony import */ var _CartComponent_CartComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../CartComponent/CartComponent */ "./resources/js/components/CartComponent/CartComponent.js");
-/* harmony import */ var react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-bootstrap/Modal */ "./node_modules/react-bootstrap/esm/Modal.js");
+/* harmony import */ var react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-bootstrap/Row */ "./node_modules/react-bootstrap/esm/Row.js");
+/* harmony import */ var react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-bootstrap/Col */ "./node_modules/react-bootstrap/esm/Col.js");
+/* harmony import */ var _CartComponent_CartComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../CartComponent/CartComponent */ "./resources/js/components/CartComponent/CartComponent.js");
+/* harmony import */ var react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-bootstrap/Modal */ "./node_modules/react-bootstrap/esm/Modal.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -88105,7 +88194,6 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 
 
 
@@ -88145,6 +88233,7 @@ function (_React$Component) {
       cpts: [{
         name: 'div',
         props: {
+          key: 'div',
           onClick: function onClick() {
             return _this.handleModalClick('start');
           },
@@ -88158,8 +88247,11 @@ function (_React$Component) {
             fontSize: '12px'
           }
         },
-        children: ['iniciar novo pedido', e('img', {
+        children: [e('span', {
+          key: 'span'
+        }, 'iniciar novo pedido'), e('img', {
           src: "/images/star.svg",
+          key: 'img',
           alt: "task",
           style: {
             width: '4%',
@@ -88169,13 +88261,14 @@ function (_React$Component) {
       }, {
         name: _ProductSelect__WEBPACK_IMPORTED_MODULE_1__["default"],
         props: {
+          key: 'product',
           onProductChange: _this.handleProductChange
         }
       }, {
-        name: _TotalComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
         props: {
-          prods: _this.state.prods
-        }
+          key: 'total'
+        },
+        name: _TotalComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
       }]
     };
     return _this;
@@ -88198,14 +88291,14 @@ function (_React$Component) {
       var cpts = [this.state.cpts[0], this.state.cpts[1], this.state.cpts[2]];
       var cpt = {};
 
-      if (prods[prodName].tipo_categoria !== 0) {
+      if (prods[prodName].tipo_categoria !== 0 || prodName.includes('ela')) {
         cpt = {
           name: _TypeComponent_TypeComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
           props: {
             onSubtypeSet: this.handleSubtypeSet,
             onTypeChange: this.handleTypeChange,
             prodName: prodName,
-            key: 2
+            key: 'type'
           }
         };
       } else {
@@ -88214,7 +88307,7 @@ function (_React$Component) {
           props: {
             onSizeChange: this.handleSizeChange,
             prodName: prodName,
-            key: 2
+            key: 'size'
           }
         };
       }
@@ -88232,7 +88325,7 @@ function (_React$Component) {
       cpts.push({
         name: _TypeComponent_TypeComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
         props: {
-          key: 3,
+          key: 'type',
           size: size,
           prodName: prodName,
           onSubtypeSet: this.handleSubtypeSet,
@@ -88313,6 +88406,7 @@ function (_React$Component) {
         return i === 2 ? {
           name: _TotalComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
           props: {
+            key: 'total',
             prods: prods,
             onCartClick: _this2.handleCartClick
           }
@@ -88329,16 +88423,17 @@ function (_React$Component) {
       var cpts = this.state.cpts.map(function (el) {
         return Object.assign({}, el, {
           props: Object.assign({}, el.props, {
-            display: true
+            display: 'true'
           })
         });
       });
       cpts.push({
-        name: _CartComponent_CartComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
+        name: _CartComponent_CartComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
         props: {
           prods: this.state.prods,
           totalQty: totalQty,
-          totalPrice: totalPrice
+          totalPrice: totalPrice,
+          key: 'cart'
         }
       });
       this.setState({
@@ -88403,7 +88498,7 @@ function (_React$Component) {
           cpts: [{
             name: 'div',
             props: {
-              onProductChange: this.handleProductChange,
+              key: 'div',
               onClick: function onClick() {
                 return _this4.handleModalClick('start');
               },
@@ -88417,7 +88512,9 @@ function (_React$Component) {
                 fontSize: '12px'
               }
             },
-            children: ['iniciar novo pedido', e('img', {
+            children: [e('span', {
+              key: 'span'
+            }, 'iniciar novo pedido'), e('img', {
               src: "/images/star.svg",
               alt: "task",
               style: {
@@ -88448,14 +88545,14 @@ function (_React$Component) {
       /* const prods = Object.keys(this.state)
         .filter((item) => !["size", "type"].includes(item))
         .reduce((o, key) => ({ ...o, [key]: this.state[key] }), {}) */
-      return e(react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_7__["default"], null, e(react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_8__["default"], {
+      return e(react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_6__["default"], null, e(react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_7__["default"], {
         style: {
           padding: 0
         },
         key: 1
       }, this.state.cpts.map(function (item) {
         return e(item.name, item.props, item.children);
-      })), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_10__["default"], {
+      })), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"], {
         key: 2,
         show: this.state.mdShow,
         style: {
@@ -88463,13 +88560,13 @@ function (_React$Component) {
           top: '10%',
           left: '5%'
         }
-      }, e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_10__["default"].Header, {
+      }, e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"].Header, {
         key: 'mh',
         style: {
           border: 'none',
           padding: '1rem 1rem 0'
         }
-      }, e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_10__["default"].Title, {
+      }, e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"].Title, {
         style: {
           width: '100%',
           textAlign: 'center'
@@ -88482,7 +88579,7 @@ function (_React$Component) {
           margin: '0.2em',
           paddingBottom: '0.2em'
         }
-      }))), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_10__["default"].Body, {
+      }))), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"].Body, {
         key: 'mb',
         style: {
           padding: 0
@@ -88500,7 +88597,7 @@ function (_React$Component) {
           textAlign: 'center',
           fontSize: '12px'
         }
-      }, 'Isso irá limpar todos os campos preenchidos!')), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_10__["default"].Footer, {
+      }, 'Isso irá limpar todos os campos preenchidos!')), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"].Footer, {
         key: 'mf',
         style: {
           border: 'none'
@@ -88919,9 +89016,12 @@ function (_React$Component) {
     key: "getTotalCat3",
     value: function getTotalCat3(prods) {
       if (prods.etiquetas && prods.etiquetas.valor_unitario) {
-        var unitPrice = parseFloat(prods.etiquetas.valor_unitario.replace(',', '.'));
+        var price = prods.etiquetas.valor_unitario;
+        var normString = price.replace('R$', '');
+        var normString2 = normString.replace(',', '.').trim();
+        var unitPrice = parseFloat(normString2);
         var qty = Object.keys(prods.etiquetas.dados).reduce(function (o, item) {
-          return parseInt(prods.etiquetas.dados[item]) + o;
+          return (parseInt(prods.etiquetas.dados[item]) || 0) + o;
         }, 0);
         return unitPrice * qty;
       } else {
@@ -88948,7 +89048,10 @@ function (_React$Component) {
     key: "getCat1UnitPrice",
     value: function getCat1UnitPrice(item) {
       if (this.props.prods[item] && this.props.prods[item].valor_unitario) {
-        return this.props.prods[item].valor_unitario.includes('R$ ') ? parseFloat(this.props.prods[item].valor_unitario.replace('R$ ', '').replace(',', '.')) : parseFloat(this.props.prods[item].valor_unitario.replace(',', '.'));
+        var price = this.props.prods[item].valor_unitario;
+        var normString = price.replace('R$', '');
+        var normString2 = normString.replace(',', '.').trim();
+        return parseFloat(normString2);
       } else {
         return 0;
       }
@@ -88961,7 +89064,7 @@ function (_React$Component) {
       if (this.props.prods[item] && this.props.prods[item].dados) {
         return Object.keys(this.props.prods[item].dados).reduce(function (old, i) {
           return Object.keys(_this3.props.prods[item].dados[i]).reduce(function (o, k) {
-            return parseInt(_this3.props.prods[item].dados[i][k]) + o;
+            return (parseInt(_this3.props.prods[item].dados[i][k]) || 0) + o;
           }, 0) + old;
         }, 0);
       } else {
@@ -88991,20 +89094,29 @@ function (_React$Component) {
 
       if (this.props.prods[item] && this.props.prods[item].dados) {
         return Object.keys(this.props.prods[item].dados).reduce(function (o, k) {
-          return parseInt(_this5.props.prods[item].dados[k].quantidade) * parseFloat(_this5.props.prods[item].dados[k].valor_unitario.replace(',', '.')) + o;
+          return (parseInt(_this5.props.prods[item].dados[k].quantidade) || 0) * _this5.getNormPrice(_this5.props.prods[item].dados[k].valor_unitario) + o;
         }, 0);
       } else {
         return 0;
       }
     }
   }, {
+    key: "getNormPrice",
+    value: function getNormPrice(price) {
+      var priceNorm = price.replace('R$', '');
+      var priceNorm2 = priceNorm.replace(',', '.').trim();
+      return parseFloat(priceNorm2);
+    }
+  }, {
     key: "getTotalCat0",
     value: function getTotalCat0(prods) {
       var _this6 = this;
 
-      return this.getCat0Prods(prods).reduce(function (o, item) {
-        return _this6.getCat0TotalPerProd(item) + o;
-      }, 0);
+      if (prods) {
+        return this.getCat0Prods(prods).reduce(function (o, item) {
+          return _this6.getCat0TotalPerProd(item) + o;
+        }, 0);
+      }
     }
   }, {
     key: "getCat0Prods",
@@ -89046,12 +89158,16 @@ function (_React$Component) {
     value: function getCat0PerSubtypes(item, type, subtype) {
       var _this9 = this;
 
+      var price = this.props.prods[item].dados[type].valor_unitario;
+      var normString = price.replace('R$', '');
+      var normString2 = normString.replace(',', '.').trim();
+
       if (this.props.prods[item].dados[type][subtype] !== null) {
         return Object.keys(this.props.prods[item].dados[type][subtype]).filter(function (st) {
           return _this9.props.prods[item].dados[type][subtype][st] !== '';
         }).reduce(function (o, k) {
-          return parseInt(_this9.props.prods[item].dados[type][subtype][k]) + o;
-        }, 0) * (typeof this.props.prods[item].dados[type].valor_unitario === 'string' ? parseFloat(this.props.prods[item].dados[type].valor_unitario.replace('R$ ', '').replace(',', '.')) : this.props.prods[item].dados[type].valor_unitario);
+          return (parseInt(_this9.props.prods[item].dados[type][subtype][k]) || 0) + o;
+        }, 0) * normString2;
       } else {
         return 0;
       }
@@ -89078,7 +89194,7 @@ function (_React$Component) {
     value: function getTotalQtyCat0LastLevel(prods, key, ke, k) {
       if (k !== 'valor_unitario' && prods[key].dados[ke][k] !== null) {
         return Object.keys(prods[key].dados[ke][k]).reduce(function (l, i) {
-          return parseInt(prods[key].dados[ke][k][i]) + l;
+          return (parseInt(prods[key].dados[ke][k][i]) || 0) + l;
         }, 0);
       } else {
         return 0;
@@ -89092,7 +89208,7 @@ function (_React$Component) {
       }).reduce(function (old, key) {
         return Object.keys(prods[key].dados).reduce(function (ol, ke) {
           return Object.keys(prods[key].dados[ke]).reduce(function (o, k) {
-            return parseInt(prods[key].dados[ke][k]) + o;
+            return (parseInt(prods[key].dados[ke][k]) || 0) + o;
           }, 0) + ol;
         }, 0) + old;
       }, 0);
@@ -89104,7 +89220,7 @@ function (_React$Component) {
         return prods[el].tipo_categoria === 2;
       }).reduce(function (old, key) {
         return Object.keys(prods[key].dados).reduce(function (ol, ke) {
-          return parseInt(prods[key].dados[ke].quantidade) + ol;
+          return (parseInt(prods[key].dados[ke].quantidade) || 0) + ol;
         }, 0) + old;
       }, 0);
     }
@@ -89113,7 +89229,7 @@ function (_React$Component) {
     value: function getTotalQtyCat3(prods) {
       if (prods['etiquetas']) {
         return Object.keys(prods['etiquetas'].dados).reduce(function (old, key) {
-          return parseInt(prods['etiquetas'].dados[key]) + old;
+          return (parseInt(prods['etiquetas'].dados[key]) || 0) + old;
         }, 0);
       } else {
         return 0;
@@ -89136,7 +89252,6 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      console.log(this.getTotalQty());
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "footer" + (this.props.display ? ' d-none' : ''),
         style: {
@@ -89144,6 +89259,7 @@ function (_React$Component) {
         }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         src: "/images/shopping-bag-white.svg",
+        key: "img",
         alt: "user",
         style: {
           width: '5%',
@@ -89151,11 +89267,13 @@ function (_React$Component) {
           paddingBottom: '0.2em'
         }
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-        onClick: this.handleClick
+        onClick: this.handleClick,
+        key: "s-1"
       }, "Sacola:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: {
           "float": 'right'
-        }
+        },
+        key: "s-2"
       }, "R$ ", this.state.totalPrice));
     }
   }]);
@@ -89248,7 +89366,8 @@ function (_React$Component) {
             style: 'currency',
             currency: 'BRL',
             minimumFractionDigits: 2
-          })
+          }),
+          type: this.state.type
         });
       }
     }
@@ -89301,7 +89420,7 @@ function (_React$Component) {
           price: price
         });
         this.setState(state, function () {
-          _this4.props.onSubtypeSet(_this4.state, _this4.props.prodName);
+          _this4.props.onSubtypeSet(_this4.state, _this4.props.prodName, _this4.props.size);
         });
       } else {
         var _state = Object.assign({}, this.state, {
@@ -89347,7 +89466,7 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       return e(react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        bsPrefix: 'row m-1' + (this.props.display ? ' d-none' : '')
+        bsPrefix: 'row m-1 mb-5' + (this.props.display ? ' d-none' : '')
       }, e(react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_4__["default"], null, [e(_TypeSelect__WEBPACK_IMPORTED_MODULE_1__["default"], {
         onTypeChange: this.handleTypeChange,
         key: 2,
@@ -89472,9 +89591,22 @@ function (_React$Component) {
   }
 
   _createClass(TypeList, [{
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      var _this2 = this;
+
+      if (prevProps.prods !== this.props.prods) {
+        this.setState({
+          subtypeObj: {}
+        }, function () {
+          return _this2.forceUpdate();
+        });
+      }
+    }
+  }, {
     key: "handleQtyChange",
     value: function handleQtyChange(e) {
-      var _this2 = this;
+      var _this3 = this;
 
       var subtypeObj = {};
 
@@ -89497,15 +89629,15 @@ function (_React$Component) {
       this.setState({
         subtypeObj: subtypeObj
       }, function () {
-        return _this2.props.onSubtypeChange({
-          subtype: _this2.state
+        return _this3.props.onSubtypeChange({
+          subtype: _this3.state
         });
       });
     }
   }, {
     key: "handlePriceChange",
     value: function handlePriceChange(e) {
-      var _this3 = this;
+      var _this4 = this;
 
       var qty = document.querySelectorAll("[data=\"".concat(e.target.attributes.data.value, "-qty\"]"))[0].value;
       var price = e.target.value;
@@ -89518,8 +89650,8 @@ function (_React$Component) {
       this.setState({
         subtypeObj: subtypeObj
       }, function () {
-        return qty === '' ? null : _this3.props.onSubtypeChange({
-          subtype: _this3.state
+        return qty === '' ? null : _this4.props.onSubtypeChange({
+          subtype: _this4.state
         });
       });
     }
@@ -89543,10 +89675,10 @@ function (_React$Component) {
   }, {
     key: "getProdCategory",
     value: function getProdCategory() {
-      var _this4 = this;
+      var _this5 = this;
 
       return [0, 1, 2, 3].find(function (item) {
-        return _resources_products__WEBPACK_IMPORTED_MODULE_6__["Products"].categories[item][_this4.props.prodName];
+        return _resources_products__WEBPACK_IMPORTED_MODULE_6__["Products"].categories[item][_this5.props.prodName];
       });
     }
   }, {
@@ -89561,7 +89693,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this5 = this;
+      var _this6 = this;
 
       var types = [];
 
@@ -89577,7 +89709,7 @@ function (_React$Component) {
           break;
 
         default:
-          types = this.props.type.includes('ela') ? _toConsumableArray(Array(10).keys()).map(function (x) {
+          types = this.props.prodName.includes('ela') ? _toConsumableArray(Array(10).keys()).map(function (x) {
             return ++x;
           }) : _resources_types__WEBPACK_IMPORTED_MODULE_5__["Types"][this.props.type];
       }
@@ -89613,11 +89745,11 @@ function (_React$Component) {
             cursor: 'pointer'
           }
         }, '-'), e(react_bootstrap_FormControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
-          key: 'c-2',
+          key: _this6.props.type + item + 'c-2',
           min: 0,
-          onChange: _this5.handleQtyChange,
+          onChange: _this6.handleQtyChange,
           data: item + '-qty',
-          value: _this5.state.subtypeObj[item] ? _this5.state.subtypeObj[item].qty : 0,
+          defaultValue: 0,
           style: {
             border: 'none',
             display: 'inline-block',
@@ -89639,7 +89771,7 @@ function (_React$Component) {
         }, '+'), e(react_bootstrap_InputGroup__WEBPACK_IMPORTED_MODULE_3__["default"], {
           key: 'b-2',
           size: 'sm',
-          className: _this5.getProdCategory() !== 2 ? 'd-none' : ''
+          className: _this6.getProdCategory() !== 2 ? 'd-none' : ''
         }, [e('label', {
           key: 'c-1',
           style: {
@@ -89653,12 +89785,12 @@ function (_React$Component) {
           }
         }, 'Valor Unitário'), e(react_bootstrap_FormControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
           key: 'c-2',
-          value: _this5.getProdCategory() === 2 ? _this5.state.subtypeObj[item] ? _this5.state.subtypeObj[item].price : _this5.getItemPrice(item).toLocaleString('pt-br', {
+          value: _this6.getProdCategory() === 2 ? _this6.state.subtypeObj[item] ? _this6.state.subtypeObj[item].price : _this6.getItemPrice(item).toLocaleString('pt-br', {
             minimumFractionDigits: 2,
             currency: 'BRL',
             style: 'currency'
           }) : '0,00',
-          onChange: _this5.handlePriceChange,
+          onChange: _this6.handlePriceChange,
           data: item,
           style: {
             borderRadius: '5px',

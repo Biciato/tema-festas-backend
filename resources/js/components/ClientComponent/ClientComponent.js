@@ -3,6 +3,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import ClientSelect from './ClientSelect'
 import './ClientComponent.css'
+import { Link } from 'react-router-dom'
 
 export default class ClientComponent extends React.Component {
     constructor(props) {
@@ -16,7 +17,7 @@ export default class ClientComponent extends React.Component {
     }
     handleClick() {
         if (this.state.client !== null) {
-            this.props.onMakeOrderClick()
+            window.location = '/pedido'
         }
     }
     render() {
@@ -34,9 +35,11 @@ export default class ClientComponent extends React.Component {
                         Clientes
                     </h5>
                     <ClientSelect  key={2} onClientSelect={this.handleClientSelect}/>
-                    <div className="footer text-center"  key={3} onClick={this.handleClick}>
+                    <Link className="footer text-center"  
+                            key={3} 
+                            to={location => ({...location, pathname: this.state.client ? '/pedido' : '/clientes'})}>
                         Fazer Pedido
-                    </div>
+                    </Link>
                 </Col>
             </Row>
         )

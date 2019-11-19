@@ -13,15 +13,15 @@ export default function App() {
     return (
         <Router>
             <Switch>
-            <Route path="/clientes">
-                <ClientComponent />
-            </Route>
-            <Route path="/pedido">
-                <ProductComponent />
-            </Route>
-            <Route path="/resumo">
-                <CartComponent />
-            </Route>
+                <Route path="/clientes">
+                    <ClientComponent />
+                </Route>
+                <Route path="/pedido">
+                    <ProductComponent />
+                </Route>
+                <Route path="/resumo">
+                    <CartComponent />
+                </Route>
             </Switch>
         </Router>
     ) 

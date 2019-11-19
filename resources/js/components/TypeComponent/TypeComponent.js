@@ -31,7 +31,8 @@ export default class TypeComponent extends React.Component {
             style: 'currency', 
             currency: 'BRL', 
             minimumFractionDigits: 2
-          })
+          }),
+          type: this.state.type
         });
     }
   }
@@ -63,7 +64,7 @@ export default class TypeComponent extends React.Component {
         price
       })
       this.setState(state, () => {
-        this.props.onSubtypeSet(this.state, this.props.prodName)
+        this.props.onSubtypeSet(this.state, this.props.prodName, this.props.size)
       });  
     } else {
       const state = Object.assign({}, this.state, {
@@ -95,7 +96,7 @@ export default class TypeComponent extends React.Component {
 
   render() {
     return (
-      e(Row, { bsPrefix: 'row m-1' + (this.props.display ? ' d-none' : '') },
+      e(Row, { bsPrefix: 'row m-1 mb-5' + (this.props.display ? ' d-none' : '') },
         e(Col, null, [
           e(TypeSelect, {
             onTypeChange: this.handleTypeChange,

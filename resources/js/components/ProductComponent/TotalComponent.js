@@ -34,9 +34,12 @@ export default class TotalComponent extends React.Component {
     }
     getTotalCat3(prods) {
         if (prods.etiquetas && prods.etiquetas.valor_unitario) {
-            const unitPrice = parseFloat(prods.etiquetas.valor_unitario.replace(',', '.'));
+            let price = prods.etiquetas.valor_unitario
+            let normString = price.replace('R$', '')
+            let normString2 = normString.replace(',','.').trim()
+            const unitPrice = parseFloat(normString2);
             const qty = Object.keys(prods.etiquetas.dados).reduce((o, item) =>
-                parseInt(prods.etiquetas.dados[item]) + o, 0
+                (parseInt(prods.etiquetas.dados[item]) || 0) + o, 0
             );
             return (unitPrice * qty);
         } else {
@@ -58,11 +61,10 @@ export default class TotalComponent extends React.Component {
 
     getCat1UnitPrice(item) {
         if (this.props.prods[item] && this.props.prods[item].valor_unitario) {
-            return this.props.prods[item].valor_unitario.includes('R$ ')
-                    ? parseFloat(this.props.prods[item].valor_unitario
-                        .replace('R$ ', '')
-                        .replace(',', '.'))
-                    : parseFloat(this.props.prods[item].valor_unitario.replace(',', '.'))
+            let price = this.props.prods[item].valor_unitario
+            let normString = price.replace('R$', '')
+            let normString2 = normString.replace(',','.').trim()
+            return parseFloat(normString2)
         } else {
             return 0;
         }
@@ -72,7 +74,7 @@ export default class TotalComponent extends React.Component {
             return (
                 Object.keys(this.props.prods[item].dados).reduce((old, i) =>
                     Object.keys(this.props.prods[item].dados[i]).reduce((o, k) =>
-                        parseInt(this.props.prods[item].dados[i][k]) + o, 0
+                        (parseInt(this.props.prods[item].dados[i][k]) || 0) + o, 0
                     ) + old, 0
                 )
             );
@@ -98,8 +100,8 @@ export default class TotalComponent extends React.Component {
         if (this.props.prods[item] && this.props.prods[item].dados) {
             return(
                 Object.keys(this.props.prods[item].dados).reduce((o, k) =>
-                    parseInt(this.props.prods[item].dados[k].quantidade) * 
-                    parseFloat(this.props.prods[item].dados[k].valor_unitario.replace(',','.')) + 
+                    ((parseInt(this.props.prods[item].dados[k].quantidade) || 0) * 
+                    this.getNormPrice(this.props.prods[item].dados[k].valor_unitario)) + 
                     o, 0 
                 )
             )
@@ -107,12 +109,19 @@ export default class TotalComponent extends React.Component {
             return 0
         }        
     }
+    getNormPrice(price) {
+        let priceNorm = price.replace('R$','')
+        let priceNorm2 = priceNorm.replace(',','.').trim()
+        return parseFloat(priceNorm2)
+    }
     getTotalCat0(prods) {
-        return(
-            this.getCat0Prods(prods).reduce((o, item) =>
-                this.getCat0TotalPerProd(item) + o, 0
-            )
-        ); 
+        if(prods) {
+            return(
+                this.getCat0Prods(prods).reduce((o, item) =>
+                    this.getCat0TotalPerProd(item) + o, 0
+                )
+            ); 
+        }        
     }
     getCat0Prods(prods) {
         return(
@@ -148,17 +157,16 @@ export default class TotalComponent extends React.Component {
     }
 
     getCat0PerSubtypes(item, type, subtype) {
+        let price = this.props.prods[item].dados[type].valor_unitario
+        let normString = price.replace('R$', '')
+        let normString2 = normString.replace(',','.').trim()
         if (this.props.prods[item].dados[type][subtype] !== null) {
             return(
                 Object.keys(this.props.prods[item].dados[type][subtype]).filter((st) =>
                     this.props.prods[item].dados[type][subtype][st] !== ''
                 ).reduce((o, k) =>
-                    parseInt(this.props.prods[item].dados[type][subtype][k]) + o, 0
-                ) * (typeof this.props.prods[item].dados[type].valor_unitario === 'string'
-                        ? parseFloat(this.props.prods[item].dados[type].valor_unitario
-                            .replace('R$ ', '')
-                            .replace(',', '.'))
-                        : this.props.prods[item].dados[type].valor_unitario)
+                    (parseInt(this.props.prods[item].dados[type][subtype][k]) || 0) + o, 0
+                ) * normString2
             )
         } else {
             return 0;
@@ -184,7 +192,7 @@ export default class TotalComponent extends React.Component {
         if(k !== 'valor_unitario' && prods[key].dados[ke][k] !== null) {
             return(
                 Object.keys(prods[key].dados[ke][k]).reduce((l, i) => 
-                    parseInt(prods[key].dados[ke][k][i]) + l, 0
+                    (parseInt(prods[key].dados[ke][k][i]) || 0) + l, 0
                 )  
             )
         } else {
@@ -197,7 +205,7 @@ export default class TotalComponent extends React.Component {
                 .reduce((old, key) =>
                     Object.keys(prods[key].dados).reduce((ol, ke) => 
                         Object.keys(prods[key].dados[ke])
-                            .reduce((o, k) => parseInt(prods[key].dados[ke][k]) + o, 0)
+                            .reduce((o, k) => (parseInt(prods[key].dados[ke][k]) ||0) + o, 0)
                         + ol, 0
                     ) 
                     + old, 0    
@@ -208,7 +216,7 @@ export default class TotalComponent extends React.Component {
                 .filter((el) => prods[el].tipo_categoria === 2)
                 .reduce((old, key) =>
                     Object.keys(prods[key].dados).reduce((ol, ke) => 
-                        parseInt(prods[key].dados[ke].quantidade)
+                        (parseInt(prods[key].dados[ke].quantidade) || 0)
                         + ol, 0
                     ) 
                     + old, 0    
@@ -219,7 +227,7 @@ export default class TotalComponent extends React.Component {
         if (prods['etiquetas']) {
             return Object
                 .keys(prods['etiquetas'].dados)
-                .reduce((old, key) => parseInt(prods['etiquetas'].dados[key]) + old, 0 )    
+                .reduce((old, key) => (parseInt(prods['etiquetas'].dados[key]) || 0) + old, 0 )    
         } else {
             return 0
         }
@@ -241,10 +249,10 @@ export default class TotalComponent extends React.Component {
         this.props.onCartClick(this.state.totalQty, this.state.totalPrice)
     }
     render() {
-        console.log(this.getTotalQty()) 
         return (
             <div className={"footer" + (this.props.display ? ' d-none' : '')} style={{textAlign: 'left'}}>
                 <img src="/images/shopping-bag-white.svg" 
+                        key="img"
                         alt="user"
                         style={{
                             width: '5%',
@@ -252,8 +260,8 @@ export default class TotalComponent extends React.Component {
                             paddingBottom: '0.2em'
                         }}>                            
                 </img>
-                <span onClick={this.handleClick}>Sacola:</span>
-                <span style={{float: 'right'}}>R$ {this.state.totalPrice}</span>
+                <span onClick={this.handleClick} key="s-1">Sacola:</span>
+                <span style={{float: 'right'}} key="s-2">R$ {this.state.totalPrice}</span>
             </div>
         );
     }

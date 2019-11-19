@@ -4,7 +4,6 @@ import SizeSelect from "./SizeSelect"
 import TypeComponent from "../TypeComponent/TypeComponent"
 import TotalComponent from './TotalComponent'
 import { Products } from '../resources/products'
-import ClientComponent from "../ClientComponent/ClientComponent"
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import CartComponent from "../CartComponent/CartComponent"
@@ -31,6 +30,7 @@ export default class ProductComponent extends React.Component {
         {
           name: 'div',
           props: {
+            key: 'div',
             onClick: () => this.handleModalClick('start'),
             style: {
               textAlign: 'end',
@@ -43,9 +43,10 @@ export default class ProductComponent extends React.Component {
             }
           },
           children: [
-            'iniciar novo pedido',
+            e('span', {key: 'span'}, 'iniciar novo pedido'),
             e('img', {
               src: "/images/star.svg",
+              key: 'img',
               alt: "task",
               style: {
                   width: '4%',
@@ -57,14 +58,13 @@ export default class ProductComponent extends React.Component {
         {
           name: ProductSelect,
           props: {
+            key: 'product',
             onProductChange: this.handleProductChange
           }
         },
         {
-          name: TotalComponent,
-          props: {
-            prods: this.state.prods
-          }
+          props: {key: 'total'},
+          name: TotalComponent
         }
       ] 
     }
@@ -88,14 +88,14 @@ export default class ProductComponent extends React.Component {
     }
     const cpts = [this.state.cpts[0], this.state.cpts[1], this.state.cpts[2]]
     let cpt = {}
-    if (prods[prodName].tipo_categoria !== 0) {
+    if (prods[prodName].tipo_categoria !== 0 || prodName.includes('ela')) {
       cpt = {
         name : TypeComponent,
         props: { 
           onSubtypeSet : this.handleSubtypeSet,
           onTypeChange : this.handleTypeChange,
           prodName,
-          key: 2
+          key: 'type'
         }
       }      
     } else {
@@ -104,7 +104,7 @@ export default class ProductComponent extends React.Component {
         props: {
           onSizeChange : this.handleSizeChange,
           prodName,
-          key: 2
+          key: 'size'
         }
       }      
     } 
@@ -116,7 +116,7 @@ export default class ProductComponent extends React.Component {
     cpts.push({
       name: TypeComponent,
       props: {
-        key: 3,
+        key: 'type',
         size,
         prodName,
         onSubtypeSet: this.handleSubtypeSet,
@@ -226,6 +226,7 @@ export default class ProductComponent extends React.Component {
       ? {
         name: TotalComponent,
             props: {
+              key: 'total',
               prods,
               onCartClick: this.handleCartClick
             }
@@ -238,7 +239,7 @@ export default class ProductComponent extends React.Component {
     let cpts = this.state.cpts.map((el) =>
       Object.assign({}, el, {
         props: Object.assign({}, el.props, {
-          display: true
+          display: 'true'
         })
       })
     )
@@ -247,7 +248,8 @@ export default class ProductComponent extends React.Component {
       props: {
         prods: this.state.prods,
         totalQty,
-        totalPrice
+        totalPrice,
+        key: 'cart'
       }
     })
     this.setState({cpts})
@@ -290,7 +292,7 @@ export default class ProductComponent extends React.Component {
           {
             name: 'div',
             props: {
-              onProductChange: this.handleProductChange,
+              key: 'div',
               onClick: () => this.handleModalClick('start'),
               style: {
                 textAlign: 'end',
@@ -303,7 +305,7 @@ export default class ProductComponent extends React.Component {
               }
             },
             children: [
-              'iniciar novo pedido',
+              e('span', {key: 'span'}, 'iniciar novo pedido'),
               e('img', {
                 src: "/images/star.svg",
                 alt: "task",

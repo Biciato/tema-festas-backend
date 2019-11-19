@@ -18,6 +18,13 @@ export default class TypeList extends React.Component {
     this.handlePriceChange = this.handlePriceChange.bind(this)
     this.state = {subtypeObj: {}};
   }
+  componentDidUpdate(prevProps) {
+    if (prevProps.prods !== this.props.prods) {
+        this.setState({
+          subtypeObj: {}
+        },() => this.forceUpdate());
+    }
+}
   handleQtyChange(e) {
     let subtypeObj = {};
     if (this.getProdCategory() === 2) {
@@ -91,7 +98,7 @@ export default class TypeList extends React.Component {
         types = Products.categories[3].etiquetas.names;
         break
       default:
-        types = this.props.type.includes('ela') 
+        types = this.props.prodName.includes('ela') 
           ? [...Array(10).keys()].map(x => ++x) 
           : Types[this.props.type];
     }
@@ -100,43 +107,46 @@ export default class TypeList extends React.Component {
     }
     return types.map((item, idx) => {
       return e(
-        Row, {key: idx, style: {backgroundColor: ((idx % 2) === 0 ? 'white' : '#F8F8F8')}},
-        e(Col, null, [
-          e('label', {
-            variant: 'info',
-            key: 'c-0',
-            style: {
-              fontSize: '14px',
-              fontWeight: '600',
-              width: '61%',
-              marginRight: '1em',
-              marginBottom: 0,
-              padding: '0.2em 0.5em'
-            }}, item
-          ),
-          e('span', {
-            key: 'c-1',
-            style: {      
-              fontSize: '30px',      
-              display: 'inline-block',
-              verticalAlign: 'sub',
-              color: '#32338D',
-              cursor: 'pointer'
-          }}, '-'),
-          e(FormControl, {
-              key: 'c-2', 
-              min: 0, 
-              onChange: this.handleQtyChange, 
-              data: item + '-qty',
-              value: this.state.subtypeObj[item] ? this.state.subtypeObj[item].qty : 0,
+        Row, {
+            key: idx, 
+            style: {backgroundColor: ((idx % 2) === 0 ? 'white' : '#F8F8F8')},
+          },
+          e(Col, null, [
+            e('label', {
+              variant: 'info',
+              key: 'c-0',
               style: {
-                border: 'none',
+                fontSize: '14px',
+                fontWeight: '600',
+                width: '61%',
+                marginRight: '1em',
+                marginBottom: 0,
+                padding: '0.2em 0.5em'
+              }}, item
+            ),
+            e('span', {
+              key: 'c-1',
+              style: {      
+                fontSize: '30px',      
                 display: 'inline-block',
-                width: '20%',
-                backgroundColor: 'inherit',
-                textAlign: 'center'
-              }
-            }),
+                verticalAlign: 'sub',
+                color: '#32338D',
+                cursor: 'pointer'
+            }}, '-'),
+            e(FormControl, {
+                key: this.props.type + item + 'c-2', 
+                min: 0, 
+                onChange: this.handleQtyChange, 
+                data: item + '-qty',
+                defaultValue: 0,
+                style: {
+                  border: 'none',
+                  display: 'inline-block',
+                  width: '20%',
+                  backgroundColor: 'inherit',
+                  textAlign: 'center'
+                }
+              }),
             e('span', {
               key: 'b-1',
               style: {
@@ -149,10 +159,10 @@ export default class TypeList extends React.Component {
               padding: 0
             }}, '+'),
             e(InputGroup, {
-              key: 'b-2', 
-              size: 'sm', 
-              className: this.getProdCategory() !== 2 ? 'd-none' : '' 
-            }, [
+                key: 'b-2', 
+                size: 'sm', 
+                className: this.getProdCategory() !== 2 ? 'd-none' : '' 
+              }, [
               e('label', {
                 key: 'c-1',
                 style: {
@@ -185,9 +195,10 @@ export default class TypeList extends React.Component {
                   color: '#747474'
                 }
               })
-            ]
-        ),          
-      ])
+              ]
+            )          
+          ]
+        )
       )
     })
   }
