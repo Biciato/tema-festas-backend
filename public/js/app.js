@@ -87113,12 +87113,17 @@ __webpack_require__.r(__webpack_exports__);
 
 function App() {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["BrowserRouter"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Switch"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Route"], {
-    path: "/clientes"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ClientComponent_ClientComponent__WEBPACK_IMPORTED_MODULE_2__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Route"], {
-    path: "/pedido"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ProductComponent_ProductComponent__WEBPACK_IMPORTED_MODULE_3__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Route"], {
-    path: "/resumo"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CartComponent_CartComponent__WEBPACK_IMPORTED_MODULE_4__["default"], null))));
+    path: "/clientes",
+    component: _ClientComponent_ClientComponent__WEBPACK_IMPORTED_MODULE_2__["default"]
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Route"], {
+    path: "/pedido",
+    component: _ProductComponent_ProductComponent__WEBPACK_IMPORTED_MODULE_3__["default"]
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Route"], {
+    path: "/resumo",
+    render: function render(props) {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CartComponent_CartComponent__WEBPACK_IMPORTED_MODULE_4__["default"], props);
+    }
+  })));
 }
 
 /***/ }),
@@ -87161,15 +87166,15 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 var successDivStyle = {
-  height: 'calc(100vh - 40px)',
-  width: '100%',
-  backgroundColor: '#32A1DD',
-  color: 'white',
-  textAlign: 'center',
-  fontStyle: 'normal',
-  fontWeight: 'bold',
-  fontSize: '20px',
-  lineHeight: '27px'
+  height: "calc(100vh - 40px)",
+  width: "100%",
+  backgroundColor: "#32A1DD",
+  color: "white",
+  textAlign: "center",
+  fontStyle: "normal",
+  fontWeight: "bold",
+  fontSize: "20px",
+  lineHeight: "27px"
 };
 
 var CartComponent =
@@ -87183,12 +87188,15 @@ function (_React$Component) {
     _classCallCheck(this, CartComponent);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(CartComponent).call(this, props));
+    _this.handlePlusQty = _this.handlePlusQty.bind(_assertThisInitialized(_this));
+    _this.handleMinusQty = _this.handleMinusQty.bind(_assertThisInitialized(_this));
+    _this.handleFinishOrder = _this.handleFinishOrder.bind(_assertThisInitialized(_this));
+    _this.handlePriceChange = _this.handlePriceChange.bind(_assertThisInitialized(_this));
     _this.getTotalPricePerProduct = _this.getTotalPricePerProduct.bind(_assertThisInitialized(_this));
     _this.getTotalQtyCat2 = _this.getTotalQtyCat2.bind(_assertThisInitialized(_this));
     _this.getTotalPriceCat2 = _this.getTotalPriceCat2.bind(_assertThisInitialized(_this));
     _this.getTotalQtyCat0 = _this.getTotalQtyCat0.bind(_assertThisInitialized(_this));
     _this.getTotalPriceCat0 = _this.getTotalPriceCat0.bind(_assertThisInitialized(_this));
-    _this.handleFinishOrder = _this.handleFinishOrder.bind(_assertThisInitialized(_this));
     _this.mountCat0List = _this.mountCat0List.bind(_assertThisInitialized(_this));
     _this.mountCat1List = _this.mountCat1List.bind(_assertThisInitialized(_this));
     _this.mountCat2List = _this.mountCat2List.bind(_assertThisInitialized(_this));
@@ -87201,6 +87209,29 @@ function (_React$Component) {
   }
 
   _createClass(CartComponent, [{
+    key: "moeda",
+    value: function moeda(v) {
+      v = v.replace(/\D/g, ""); // permite digitar apenas numero
+
+      v = v.replace(/(\d{1})(\d{14})$/, "$1.$2"); // coloca ponto antes dos ultimos digitos
+
+      v = v.replace(/(\d{1})(\d{11})$/, "$1.$2"); // coloca ponto antes dos ultimos 11 digitos
+
+      v = v.replace(/(\d{1})(\d{8})$/, "$1.$2"); // coloca ponto antes dos ultimos 8 digitos
+
+      v = v.replace(/(\d{1})(\d{5})$/, "$1.$2"); // coloca ponto antes dos ultimos 5 digitos
+
+      v = v.replace(/(\d{1})(\d{1,2})$/, "$1,$2"); // coloca virgula antes dos ultimos 2 digitos
+
+      return v;
+    }
+  }, {
+    key: "handlePriceChange",
+    value: function handlePriceChange(e, div) {
+      e.target.value = this.moeda(e.target.value);
+      this.setTotalQtyPerBlockOnChange(div);
+    }
+  }, {
     key: "handleFinishOrder",
     value: function handleFinishOrder() {
       var _this2 = this;
@@ -87216,6 +87247,23 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "handlePlusQty",
+    value: function handlePlusQty(item, div) {
+      var value = parseInt(document.querySelectorAll("[data=\"".concat(item, "\"]"))[0].value);
+      document.querySelectorAll("[data=\"".concat(item, "\"]"))[0].value = value + 1;
+      this.setTotalQtyPerBlockOnChange(div);
+    }
+  }, {
+    key: "handleMinusQty",
+    value: function handleMinusQty(item, div) {
+      var value = parseInt(document.querySelectorAll("[data=\"".concat(item, "\"]"))[0].value);
+
+      if (value > 0) {
+        document.querySelectorAll("[data=\"".concat(item, "\"]"))[0].value = value - 1;
+        this.setTotalQtyPerBlockOnChange(div);
+      }
+    }
+  }, {
     key: "getTotalQtyPerProduct",
     value: function getTotalQtyPerProduct(item) {
       if (item !== undefined) {
@@ -87225,11 +87273,24 @@ function (_React$Component) {
       }
     }
   }, {
+    key: "getTotalQtyCat1",
+    value: function getTotalQtyCat1(item) {
+      if (item !== undefined) {
+        return Object.keys(item).reduce(function (o, k) {
+          return Object.keys(item[k]).reduce(function (old, i) {
+            return parseInt(item[k][i]) + old;
+          }, 0) + o;
+        }, 0);
+      }
+    }
+  }, {
     key: "getTotalPricePerProduct",
     value: function getTotalPricePerProduct(item, price) {
-      var priceNorm = price.replace('R$', '');
-      var priceNorm2 = priceNorm.replace(',', '.').trim();
-      return this.getTotalQtyCat0(item) * parseFloat(priceNorm2);
+      var priceNorm = price.replace("R$", "");
+      var priceNorm2 = priceNorm.replace(",", ".").trim();
+      return (this.getTotalQtyCat0(item) * parseFloat(priceNorm2)).toLocaleString('pt-br', {
+        minimumFractionDigits: 2
+      });
     }
   }, {
     key: "getTotalQtyCat2",
@@ -87245,10 +87306,10 @@ function (_React$Component) {
     value: function getTotalPriceCat2(item) {
       if (item !== undefined) {
         return Object.keys(item).reduce(function (o, k) {
-          var priceNorm = item[k].valor_unitario.replace('R$', '');
-          var priceNorm2 = priceNorm.replace(',', '.').trim();
+          var priceNorm = item[k].valor_unitario.replace("R$", "");
+          var priceNorm2 = priceNorm.replace(",", ".").trim();
           return parseInt(item[k].quantidade) * parseFloat(priceNorm2) + o;
-        }, 0).toLocaleString('pt-br', {
+        }, 0).toLocaleString("pt-br", {
           minimumFractionDigits: 2
         });
       }
@@ -87258,7 +87319,7 @@ function (_React$Component) {
     value: function getTotalQtyCat0(item) {
       if (item !== undefined) {
         return Object.keys(item).filter(function (el) {
-          return el !== 'valor_unitario';
+          return el !== "valor_unitario";
         }).reduce(function (o, k) {
           return Object.keys(item[k]).reduce(function (old, key) {
             return parseInt(item[k][key]) + old;
@@ -87276,125 +87337,137 @@ function (_React$Component) {
     value: function mountCat0List(item) {
       var _this3 = this;
 
-      if (this.props.prods[item].tipo_categoria === 0) {
-        return Object.keys(this.props.prods[item].dados).map(function (i) {
+      if (this.props.location.state.prods[item].tipo_categoria === 0) {
+        return Object.keys(this.props.location.state.prods[item].dados).map(function (i) {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            id: "".concat(item, "-").concat(i),
+            className: "products",
             style: {
-              marginTop: '1em'
+              marginTop: "1em"
             },
-            key: 'cat0-' + i
+            key: "cat0-" + i
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
-              padding: '0.1em',
-              height: '2em',
-              marginLeft: '0.8em'
+              padding: "0.1em",
+              height: "2em",
+              marginLeft: "0.8em"
             },
             key: "cat0-div1"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
-              fontSize: '16px',
-              fontWeight: 'bold',
-              padding: '0.4em'
+              fontSize: "16px",
+              fontWeight: "bold",
+              padding: "0.4em"
             },
             key: "cat0-div1-s1"
-          }, item + ' ' + i), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          }, " ", item + " " + i, " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
             style: {
-              "float": 'right',
-              border: '1px solid silver',
-              borderRadius: '5px',
-              padding: '0.4em',
-              color: 'darkgray',
-              marginRight: '1.5em',
-              width: '30%',
-              textAlign: 'center'
+              "float": "right",
+              border: "1px solid silver",
+              borderRadius: "5px",
+              padding: "0.4em",
+              color: "darkgray",
+              marginRight: "1em",
+              width: "30%",
+              textAlign: "center"
             },
-            value: _this3.props.prods[item].dados[i].valor_unitario
-          })), Object.keys(_this3.props.prods[item].dados[i]).filter(function (i) {
-            return i !== 'valor_unitario';
+            onChange: function onChange(e) {
+              return _this3.handlePriceChange(e, "".concat(item, "-").concat(i));
+            },
+            defaultValue: _this3.props.location.state.prods[item].dados[i].valor_unitario
+          }), " "), " ", Object.keys(_this3.props.location.state.prods[item].dados[i]).filter(function (i) {
+            return i !== "valor_unitario";
           }).map(function (el) {
-            return Object.keys(_this3.props.prods[item].dados[i][el]).map(function (e, idx) {
+            return Object.keys(_this3.props.location.state.prods[item].dados[i][el]).map(function (e, idx) {
               return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
                 style: {
-                  padding: '0.7em 0.1em',
-                  height: '4em',
-                  fontSize: '14px',
-                  backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
+                  padding: "0.7em 0.1em",
+                  height: "4em",
+                  fontSize: "14px",
+                  backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8"
                 },
                 key: "cat0-div2-" + e
               }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
                 style: {
                   fontWeight: 600,
-                  padding: '0.4em',
-                  marginLeft: '1em',
-                  display: 'inline-block',
-                  width: '56%'
+                  padding: "0.4em",
+                  marginLeft: "1em",
+                  display: "inline-block",
+                  width: "56%"
                 },
                 key: "cat0-div2-s1"
-              }, el + ' ' + e), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+              }, " ", el + " " + e, " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
                 style: {
-                  fontSize: '30px',
-                  display: 'inline-block',
-                  verticalAlign: 'sub',
-                  color: '#32338D',
-                  cursor: 'pointer',
-                  marginLeft: '5%'
+                  fontSize: "30px",
+                  display: "inline-block",
+                  verticalAlign: "sub",
+                  color: "#32338D",
+                  cursor: "pointer",
+                  marginLeft: "5%"
                 },
-                key: "cat0-div2-s2"
-              }, "-"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+                key: "cat0-div2-s2",
+                onClick: function onClick() {
+                  return _this3.handleMinusQty("".concat(item, "-").concat(i, "-").concat(el, "-").concat(e), "".concat(item, "-").concat(i));
+                }
+              }, " ", "-", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
                 style: {
-                  border: 'none',
-                  display: 'inline-block',
-                  width: '20%',
-                  backgroundColor: 'inherit',
-                  textAlign: 'center'
+                  border: "none",
+                  display: "inline-block",
+                  width: "20%",
+                  backgroundColor: "inherit",
+                  textAlign: "center"
                 },
+                data: "".concat(item, "-").concat(i, "-").concat(el, "-").concat(e),
                 key: "cat0-div2-i1",
-                value: _this3.props.prods[item].dados[i][el][e]
-              }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+                defaultValue: _this3.props.location.state.prods[item].dados[i][el][e]
+              }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
                 style: {
-                  fontSize: '30px',
-                  display: 'inline-block',
-                  verticalAlign: 'sub',
-                  color: '#32338D',
-                  cursor: 'pointer',
+                  fontSize: "30px",
+                  display: "inline-block",
+                  verticalAlign: "sub",
+                  color: "#32338D",
+                  cursor: "pointer",
                   margin: 0,
                   padding: 0
                 },
-                key: "cat0-div2-s3"
-              }, "+"));
+                key: "cat0-div2-s3",
+                onClick: function onClick() {
+                  return _this3.handlePlusQty("".concat(item, "-").concat(i, "-").concat(el, "-").concat(e), "".concat(item, "-").concat(i));
+                }
+              }, " ", "+", " "), " ");
             });
-          }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
-              padding: '0.1em',
-              height: '2em',
-              margin: '0px 2em 0 1em',
-              borderBottom: '1px solid #D7D7D7',
-              fontSize: '14px'
+              padding: "0.1em",
+              height: "2em",
+              margin: "0px 2em 0 1em",
+              borderBottom: "1px solid #D7D7D7",
+              fontSize: "14px"
             },
             key: "cat0-div3"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
-              fontWeight: 'bold',
-              padding: '0.4em'
+              fontWeight: "bold",
+              padding: "0.4em"
             },
             key: "cat0-div3-s1"
-          }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          }, " ", "Quantidade:", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             key: "cat0-div3-s2"
-          }, _this3.getTotalQtyCat0(_this3.props.prods[item].dados[i])), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          }, " ", _this3.getTotalQtyCat0(_this3.props.location.state.prods[item].dados[i]), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
-              fontWeight: 'bold',
-              padding: '0.4em'
+              fontWeight: "bold",
+              padding: "0.4em"
             },
             key: "cat0-div3-s3"
-          }, "Total: R$"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          }, "Total: R$", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
-              "float": 'right',
-              padding: '0.4em',
-              color: 'darkgray',
-              marginLeft: '1em'
+              "float": "right",
+              padding: "0.4em",
+              color: "darkgray",
+              marginLeft: "1em"
             },
             key: "cat0-div3-s4"
-          }, _this3.getTotalPricePerProduct(_this3.props.prods[item].dados[i], _this3.props.prods[item].dados[i].valor_unitario))));
+          }, " ", _this3.getTotalPricePerProduct(_this3.props.location.state.prods[item].dados[i], _this3.props.location.state.prods[item].dados[i].valor_unitario), " "), " "), " ");
         });
       } else {
         return this.mountCat1List(item);
@@ -87405,121 +87478,133 @@ function (_React$Component) {
     value: function mountCat1List(item) {
       var _this4 = this;
 
-      if (this.props.prods[item].tipo_categoria === 1) {
-        return Object.keys(this.props.prods[item].dados).map(function (i) {
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            style: {
-              marginTop: '1em'
-            },
-            key: 'cat1' + i
-          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            style: {
-              padding: '0.1em',
-              height: '2em',
-              marginLeft: '0.8em'
-            },
-            key: "cat1-div1"
-          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            style: {
-              fontSize: '16px',
-              fontWeight: 'bold',
-              padding: '0.4em'
-            }
-          }, item + ' ' + i), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-            style: {
-              "float": 'right',
-              border: '1px solid silver',
-              borderRadius: '5px',
-              padding: '0.4em',
-              color: 'darkgray',
-              marginRight: '1.5em',
-              width: '30%',
-              textAlign: 'center'
-            },
-            value: _this4.props.prods[item].valor_unitario
-          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, Object.keys(_this4.props.prods[item].dados[i]).map(function (el, idx) {
+      if (this.props.location.state.prods[item].tipo_categoria === 1) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "products",
+          id: "".concat(item),
+          style: {
+            marginTop: "1em"
+          },
+          key: "cat1" + item
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          style: {
+            padding: "0.1em",
+            height: "2em",
+            marginLeft: "0.8em"
+          },
+          key: "cat1-div1"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          style: {
+            fontSize: "16px",
+            fontWeight: "bold",
+            padding: "0.4em"
+          }
+        }, " ", item, " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          style: {
+            "float": "right",
+            border: "1px solid silver",
+            borderRadius: "5px",
+            padding: "0.4em",
+            color: "darkgray",
+            marginRight: "1em",
+            width: "30%",
+            textAlign: "center"
+          },
+          defaultValue: this.props.location.state.prods[item].valor_unitario,
+          onChange: function onChange(e) {
+            return _this4.handlePriceChange(e, "".concat(item));
+          }
+        }), " "), " ", Object.keys(this.props.location.state.prods[item].dados).map(function (el) {
+          return Object.keys(_this4.props.location.state.prods[item].dados[el]).map(function (e, idx) {
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
               style: {
-                padding: '0.7em 0.1em',
-                height: '4em',
-                fontSize: '14px',
-                backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
+                padding: "0.7em 0.1em",
+                height: "4em",
+                fontSize: "14px",
+                backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8"
               },
-              key: 'cat1-div2' + el
+              key: "cat1-div2" + el + e
             }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
               style: {
                 fontWeight: 600,
-                padding: '0.4em',
-                marginLeft: '1em',
-                width: '56%',
-                display: 'inline-block'
+                padding: "0.4em",
+                marginLeft: "1em",
+                width: "56%",
+                display: "inline-block"
               },
               key: "cat1-div2-s1"
-            }, el), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            }, " ", "".concat(el, " ").concat(e), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
               style: {
-                fontSize: '30px',
-                display: 'inline-block',
-                verticalAlign: 'sub',
-                color: '#32338D',
-                marginLeft: '5%',
-                cursor: 'pointer'
+                fontSize: "30px",
+                display: "inline-block",
+                verticalAlign: "sub",
+                color: "#32338D",
+                marginLeft: "5%",
+                cursor: "pointer"
               },
-              key: "cat1-div2-s2"
-            }, "-"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+              key: "cat1-div2-s2",
+              onClick: function onClick() {
+                return _this4.handleMinusQty("".concat(item, "-").concat(el, "-").concat(e), "".concat(item));
+              }
+            }, " ", "-", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+              data: "".concat(item, "-").concat(el, "-").concat(e),
               style: {
-                border: 'none',
-                display: 'inline-block',
-                width: '20%',
-                backgroundColor: 'inherit',
-                textAlign: 'center'
+                border: "none",
+                display: "inline-block",
+                width: "20%",
+                backgroundColor: "inherit",
+                textAlign: "center"
               },
               key: "cat1-div2-i",
-              value: _this4.props.prods[item].dados[i][el]
-            }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+              defaultValue: _this4.props.location.state.prods[item].dados[el][e]
+            }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
               style: {
-                fontSize: '30px',
-                display: 'inline-block',
-                verticalAlign: 'sub',
-                color: '#32338D',
-                cursor: 'pointer',
+                fontSize: "30px",
+                display: "inline-block",
+                verticalAlign: "sub",
+                color: "#32338D",
+                cursor: "pointer",
                 margin: 0,
                 padding: 0
               },
-              key: "cat1-div2-s3"
-            }, "+"));
-          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            style: {
-              padding: '0.1em',
-              height: '2em',
-              margin: '0px 2em 0 1em',
-              borderBottom: '1px solid #D7D7D7',
-              fontSize: '14px'
-            },
-            key: "cat1-div3"
-          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            style: {
-              fontWeight: 'bold',
-              padding: '0.4em'
-            },
-            key: "cat1-div3-s1"
-          }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            key: "cat1-div3-s2"
-          }, _this4.getTotalQtyPerProduct(_this4.props.prods[item].dados[i])), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            style: {
-              fontWeight: 'bold',
-              padding: '0.4em'
-            },
-            key: "cat1-div3-s3"
-          }, "Total: R$"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            style: {
-              "float": 'right',
-              padding: '0.4em',
-              color: 'darkgray',
-              marginLeft: '1em'
-            },
-            key: "cat1-div3-s3"
-          }, _this4.getTotalPricePerProduct(_this4.props.prods[item].dados[i], _this4.props.prods[item].valor_unitario))));
-        });
+              key: "cat1-div2-s3",
+              onClick: function onClick() {
+                return _this4.handlePlusQty("".concat(item, "-").concat(el, "-").concat(e), "".concat(item));
+              }
+            }, " ", "+", " "), " ");
+          });
+        }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          style: {
+            padding: "0.1em",
+            height: "2em",
+            margin: "0px 2em 0 1em",
+            borderBottom: "1px solid #D7D7D7",
+            fontSize: "14px"
+          },
+          key: "cat1-div3"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          style: {
+            fontWeight: "bold",
+            padding: "0.4em"
+          },
+          key: "cat1-div3-s1"
+        }, " ", "Quantidade:", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          key: "cat1-div3-s2"
+        }, " ", this.getTotalQtyCat1(this.props.location.state.prods[item].dados), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          style: {
+            fontWeight: "bold",
+            padding: "0.4em"
+          },
+          key: "cat1-div3-s3"
+        }, "Total: R$", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          style: {
+            "float": "right",
+            padding: "0.4em",
+            color: "darkgray",
+            marginLeft: "1em"
+          },
+          key: "cat1-div3-s4"
+        }, " ", this.getTotalPricePerProduct(this.props.location.state.prods[item].dados, this.props.location.state.prods[item].valor_unitario), " "), " "), " ");
       } else {
         return this.mountCat2List(item);
       }
@@ -87529,140 +87614,152 @@ function (_React$Component) {
     value: function mountCat2List(item) {
       var _this5 = this;
 
-      if (this.props.prods[item].tipo_categoria === 2) {
+      if (this.props.location.state.prods[item].tipo_categoria === 2) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          id: item,
+          className: "products",
           style: {
-            marginTop: '1em'
+            marginTop: "1em"
           },
           key: item
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
-            padding: '0.1em',
-            height: '2em',
-            marginLeft: '0.8em'
+            padding: "0.1em",
+            height: "2em",
+            marginLeft: "0.8em"
           },
           key: "cat2-div1"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
-            fontSize: '16px',
-            fontWeight: 'bold',
-            padding: '0.4em'
+            fontSize: "16px",
+            fontWeight: "bold",
+            padding: "0.4em"
           }
-        }, item)), Object.keys(this.props.prods[item].dados).map(function (i, idx) {
+        }, " ", item, " "), " "), " ", Object.keys(this.props.location.state.prods[item].dados).map(function (i, idx) {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
-              padding: '0 1em 1em 0',
-              backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
+              padding: "0 1em 1em 0",
+              backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8"
             },
-            key: "cat2-div2"
+            key: 'cat2-div2-' + i
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
-              padding: '0.7em 0.1em',
-              height: '3em',
-              fontSize: '14px'
+              padding: "0.7em 0.1em",
+              height: "3em",
+              fontSize: "14px"
             },
             key: "cat2-item-div1"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontWeight: 600,
-              padding: '0.4em',
-              marginLeft: '1em',
-              display: 'inline-block',
-              width: '60%',
-              borderBottom: '1px solid #D7D7D7'
+              padding: "0.4em",
+              marginLeft: "1em",
+              display: "inline-block",
+              width: "60%",
+              borderBottom: "1px solid #D7D7D7"
             },
-            key: "cat2-div2-s1"
-          }, i), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            key: 'cat2-div2-s1-' + item
+          }, " ", i, " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
-              fontSize: '30px',
-              display: 'inline-block',
-              verticalAlign: 'sub',
-              color: '#32338D',
-              cursor: 'pointer',
-              marginLeft: '5%'
+              fontSize: "30px",
+              display: "inline-block",
+              verticalAlign: "sub",
+              color: "#32338D",
+              cursor: "pointer",
+              marginLeft: "5%"
             },
-            key: "cat2-div2-s2"
-          }, "-"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            key: 'cat2-div2-s2-' + item,
+            onClick: function onClick() {
+              return _this5.handleMinusQty("".concat(item, "-").concat(i), "".concat(item));
+            }
+          }, " ", "-", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            data: "".concat(item, "-").concat(i),
             style: {
-              border: 'none',
-              display: 'inline-block',
-              width: '20%',
-              backgroundColor: 'inherit',
-              textAlign: 'center'
+              border: "none",
+              display: "inline-block",
+              width: "15%",
+              backgroundColor: "inherit",
+              textAlign: "center"
             },
-            value: _this5.props.prods[item].dados[i].quantidade,
+            defaultValue: _this5.props.location.state.prods[item].dados[i].quantidade,
             key: "cat2-div2-i1"
           }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
-              fontSize: '30px',
-              display: 'inline-block',
-              verticalAlign: 'sub',
-              color: '#32338D',
-              cursor: 'pointer',
+              fontSize: "30px",
+              display: "inline-block",
+              verticalAlign: "sub",
+              color: "#32338D",
+              cursor: "pointer",
               margin: 0,
               padding: 0
             },
-            key: "cat2-div2-s2"
-          }, "+")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            key: "cat2-div2-s2",
+            onClick: function onClick() {
+              return _this5.handlePlusQty("".concat(item, "-").concat(i), "".concat(item));
+            }
+          }, " ", "+", " "), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
-              padding: '0.7em 0.1em',
-              height: '3em',
-              fontSize: '14px',
-              backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
+              padding: "0.7em 0.1em",
+              height: "3em",
+              fontSize: "14px",
+              backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8"
             },
             key: "cat2-item-div2"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
-              padding: '0.4em',
-              marginLeft: '1em',
-              display: 'inline-block',
-              color: '#747474',
-              fontWeight: 'normal'
+              padding: "0.4em",
+              marginLeft: "1em",
+              display: "inline-block",
+              color: "#747474",
+              fontWeight: "normal"
             }
-          }, "Valor Unit\xE1rio"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          }, " ", "Valor Unit\xE1rio", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
             style: {
-              "float": 'right',
-              border: '1px solid silver',
-              borderRadius: '5px',
-              padding: '0.4em',
-              color: 'darkgray',
-              marginRight: '1em',
-              backgroundColor: 'inherit',
-              width: '27%',
-              textAlign: 'right'
+              "float": "right",
+              border: "1px solid silver",
+              borderRadius: "5px",
+              padding: "0.4em",
+              color: "darkgray",
+              marginRight: "1em",
+              backgroundColor: "inherit",
+              width: "27%",
+              textAlign: "center"
             },
-            value: _this5.props.prods[item].dados[i].valor_unitario
-          })));
-        }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            onChange: function onChange(e) {
+              return _this5.handlePriceChange(e, "".concat(item));
+            },
+            defaultValue: _this5.props.location.state.prods[item].dados[i].valor_unitario
+          }), " "), " ");
+        }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
-            padding: '0.1em',
-            height: '2em',
-            margin: '0px 2em 0 1em',
-            borderBottom: '1px solid #D7D7D7',
-            fontSize: '14px'
+            padding: "0.1em",
+            height: "2em",
+            margin: "0px 2em 0 1em",
+            borderBottom: "1px solid #D7D7D7",
+            fontSize: "14px"
           },
           key: "cat2-div3"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
-            fontWeight: 'bold',
-            padding: '0.4em'
+            fontWeight: "bold",
+            padding: "0.4em"
           },
           key: "cat2-div3-s1"
-        }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, this.getTotalQtyCat2(this.props.prods[item].dados)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        }, " ", "Quantidade:", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, " ", this.getTotalQtyCat2(this.props.location.state.prods[item].dados), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
-            fontWeight: 'bold',
-            padding: '0.4em'
+            fontWeight: "bold",
+            padding: "0.4em"
           },
           key: "cat2-div3-s2"
-        }, "Total: R$"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        }, "Total: R$", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
-            "float": 'right',
-            padding: '0.4em',
-            color: 'darkgray',
-            marginLeft: '1em'
+            "float": "right",
+            padding: "0.4em",
+            color: "darkgray",
+            marginLeft: "1em"
           },
-          key: "cat2-div3-s2"
-        }, this.getTotalPriceCat2(this.props.prods[item].dados))));
+          key: "cat2-div3-s3"
+        }, " ", this.getTotalPriceCat2(this.props.location.state.prods[item].dados), " "), " "), " ");
       } else {
         return this.mountCat3List(item);
       }
@@ -87673,123 +87770,205 @@ function (_React$Component) {
       var _this6 = this;
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: item,
+        className: "products",
         style: {
-          marginTop: '1em'
+          marginTop: "1em"
         },
         key: item
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
-          padding: '0.1em',
-          height: '2em',
-          marginLeft: '0.8em'
+          padding: "0.1em",
+          height: "2em",
+          marginLeft: "0.8em"
         },
         key: "cat3-div1"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: {
-          fontSize: '16px',
-          fontWeight: 'bold',
-          padding: '0.4em'
+          fontSize: "16px",
+          fontWeight: "bold",
+          padding: "0.4em"
         }
-      }, item), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      }, " ", item, " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         style: {
-          "float": 'right',
-          border: '1px solid silver',
-          borderRadius: '5px',
-          padding: '0.4em',
-          color: 'darkgray',
-          marginRight: '1.5em',
-          width: '30%',
-          textAlign: 'center'
+          "float": "right",
+          border: "1px solid silver",
+          borderRadius: "5px",
+          padding: "0.4em",
+          color: "darkgray",
+          marginRight: "1em",
+          width: "30%",
+          textAlign: "center"
         },
-        value: this.props.prods[item].valor_unitario
-      })), Object.keys(this.props.prods[item].dados).map(function (el, idx) {
+        onChange: function onChange(e) {
+          return _this6.handlePriceChange(e, "".concat(item));
+        },
+        defaultValue: this.props.location.state.prods[item].valor_unitario
+      }), " "), " ", Object.keys(this.props.location.state.prods[item].dados).map(function (el, idx) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
-            padding: '0.7em 0.1em',
-            height: '4em',
-            fontSize: '14px',
-            backgroundColor: idx % 2 === 0 ? 'white' : '#F8F8F8'
+            padding: "0.7em 0.1em",
+            height: "4em",
+            fontSize: "14px",
+            backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8"
           },
-          key: "cat3-div3"
+          key: "cat3-div2"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
             fontWeight: 600,
-            padding: '0.4em',
-            marginLeft: '1em',
-            display: 'inline-block',
-            width: '56%'
+            padding: "0.4em",
+            marginLeft: "1em",
+            display: "inline-block",
+            width: "56%"
           },
           key: "cat3-s1"
-        }, el), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        }, " ", el, " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
-            fontSize: '30px',
-            display: 'inline-block',
-            verticalAlign: 'sub',
-            color: '#32338D',
-            cursor: 'pointer',
-            marginLeft: '5%'
+            fontSize: "30px",
+            display: "inline-block",
+            verticalAlign: "sub",
+            color: "#32338D",
+            cursor: "pointer",
+            marginLeft: "5%"
           },
-          key: "cat3-s2"
-        }, "-"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          key: "cat3-s2",
+          onClick: function onClick() {
+            return _this6.handleMinusQty("".concat(item, "-").concat(el), "".concat(item));
+          }
+        }, " ", "-", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          data: "".concat(item, "-").concat(el),
           style: {
-            border: 'none',
-            display: 'inline-block',
-            width: '20%',
-            backgroundColor: 'inherit',
-            textAlign: 'center'
+            border: "none",
+            display: "inline-block",
+            width: "20%",
+            backgroundColor: "inherit",
+            textAlign: "center"
           },
-          value: _this6.props.prods[item].dados[el],
+          defaultValue: _this6.props.location.state.prods[item].dados[el],
           key: "cat3-i1"
         }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
-            fontSize: '30px',
-            display: 'inline-block',
-            verticalAlign: 'sub',
-            color: '#32338D',
-            cursor: 'pointer',
+            fontSize: "30px",
+            display: "inline-block",
+            verticalAlign: "sub",
+            color: "#32338D",
+            cursor: "pointer",
             margin: 0,
             padding: 0
           },
-          key: "cat3-s3"
-        }, "+"));
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          key: "cat3-s3",
+          onClick: function onClick() {
+            return _this6.handlePlusQty("".concat(item, "-").concat(el), "".concat(item));
+          }
+        }, " ", "+", " "), " ");
+      }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
-          padding: '0.1em',
-          height: '2em',
-          margin: '0 2em 0 1em',
-          borderBottom: '1px solid #D7D7D7',
-          fontSize: '14px'
+          padding: "0.1em",
+          height: "2em",
+          margin: "0 2em 0 1em",
+          borderBottom: "1px solid #D7D7D7",
+          fontSize: "14px"
         },
         key: "cat3-div3"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: {
-          fontWeight: 'bold',
-          padding: '0.4em'
+          fontWeight: "bold",
+          padding: "0.4em"
         }
-      }, "Quantidade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, this.getTotalQtyPerProduct(this.props.prods[item].dados)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+      }, " ", "Quantidade:", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, " ", this.getTotalQtyPerProduct(this.props.location.state.prods[item].dados), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: {
-          fontWeight: 'bold',
-          padding: '0.4em'
+          fontWeight: "bold",
+          padding: "0.4em"
         }
-      }, "Total: R$"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+      }, "Total: R$", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: {
-          "float": 'right',
-          padding: '0.4em',
-          color: 'darkgray',
-          marginLeft: '1em'
+          "float": "right",
+          padding: "0.4em",
+          color: "darkgray",
+          marginLeft: "1em"
         }
-      }, this.getTotalPricePerProduct(this.props.prods[item].dados, this.props.prods[item].valor_unitario).toLocaleString('pt-br', {
+      }, " ", this.getTotalPricePerProduct(this.props.location.state.prods[item].dados, this.props.location.state.prods[item].valor_unitario).toLocaleString("pt-br", {
         minimumFractionDigits: 2
-      }))));
+      }), " "), " "), " ");
     }
   }, {
     key: "mountProdList",
     value: function mountProdList() {
       var _this7 = this;
 
-      return Object.keys(this.props.prods).map(function (item) {
+      return Object.keys(this.props.location.state.prods).map(function (item) {
         return _this7.mountCat0List(item);
       });
+    }
+  }, {
+    key: "setTotalQtyPerBlockOnChange",
+    value: function setTotalQtyPerBlockOnChange(div) {
+      var el = document.getElementById(div).children;
+      var length = el.length;
+      var qty = Array.from(Array(length), function (x, i) {
+        return i;
+      }).reduce(function (old, item) {
+        return (el[item].children[2] && el[item].children[2].value ? parseInt(el[item].children[2].value) : 0) + old;
+      }, 0);
+      el[length - 1].children[1].innerHTML = qty;
+      this.setTotalPricePerBlockOnChange(div, qty);
+    }
+  }, {
+    key: "setTotalPricePerBlockOnChange",
+    value: function setTotalPricePerBlockOnChange(div, qty) {
+      var el = document.getElementById(div).children[0].children[1];
+      var length = document.getElementById(div).children.length;
+      var normPrice = el.value.replace('R$', '');
+      var normPrice2 = normPrice.replace(',', '.').trim();
+      var price = parseFloat(normPrice2) * qty;
+      document.getElementById(div).children[length - 1].children[3].innerHTML = isNaN(price) ? 0 : price.toLocaleString('pt-br', {
+        minimumFractionDigits: 2
+      });
+      this.setTotalQtyOnChange();
+      this.setTotalPriceOnChange();
+    }
+  }, {
+    key: "setTotalQtyOnChange",
+    value: function setTotalQtyOnChange() {
+      var list = document.getElementsByClassName('products');
+      var listLength = list.length;
+      var qty = 0;
+
+      if (listLength === 1) {
+        qty = list[0].children[list[0].children.length - 1].children[1].innerHTML;
+      } else {
+        qty = Array.from(Array(listLength), function (x, i) {
+          return i;
+        }).reduce(function (old, item) {
+          parseInt(list[item].children[list[item].children.length - 1].children[1].innerHTML) + old;
+        }, 0);
+      }
+
+      document.getElementById('totalQty').innerHTML = qty;
+    }
+  }, {
+    key: "setTotalPriceOnChange",
+    value: function setTotalPriceOnChange() {
+      var list = document.getElementsByClassName('products');
+      var listLength = list.length;
+      var price = 0;
+
+      if (listLength === 1) {
+        price = parseFloat(list[0].children[list[0].children.length - 1].children[3].innerHTML.replace(',', '.'));
+      } else {
+        price = Array.from(Array(listLength), function (x, i) {
+          return i;
+        }).reduce(function (old, item) {
+          parseFloat(list[item].children[list[item].children.length - 1].children[3].innerHTML.replace(',', '.')) + old;
+        }, 0);
+      }
+
+      var priceBr = price.toLocaleString('pt-br', {
+        minimumFractionDigits: 2,
+        currency: 'BRL',
+        style: 'currency'
+      });
+      document.getElementById('totalPrice').innerHTML = priceBr;
     }
   }, {
     key: "render",
@@ -87802,89 +87981,91 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         key: "cart-div1",
         style: _objectSpread({}, successDivStyle, {
-          display: this.state.showSuccess ? 'block' : 'none'
+          display: this.state.showSuccess ? "block" : "none"
         })
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         src: "/images/checked.svg",
         alt: "user",
         style: {
-          width: '15%',
-          margin: '5em auto 1em 0'
+          width: "15%",
+          margin: "5em auto 1em 0"
         },
         key: "cart-div1-img"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+      }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
         style: {
-          width: '65%',
-          margin: 'auto'
+          width: "65%",
+          margin: "auto"
         },
         key: "cart-div1-p"
-      }, "Pedido Realizado com sucesso!")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Pedido Realizado com sucesso!"), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         key: "cart-div2",
         style: {
-          display: this.state.showSuccess ? 'none' : 'flex',
-          flexDirection: 'column'
+          display: this.state.showSuccess ? "none" : "flex",
+          flexDirection: "column"
         }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", {
         className: "text-left mt-3",
         key: "cart-h5-1",
         style: {
-          padding: '0 0.5em'
+          padding: "0 0.5em"
         }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         src: "/images/shopping-bag.svg",
         alt: "user",
         style: {
-          width: '5%',
-          margin: '0 0.3em'
+          width: "5%",
+          margin: "0 0.3em"
         }
-      }), "Seus itens"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h6", {
+      }), "Seus itens", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h6", {
         className: "text-left ml-3 px-1",
         key: "cart-h6-1",
         style: {
-          padding: '0 0.5em',
-          fontSize: '14px'
+          padding: "0 0.5em",
+          fontSize: "14px"
         }
-      }, "N\xBA do pedido 8824"), this.mountProdList(), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "N\xBA do pedido 8824", " "), " ", this.mountProdList(), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
-          padding: '0.1em',
-          height: '2em',
-          color: '#32338D',
-          fontWeight: 'bold',
-          margin: '0px 2em 0 1em'
+          padding: "0.1em",
+          height: "2em",
+          color: "#32338D",
+          fontWeight: "bold",
+          margin: "0px 2em 0 1em"
         },
         key: "cart-div2-div1"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         key: "cart-div2-div1-s1"
-      }, "Quantidade:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+      }, " Quantidade: "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         key: "cart-div2-div1-s2",
+        id: "totalQty",
         style: {
-          "float": 'right'
+          "float": "right"
         }
-      }, this.props.totalQty)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, " ", this.props.location.state.totalQty, " "), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
-          padding: '0.1em',
-          height: '2em',
-          color: '#32338D',
-          fontWeight: 'bold',
-          margin: '0px 2em 4em 1em'
+          padding: "0.1em",
+          height: "2em",
+          color: "#32338D",
+          fontWeight: "bold",
+          margin: "0px 2em 4em 1em"
         },
         key: "cart-div2-div2"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         key: "cart-div2-div2-s1"
-      }, "Valor:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+      }, " Valor: "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        id: "totalPrice",
         key: "cart-div2-div2-s2",
         style: {
-          "float": 'right'
+          "float": "right"
         }
-      }, "R$ ", this.props.totalPrice))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, " ", "R$ ", this.props.location.state.totalPrice, " "), " "), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "footer text-center",
         style: {
-          backgroundColor: this.state.showSuccess ? 'white' : '#32338D',
-          color: this.state.showSuccess ? '#32A1DD' : 'white'
+          backgroundColor: this.state.showSuccess ? "white" : "#32338D",
+          color: this.state.showSuccess ? "#32A1DD" : "white"
         },
         onClick: this.handleFinishOrder,
         key: "cart-div-3"
-      }, this.state.showSuccess ? 'Novo Pedido' : 'Finalizar a Compra'));
+      }, " ", this.state.showSuccess ? "Novo Pedido" : "Finalizar a Compra", " "), " ");
     }
   }]);
 
@@ -88004,7 +88185,7 @@ function (_React$Component) {
     key: "handleClick",
     value: function handleClick() {
       if (this.state.client !== null) {
-        window.location = '/pedido';
+        window.location = "/pedido";
       }
     }
   }, {
@@ -88021,8 +88202,8 @@ function (_React$Component) {
         src: "/images/groupe-users.svg",
         alt: "user",
         style: {
-          width: '8%',
-          margin: '0.2em 0.5em 0.4em 0'
+          width: "8%",
+          margin: "0.2em 0.5em 0.4em 0"
         }
       }), "Clientes"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ClientSelect__WEBPACK_IMPORTED_MODULE_3__["default"], {
         key: 2,
@@ -88032,7 +88213,7 @@ function (_React$Component) {
         key: 3,
         to: function to(location) {
           return _objectSpread({}, location, {
-            pathname: _this2.state.client ? '/pedido' : '/clientes'
+            pathname: _this2.state.client ? "/pedido" : "/clientes"
           });
         }
       }, "Fazer Pedido")));
@@ -88169,8 +88350,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _resources_products__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../resources/products */ "./resources/js/components/resources/products.js");
 /* harmony import */ var react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-bootstrap/Row */ "./node_modules/react-bootstrap/esm/Row.js");
 /* harmony import */ var react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-bootstrap/Col */ "./node_modules/react-bootstrap/esm/Col.js");
-/* harmony import */ var _CartComponent_CartComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../CartComponent/CartComponent */ "./resources/js/components/CartComponent/CartComponent.js");
-/* harmony import */ var react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-bootstrap/Modal */ "./node_modules/react-bootstrap/esm/Modal.js");
+/* harmony import */ var react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-bootstrap/Modal */ "./node_modules/react-bootstrap/esm/Modal.js");
+/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/esm/react-router.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -88231,42 +88412,42 @@ function (_React$Component) {
       mdShow: false,
       prods: {},
       cpts: [{
-        name: 'div',
+        name: "div",
         props: {
-          key: 'div',
+          key: "div",
           onClick: function onClick() {
-            return _this.handleModalClick('start');
+            return _this.handleModalClick("start");
           },
           style: {
-            textAlign: 'end',
-            backgroundColor: '#F3F3F3',
+            textAlign: "end",
+            backgroundColor: "#F3F3F3",
             margin: 0,
-            padding: '0.3em',
-            color: '#32338D',
-            cursor: 'pointer',
-            fontSize: '12px'
+            padding: "0.3em",
+            color: "#32338D",
+            cursor: "pointer",
+            fontSize: "12px"
           }
         },
-        children: [e('span', {
-          key: 'span'
-        }, 'iniciar novo pedido'), e('img', {
+        children: [e("span", {
+          key: "span"
+        }, "iniciar novo pedido"), e("img", {
           src: "/images/star.svg",
-          key: 'img',
+          key: "img",
           alt: "task",
           style: {
-            width: '4%',
-            margin: '0.2em 0.4em 0.4em 0.3em'
+            width: "4%",
+            margin: "0.2em 0.4em 0.4em 0.3em"
           }
         })]
       }, {
         name: _ProductSelect__WEBPACK_IMPORTED_MODULE_1__["default"],
         props: {
-          key: 'product',
+          key: "product",
           onProductChange: _this.handleProductChange
         }
       }, {
         props: {
-          key: 'total'
+          key: "total"
         },
         name: _TotalComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
       }]
@@ -88291,14 +88472,14 @@ function (_React$Component) {
       var cpts = [this.state.cpts[0], this.state.cpts[1], this.state.cpts[2]];
       var cpt = {};
 
-      if (prods[prodName].tipo_categoria !== 0 || prodName.includes('ela')) {
+      if (prods[prodName].tipo_categoria !== 0 || prodName.includes("ela")) {
         cpt = {
           name: _TypeComponent_TypeComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
           props: {
             onSubtypeSet: this.handleSubtypeSet,
             onTypeChange: this.handleTypeChange,
             prodName: prodName,
-            key: 'type'
+            key: "type"
           }
         };
       } else {
@@ -88307,7 +88488,7 @@ function (_React$Component) {
           props: {
             onSizeChange: this.handleSizeChange,
             prodName: prodName,
-            key: 'size'
+            key: "size"
           }
         };
       }
@@ -88325,7 +88506,7 @@ function (_React$Component) {
       cpts.push({
         name: _TypeComponent_TypeComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
         props: {
-          key: 'type',
+          key: "type",
           size: size,
           prodName: prodName,
           onSubtypeSet: this.handleSubtypeSet,
@@ -88406,7 +88587,7 @@ function (_React$Component) {
         return i === 2 ? {
           name: _TotalComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
           props: {
-            key: 'total',
+            key: "total",
             prods: prods,
             onCartClick: _this2.handleCartClick
           }
@@ -88420,43 +88601,34 @@ function (_React$Component) {
   }, {
     key: "handleCartClick",
     value: function handleCartClick(totalQty, totalPrice) {
-      var cpts = this.state.cpts.map(function (el) {
-        return Object.assign({}, el, {
-          props: Object.assign({}, el.props, {
-            display: 'true'
-          })
-        });
-      });
-      cpts.push({
-        name: _CartComponent_CartComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
-        props: {
-          prods: this.state.prods,
-          totalQty: totalQty,
-          totalPrice: totalPrice,
-          key: 'cart'
-        }
-      });
+      var _this3 = this;
+
       this.setState({
-        cpts: cpts
+        totalQty: totalQty,
+        totalPrice: totalPrice
+      }, function () {
+        return _this3.setState({
+          redirect: true
+        });
       });
     }
   }, {
     key: "handleModalClick",
     value: function handleModalClick(cdt) {
-      var _this3 = this;
+      var _this4 = this;
 
       var state = Object.assign({}, this.state);
 
-      if (cdt === 'accepted') {
+      if (cdt === "accepted") {
         state.mdShow = false;
-      } else if (cdt === 'not_accepted') {
+      } else if (cdt === "not_accepted") {
         state.mdShow = false;
       } else {
         state.mdShow = true;
       }
 
       this.setState(state, function () {
-        return _this3.startNewOrder(cdt);
+        return _this4.startNewOrder(cdt);
       });
     }
   }, {
@@ -88483,7 +88655,7 @@ function (_React$Component) {
           return item.name === size;
         }).price;
       } else {
-        return _resources_products__WEBPACK_IMPORTED_MODULE_5__["Products"].categories[this.getProdCategory(prodName)][prodName].price.toLocaleString('pt-br', {
+        return _resources_products__WEBPACK_IMPORTED_MODULE_5__["Products"].categories[this.getProdCategory(prodName)][prodName].price.toLocaleString("pt-br", {
           minimumFractionDigits: 2
         });
       }
@@ -88491,35 +88663,35 @@ function (_React$Component) {
   }, {
     key: "startNewOrder",
     value: function startNewOrder(cdt) {
-      var _this4 = this;
+      var _this5 = this;
 
-      if (cdt === 'accepted') {
+      if (cdt === "accepted") {
         this.setState({
           cpts: [{
-            name: 'div',
+            name: "div",
             props: {
-              key: 'div',
+              key: "div",
               onClick: function onClick() {
-                return _this4.handleModalClick('start');
+                return _this5.handleModalClick("start");
               },
               style: {
-                textAlign: 'end',
-                backgroundColor: '#F3F3F3',
+                textAlign: "end",
+                backgroundColor: "#F3F3F3",
                 margin: 0,
-                padding: '0.3em',
-                color: '#32338D',
-                cursor: 'pointer',
-                fontSize: '12px'
+                padding: "0.3em",
+                color: "#32338D",
+                cursor: "pointer",
+                fontSize: "12px"
               }
             },
-            children: [e('span', {
-              key: 'span'
-            }, 'iniciar novo pedido'), e('img', {
+            children: [e("span", {
+              key: "span"
+            }, "iniciar novo pedido"), e("img", {
               src: "/images/star.svg",
               alt: "task",
               style: {
-                width: '4%',
-                margin: '0.2em 0.4em 0.4em 0.3em'
+                width: "4%",
+                margin: "0.2em 0.4em 0.4em 0.3em"
               }
             })]
           }, {
@@ -88540,11 +88712,22 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this5 = this;
+      var _this6 = this;
 
-      /* const prods = Object.keys(this.state)
-        .filter((item) => !["size", "type"].includes(item))
-        .reduce((o, key) => ({ ...o, [key]: this.state[key] }), {}) */
+      if (this.state.redirect) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router__WEBPACK_IMPORTED_MODULE_9__["Redirect"], {
+          push: true,
+          to: {
+            pathname: "/resumo",
+            state: {
+              prods: this.state.prods,
+              totalPrice: this.state.totalPrice,
+              totalQty: this.state.totalQty
+            }
+          }
+        });
+      }
+
       return e(react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_6__["default"], null, e(react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_7__["default"], {
         style: {
           padding: 0
@@ -88552,91 +88735,91 @@ function (_React$Component) {
         key: 1
       }, this.state.cpts.map(function (item) {
         return e(item.name, item.props, item.children);
-      })), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"], {
+      })), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_8__["default"], {
         key: 2,
         show: this.state.mdShow,
         style: {
-          width: '90%',
-          top: '10%',
-          left: '5%'
+          width: "90%",
+          top: "10%",
+          left: "5%"
         }
-      }, e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"].Header, {
-        key: 'mh',
+      }, e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_8__["default"].Header, {
+        key: "mh",
         style: {
-          border: 'none',
-          padding: '1rem 1rem 0'
+          border: "none",
+          padding: "1rem 1rem 0"
         }
-      }, e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"].Title, {
+      }, e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_8__["default"].Title, {
         style: {
-          width: '100%',
-          textAlign: 'center'
+          width: "100%",
+          textAlign: "center"
         }
-      }, e('img', {
+      }, e("img", {
         src: "/images/warning.svg",
         alt: "user",
         style: {
-          width: '15%',
-          margin: '0.2em',
-          paddingBottom: '0.2em'
+          width: "15%",
+          margin: "0.2em",
+          paddingBottom: "0.2em"
         }
-      }))), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"].Body, {
-        key: 'mb',
+      }))), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_8__["default"].Body, {
+        key: "mb",
         style: {
           padding: 0
         }
-      }, e('p', {
-        key: 'p1',
+      }, e("p", {
+        key: "p1",
         style: {
-          textAlign: 'center',
-          width: '60%',
-          margin: '0.5em auto'
+          textAlign: "center",
+          width: "60%",
+          margin: "0.5em auto"
         }
-      }, 'Você deseja realmente iniciar um novo pedido?'), e('p', {
-        key: 'p2',
+      }, "Você deseja realmente iniciar um novo pedido?"), e("p", {
+        key: "p2",
         style: {
-          textAlign: 'center',
-          fontSize: '12px'
+          textAlign: "center",
+          fontSize: "12px"
         }
-      }, 'Isso irá limpar todos os campos preenchidos!')), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_9__["default"].Footer, {
-        key: 'mf',
+      }, "Isso irá limpar todos os campos preenchidos!")), e(react_bootstrap_Modal__WEBPACK_IMPORTED_MODULE_8__["default"].Footer, {
+        key: "mf",
         style: {
-          border: 'none'
+          border: "none"
         }
-      }, e('button', {
+      }, e("button", {
         onClick: function onClick() {
-          return _this5.handleModalClick('accepted');
+          return _this6.handleModalClick("accepted");
         },
-        key: 'b1',
+        key: "b1",
         style: {
-          borderRadius: '5px',
-          backgroundColor: '#328D3B',
-          color: 'white',
-          border: 'none',
-          width: '100%',
-          padding: '0.5em',
-          fontStyle: 'normal',
-          fontWeight: 'bold',
-          fontSize: '20px',
-          lineHeight: '27px'
+          borderRadius: "5px",
+          backgroundColor: "#328D3B",
+          color: "white",
+          border: "none",
+          width: "100%",
+          padding: "0.5em",
+          fontStyle: "normal",
+          fontWeight: "bold",
+          fontSize: "20px",
+          lineHeight: "27px"
         }
-      }, 'Sim'), e('button', {
+      }, "Sim"), e("button", {
         onClick: function onClick() {
-          return _this5.handleModalClick('not_accepted');
+          return _this6.handleModalClick("not_accepted");
         },
-        key: 'b2',
+        key: "b2",
         style: {
-          borderRadius: '5px',
-          backgroundColor: '#E33333',
-          color: 'white',
-          border: 'none',
-          width: '100%',
-          padding: '0.5em',
-          fontStyle: 'normal',
-          fontWeight: 'bold',
-          fontSize: '20px',
-          lineHeight: '27px'
+          borderRadius: "5px",
+          backgroundColor: "#E33333",
+          color: "white",
+          border: "none",
+          width: "100%",
+          padding: "0.5em",
+          fontStyle: "normal",
+          fontWeight: "bold",
+          fontSize: "20px",
+          lineHeight: "27px"
         }
-      }, 'Não'))));
+      }, "Não"))));
     }
   }]);
 
@@ -88994,7 +89177,7 @@ function (_React$Component) {
     _this.getCat0PerSubtypes = _this.getCat0PerSubtypes.bind(_assertThisInitialized(_this));
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     _this.state = {
-      totalPrice: '0,00',
+      totalPrice: "0,00",
       totalQty: 0
     };
     return _this;
@@ -89005,7 +89188,7 @@ function (_React$Component) {
     value: function componentDidUpdate(prevProps) {
       if (prevProps.prods !== this.props.prods) {
         this.setState({
-          totalPrice: (this.getTotalCat0(this.props.prods) + this.getTotalCat1(this.props.prods) + this.getTotalCat2(this.props.prods) + this.getTotalCat3(this.props.prods)).toLocaleString('pt-br', {
+          totalPrice: (this.getTotalCat0(this.props.prods) + this.getTotalCat1(this.props.prods) + this.getTotalCat2(this.props.prods) + this.getTotalCat3(this.props.prods)).toLocaleString("pt-br", {
             minimumFractionDigits: 2
           }),
           totalQty: this.getTotalQty()
@@ -89017,8 +89200,8 @@ function (_React$Component) {
     value: function getTotalCat3(prods) {
       if (prods.etiquetas && prods.etiquetas.valor_unitario) {
         var price = prods.etiquetas.valor_unitario;
-        var normString = price.replace('R$', '');
-        var normString2 = normString.replace(',', '.').trim();
+        var normString = price.replace("R$", "");
+        var normString2 = normString.replace(",", ".").trim();
         var unitPrice = parseFloat(normString2);
         var qty = Object.keys(prods.etiquetas.dados).reduce(function (o, item) {
           return (parseInt(prods.etiquetas.dados[item]) || 0) + o;
@@ -89049,8 +89232,8 @@ function (_React$Component) {
     value: function getCat1UnitPrice(item) {
       if (this.props.prods[item] && this.props.prods[item].valor_unitario) {
         var price = this.props.prods[item].valor_unitario;
-        var normString = price.replace('R$', '');
-        var normString2 = normString.replace(',', '.').trim();
+        var normString = price.replace("R$", "");
+        var normString2 = normString.replace(",", ".").trim();
         return parseFloat(normString2);
       } else {
         return 0;
@@ -89103,8 +89286,8 @@ function (_React$Component) {
   }, {
     key: "getNormPrice",
     value: function getNormPrice(price) {
-      var priceNorm = price.replace('R$', '');
-      var priceNorm2 = priceNorm.replace(',', '.').trim();
+      var priceNorm = price.replace("R$", "");
+      var priceNorm2 = priceNorm.replace(",", ".").trim();
       return parseFloat(priceNorm2);
     }
   }, {
@@ -89130,7 +89313,7 @@ function (_React$Component) {
     value: function getCat0TotalPerProd(item) {
       var _this7 = this;
 
-      if (this.props.prods[item].dados !== '') {
+      if (this.props.prods[item].dados !== "") {
         return Object.keys(this.props.prods[item].dados).reduce(function (o, k) {
           return _this7.getCat0PerTypes(item, k) + o;
         }, 0);
@@ -89145,7 +89328,7 @@ function (_React$Component) {
 
       if (this.props.prods[item].dados[type] !== null) {
         return Object.keys(this.props.prods[item].dados[type]).filter(function (item) {
-          return item !== 'valor_unitario';
+          return item !== "valor_unitario";
         }).reduce(function (old, key) {
           return _this8.getCat0PerSubtypes(item, type, key) + old;
         }, 0);
@@ -89159,12 +89342,12 @@ function (_React$Component) {
       var _this9 = this;
 
       var price = this.props.prods[item].dados[type].valor_unitario;
-      var normString = price.replace('R$', '');
-      var normString2 = normString.replace(',', '.').trim();
+      var normString = price.replace("R$", "");
+      var normString2 = normString.replace(",", ".").trim();
 
       if (this.props.prods[item].dados[type][subtype] !== null) {
         return Object.keys(this.props.prods[item].dados[type][subtype]).filter(function (st) {
-          return _this9.props.prods[item].dados[type][subtype][st] !== '';
+          return _this9.props.prods[item].dados[type][subtype][st] !== "";
         }).reduce(function (o, k) {
           return (parseInt(_this9.props.prods[item].dados[type][subtype][k]) || 0) + o;
         }, 0) * normString2;
@@ -89182,7 +89365,7 @@ function (_React$Component) {
       }).reduce(function (old, key) {
         return Object.keys(prods[key].dados).reduce(function (ol, ke) {
           return Object.keys(prods[key].dados[ke]).filter(function (e) {
-            return e !== 'valor_unitario' || prods[key].dados[ke][e] !== null;
+            return e !== "valor_unitario" || prods[key].dados[ke][e] !== null;
           }).reduce(function (o, k) {
             return _this10.getTotalQtyCat0LastLevel(prods, key, ke, k) + o;
           }, 0) + ol;
@@ -89192,7 +89375,7 @@ function (_React$Component) {
   }, {
     key: "getTotalQtyCat0LastLevel",
     value: function getTotalQtyCat0LastLevel(prods, key, ke, k) {
-      if (k !== 'valor_unitario' && prods[key].dados[ke][k] !== null) {
+      if (k !== "valor_unitario" && prods[key].dados[ke][k] !== null) {
         return Object.keys(prods[key].dados[ke][k]).reduce(function (l, i) {
           return (parseInt(prods[key].dados[ke][k][i]) || 0) + l;
         }, 0);
@@ -89227,9 +89410,9 @@ function (_React$Component) {
   }, {
     key: "getTotalQtyCat3",
     value: function getTotalQtyCat3(prods) {
-      if (prods['etiquetas']) {
-        return Object.keys(prods['etiquetas'].dados).reduce(function (old, key) {
-          return (parseInt(prods['etiquetas'].dados[key]) || 0) + old;
+      if (prods["etiquetas"]) {
+        return Object.keys(prods["etiquetas"].dados).reduce(function (old, key) {
+          return (parseInt(prods["etiquetas"].dados[key]) || 0) + old;
         }, 0);
       } else {
         return 0;
@@ -89253,25 +89436,25 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "footer" + (this.props.display ? ' d-none' : ''),
+        className: "footer" + (this.props.display ? " d-none" : ""),
         style: {
-          textAlign: 'left'
-        }
+          textAlign: "left"
+        },
+        onClick: this.handleClick
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         src: "/images/shopping-bag-white.svg",
         key: "img",
         alt: "user",
         style: {
-          width: '5%',
-          margin: '0.2em',
-          paddingBottom: '0.2em'
+          width: "5%",
+          margin: "0.2em",
+          paddingBottom: "0.2em"
         }
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-        onClick: this.handleClick,
         key: "s-1"
       }, "Sacola:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: {
-          "float": 'right'
+          "float": "right"
         },
         key: "s-2"
       }, "R$ ", this.state.totalPrice));
@@ -89582,8 +89765,10 @@ function (_React$Component) {
     _classCallCheck(this, TypeList);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(TypeList).call(this, props));
+    _this.handleMinusQty = _this.handleMinusQty.bind(_assertThisInitialized(_this));
     _this.handleQtyChange = _this.handleQtyChange.bind(_assertThisInitialized(_this));
     _this.handlePriceChange = _this.handlePriceChange.bind(_assertThisInitialized(_this));
+    _this.handlePlusQty = _this.handlePlusQty.bind(_assertThisInitialized(_this));
     _this.state = {
       subtypeObj: {}
     };
@@ -89602,6 +89787,42 @@ function (_React$Component) {
           return _this2.forceUpdate();
         });
       }
+    }
+  }, {
+    key: "handlePlusQty",
+    value: function handlePlusQty(item) {
+      var value = parseInt(document.querySelectorAll("[data=\"".concat(item, "-qty\"]"))[0].value);
+      document.querySelectorAll("[data=\"".concat(item, "-qty\"]"))[0].value = value + 1;
+      this.handleQtyChange({
+        target: {
+          value: document.querySelectorAll("[data=\"".concat(item, "-qty\"]"))[0].value,
+          attributes: {
+            data: {
+              value: "".concat(item, "-qty")
+            }
+          }
+        }
+      });
+    }
+  }, {
+    key: "handleMinusQty",
+    value: function handleMinusQty(item) {
+      var value = parseInt(document.querySelectorAll("[data=\"".concat(item, "-qty\"]"))[0].value);
+
+      if (value > 0) {
+        document.querySelectorAll("[data=\"".concat(item, "-qty\"]"))[0].value = value - 1;
+      }
+
+      this.handleQtyChange({
+        target: {
+          value: document.querySelectorAll("[data=\"".concat(item, "-qty\"]"))[0].value,
+          attributes: {
+            data: {
+              value: "".concat(item, "-qty")
+            }
+          }
+        }
+      });
     }
   }, {
     key: "handleQtyChange",
@@ -89736,6 +89957,9 @@ function (_React$Component) {
             padding: '0.2em 0.5em'
           }
         }, item), e('span', {
+          onClick: function onClick() {
+            return _this6.handleMinusQty(item);
+          },
           key: 'c-1',
           style: {
             fontSize: '30px',
@@ -89758,6 +89982,9 @@ function (_React$Component) {
             textAlign: 'center'
           }
         }), e('span', {
+          onClick: function onClick() {
+            return _this6.handlePlusQty(item);
+          },
           key: 'b-1',
           style: {
             fontSize: '30px',

@@ -13,15 +13,9 @@ export default function App() {
     return (
         <Router>
             <Switch>
-                <Route path="/clientes">
-                    <ClientComponent />
-                </Route>
-                <Route path="/pedido">
-                    <ProductComponent />
-                </Route>
-                <Route path="/resumo">
-                    <CartComponent />
-                </Route>
+                <Route path="/clientes" component={ClientComponent}/>
+                <Route path="/pedido" component={ProductComponent}/>
+                <Route path="/resumo" render={(props) => <CartComponent {...props} />}/>
             </Switch>
         </Router>
     ) 
