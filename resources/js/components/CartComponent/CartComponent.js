@@ -1,16 +1,8 @@
-import React from "react";
-
-const successDivStyle = {
-    height: "calc(100vh - 40px)",
-    width: "100%",
-    backgroundColor: "#32A1DD",
-    color: "white",
-    textAlign: "center",
-    fontStyle: "normal",
-    fontWeight: "bold",
-    fontSize: "20px",
-    lineHeight: "27px"
-};
+import React from "react"
+import axios from 'axios'
+import { Redirect } from 'react-router-dom'
+import AfterOrderComponent from "../AfterOrderComponent";
+import NewProductComponent from "../NewProductComponent";
 
 export default class CartComponent extends React.Component {
     constructor(props) {
@@ -30,7 +22,8 @@ export default class CartComponent extends React.Component {
         this.mountCat3List = this.mountCat3List.bind(this);
         this.mountProdList = this.mountProdList.bind(this);
         this.state = {
-            showSuccess: false
+            showAfterOrder: false,
+            loader: false
         };
     }
     moeda(v) {
@@ -67,7 +60,10 @@ export default class CartComponent extends React.Component {
                     tipo_categoria: 0,
                     dados: Object.assign({}, json[product] ? json[product].dados : {}, {
                         [size]: {
-                            valor_unitario: document.querySelectorAll('[data="0"]')[i].children[0].children[1].value,
+                            valor_unitario: document.querySelectorAll('[data="0"]')[i].children[0].children[1].value
+                                            .replace('R$','')
+                                            .replace(',','.')
+                                            .trim(),
                             ...type
                         }
                     })
@@ -76,8 +72,116 @@ export default class CartComponent extends React.Component {
         }
         return json
     }
+    mountCat1Json() {
+        let json = {}
+        for (let i of Array.from(Array(document.querySelectorAll('[data="1"]').length),(x,item)=>item)) {
+            const el = document.querySelectorAll('[data="1"]')[i]
+            const product = el.id
+            let type = {}
+            for (let e of Array.from(Array((el.children.length - 2)), (x, it)=>it+1)) {
+                type = Object.assign({}, type, {
+                    [el.children[e].children[0].innerHTML.trim().split(' ')[0]] :
+                        Object.assign({}, type[el.children[e].children[0].innerHTML.trim().split(' ')[0]], {
+                            [el.children[e].children[0].innerHTML.trim().split(' ')[1]] :
+                                el.children[e].children[2].value
+                        })
+                })
+            }
+            json  = Object.assign({}, json, {
+                [product]: {
+                    valor_unitario: document.querySelectorAll('[data="1"]')[i].children[0].children[1].value
+                                    .replace('R$','')
+                                    .replace(',','.')
+                                    .trim(),
+                    tipo_categoria: 1,
+                    dados: Object.assign({}, json[product] ? json[product].dados : {}, {
+                        ...type
+                    })
+                }
+            })
+        }
+        return json
+    }
+    mountCat2Json() {
+        let json = {}
+        for (let i of Array.from(Array(document.querySelectorAll('[data="2"]').length),(x,item)=>item)) {
+            const el = document.querySelectorAll('[data="2"]')[i]
+            const product = el.id
+            let types = {}
+            Array.from(Array(el.children.length - 2), (x,i)=>i+1)
+                .map((e) => 
+                    types = Object.assign({}, types, {
+                        [el.children[e].children[0].children[0].innerHTML] : {
+                            quantidade: el.children[e].children[0].children[2].value,
+                            valor_unitario: el.children[e].children[1].children[1].value
+                                .replace('R$','')
+                                .replace(',','.')
+                                .trim()
+                        }                            
+                    })
+                )
+            json  = Object.assign({}, json, {
+                [product]: {
+                    tipo_categoria: 2,
+                    dados: Object.assign({}, json[product] ? json[product].dados : {}, {
+                        ...types
+                    })
+                }
+            })
+        }
+        return json
+    }
+    mountCat3Json() {
+        const el = document.querySelectorAll('[data="3"]')[0]
+        if (el) {
+            let types = {}
+            Array.from(Array(el.children.length - 2), (x,i)=>i+1)
+                .map((e) => 
+                    types = Object.assign({}, types, {
+                        [el.children[e].children[0].innerHTML] :
+                            el.children[e].children[2].value
+                    })
+                )
+            return {
+                [el.id] : {
+                    tipo_categoria: 3,
+                    valor_unitario: el.children[0].children[1].value
+                                    .replace('R$','')
+                                    .replace(',','.')
+                                    .trim(),
+                    dados: {...types}
+                }
+            }
+        }
+    }
     handleFinishOrder() {
-        console.log(this.mountCat0Json())
+        if (!this.state.loader) {
+            this.setState({loader: true})
+            axios.post('/get-order', {
+                order: {
+                    ...this.mountCat0Json(),
+                    ...this.mountCat1Json(),
+                    ...this.mountCat2Json(),
+                    ...this.mountCat3Json()
+                }
+            })
+            .then((response) => response.data === 'success' 
+                ? this.setState({ 
+                    showAfterOrder: true,
+                    cdt: 'err' 
+                })
+                : this.setState({ 
+                    showAfterOrder: true,
+                    cdt: 'err' 
+                })
+            )
+            /* .then(() => setTimeout(() => 
+                this.setState({
+                    redirect: true
+                })
+            , 5000))  */
+            .catch((error) => console.log(error) );
+        }    
     }
     handlePlusQty(item, div, type2 = false) {
         const value = parseInt(
@@ -229,7 +333,7 @@ export default class CartComponent extends React.Component {
                                             padding: "0.4em",
                                             marginLeft: "1em",
                                             display: "inline-block",
-                                            width: "50%"
+                                            width: "56%"
                                         }}
                                         key="cat0-div2-s1"
                                     >
@@ -406,7 +510,7 @@ export default class CartComponent extends React.Component {
                                             fontWeight: 600,
                                             padding: "0.4em",
                                             marginLeft: "1em",
-                                            width: "50%",
+                                            width: "56%",
                                             display: "inline-block"
                                         }}
                                         key="cat1-div2-s1"
@@ -574,7 +678,7 @@ export default class CartComponent extends React.Component {
                                         padding: "0.4em",
                                         marginLeft: "1em",
                                         display: "inline-block",
-                                        width: "50%",
+                                        width: "56%",
                                         borderBottom: "1px solid #D7D7D7"
                                     }}
                                     key={'cat2-div2-s1-' + item}
@@ -1010,6 +1114,11 @@ export default class CartComponent extends React.Component {
         )
         document.getElementById('totalPrice').innerHTML = priceBr
     }
+    renderRedirect() {
+        if (this.state.redirect) {
+          return <Redirect to='/clientes' />
+        }
+    }
     render() {
         return (
             <div
@@ -1018,37 +1127,14 @@ export default class CartComponent extends React.Component {
                     margin: 0
                 }}
             >
-                <div
-                    key="cart-div1"
-                    style={{
-                        ...successDivStyle,
-                        display: this.state.showSuccess ? "block" : "none"
-                    }}
-                >
-                    <img
-                        src="/images/checked.svg"
-                        alt="user"
-                        style={{
-                            width: "15%",
-                            margin: "5em auto 1em 0"
-                        }}
-                        key="cart-div1-img"
-                    ></img>{" "}
-                    <p
-                        style={{
-                            width: "65%",
-                            margin: "auto"
-                        }}
-                        key="cart-div1-p"
-                    >
-                        Pedido Realizado com sucesso!
-                    </p>{" "}
-                </div>{" "}
+                {this.renderRedirect()}
+                <NewProductComponent arrow={true} history={this.props.history}/>
                 <div
                     key="cart-div2"
                     style={{
                         display: this.state.showSuccess ? "none" : "flex",
-                        flexDirection: "column"
+                        flexDirection: "column",
+                        display: this.state.showAfterOrder ? 'none' : 'block'
                     }}
                 >
                     <h5
@@ -1125,21 +1211,22 @@ export default class CartComponent extends React.Component {
                         </span>{" "}
                     </div>{" "}
                 </div>{" "}
+                <AfterOrderComponent show={this.state.showAfterOrder} cdt={this.state.cdt}/>
                 <div
                     className="footer text-center"
                     style={{
-                        backgroundColor: this.state.showSuccess
-                            ? "white"
-                            : "#32338D",
-                        color: this.state.showSuccess ? "#32A1DD" : "white"
+                        backgroundColor: "#32338D",
+                        display: this.state.showAfterOrder ? 'none' : 'block'
                     }}
                     onClick={this.handleFinishOrder}
                     key="cart-div-3"
                 >
                     {" "}
-                    {this.state.showSuccess
-                        ? "Novo Pedido"
-                        : "Finalizar a Compra"}{" "}
+                    {
+                        this.state.loader 
+                            ?  this.renderLoader
+                            : 'Finalizar Compra'
+                    }
                 </div>{" "}
             </div>
         );

@@ -22,3 +22,5 @@ Route::get('/{path?}', [
     'as' => 'home',
     'where' => ['path' => '.*']
 ]);
+
+Route::post('/get-order', 'SpreadsheetController@getOrder');

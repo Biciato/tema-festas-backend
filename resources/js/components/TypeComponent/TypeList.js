@@ -164,7 +164,7 @@ export default class TypeList extends React.Component {
                         style: {
                             fontSize: '14px',
                             fontWeight: '600',
-                            width: '55%',
+                            width: '60%',
                             marginRight: '1em',
                             marginBottom: 0,
                             padding: '0.2em 0.5em'

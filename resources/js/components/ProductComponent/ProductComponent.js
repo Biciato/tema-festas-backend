@@ -6,7 +6,7 @@ import TotalComponent from "./TotalComponent";
 import { Products } from "../resources/products";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Modal from "react-bootstrap/Modal";
+import NewProductComponent from "../NewProductComponent";
 import { Redirect } from 'react-router';
 
 const e = React.createElement;
@@ -22,38 +22,14 @@ export default class ProductComponent extends React.Component {
         this.getProdPrice = this.getProdPrice.bind(this);
         this.handleCartClick = this.handleCartClick.bind(this);
         this.startNewOrder = this.startNewOrder.bind(this);
-        this.handleModalClick = this.handleModalClick.bind(this);
         this.state = {
-            mdShow: false,
             prods: {},
             cpts: [
                 {
-                    name: "div",
+                    name: NewProductComponent,
                     props: {
-                        key: "div",
-                        onClick: () => this.handleModalClick("start"),
-                        style: {
-                            textAlign: "end",
-                            backgroundColor: "#F3F3F3",
-                            margin: 0,
-                            padding: "0.3em",
-                            color: "#32338D",
-                            cursor: "pointer",
-                            fontSize: "12px"
-                        }
-                    },
-                    children: [
-                        e("span", { key: "span" }, "iniciar novo pedido"),
-                        e("img", {
-                            src: "/images/star.svg",
-                            key: "img",
-                            alt: "task",
-                            style: {
-                                width: "4%",
-                                margin: "0.2em 0.4em 0.4em 0.3em"
-                            }
-                        })
-                    ]
+                        key: "new-product"
+                    }
                 },
                 {
                     name: ProductSelect,
@@ -412,7 +388,7 @@ export default class ProductComponent extends React.Component {
         }
         return e(
             Row,
-            null,
+            {bsPrefix: 'row no-gutters'},
             e(
                 Col,
                 { style: { padding: 0 }, key: 1 },
@@ -420,124 +396,6 @@ export default class ProductComponent extends React.Component {
                     e(item.name, item.props, item.children)
                 )
             ),
-            e(
-                Modal,
-                {
-                    key: 2,
-                    show: this.state.mdShow,
-                    style: {
-                        width: "90%",
-                        top: "10%",
-                        left: "5%"
-                    }
-                },
-                e(
-                    Modal.Header,
-                    {
-                        key: "mh",
-                        style: {
-                            border: "none",
-                            padding: "1rem 1rem 0"
-                        }
-                    },
-                    e(
-                        Modal.Title,
-                        {
-                            style: {
-                                width: "100%",
-                                textAlign: "center"
-                            }
-                        },
-                        e("img", {
-                            src: "/images/warning.svg",
-                            alt: "user",
-                            style: {
-                                width: "15%",
-                                margin: "0.2em",
-                                paddingBottom: "0.2em"
-                            }
-                        })
-                    )
-                ),
-                e(
-                    Modal.Body,
-                    {
-                        key: "mb",
-                        style: { padding: 0 }
-                    },
-                    e(
-                        "p",
-                        {
-                            key: "p1",
-                            style: {
-                                textAlign: "center",
-                                width: "60%",
-                                margin: "0.5em auto"
-                            }
-                        },
-                        "Você deseja realmente iniciar um novo pedido?"
-                    ),
-                    e(
-                        "p",
-                        {
-                            key: "p2",
-                            style: {
-                                textAlign: "center",
-                                fontSize: "12px"
-                            }
-                        },
-                        "Isso irá limpar todos os campos preenchidos!"
-                    )
-                ),
-                e(
-                    Modal.Footer,
-                    {
-                        key: "mf",
-                        style: { border: "none" }
-                    },
-                    e(
-                        "button",
-                        {
-                            onClick: () => this.handleModalClick("accepted"),
-                            key: "b1",
-                            style: {
-                                borderRadius: "5px",
-                                backgroundColor: "#328D3B",
-                                color: "white",
-                                border: "none",
-                                width: "100%",
-                                padding: "0.5em",
-                                fontStyle: "normal",
-                                fontWeight: "bold",
-                                fontSize: "20px",
-                                lineHeight: "27px"
-                            }
-                        },
-                        "Sim"
-                    ),
-                    e(
-                        "button",
-                        {
-                            onClick: () =>
-                                this.handleModalClick("not_accepted"),
-                            key: "b2",
-                            style: {
-                                borderRadius: "5px",
-                                backgroundColor: "#E33333",
-                                color: "white",
-                                border: "none",
-                                width: "100%",
-                                padding: "0.5em",
-                                fontStyle: "normal",
-                                fontWeight: "bold",
-                                fontSize: "20px",
-                                lineHeight: "27px"
-                            }
-                        },
-                        "Não"
-                    )
-                )
-            )
         );
     }
 }

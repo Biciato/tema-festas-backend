@@ -105,6 +105,7 @@ export default class TypeComponent extends React.Component {
           }),
           e(InputGroup, { 
               key: 3, 
+              style: { width: '99%' },
               className: this.getProdCategory() === 2 ? 'd-none' : '' 
             }, [
               e('label', {
