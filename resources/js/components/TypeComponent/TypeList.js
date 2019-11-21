@@ -43,13 +43,13 @@ export default class TypeList extends React.Component {
                     }
                 }
             }
-      }) 
+      })
     }
     handleMinusQty(item) {
         const value = parseInt(document.querySelectorAll(`[data="${item}-qty"]`)[0].value)
         if (value > 0) {
             document.querySelectorAll(`[data="${item}-qty"]`)[0].value = value - 1
-        }        
+        }
         this.handleQtyChange({
             target: {
                 value: document.querySelectorAll(`[data="${item}-qty"]`)[0].value,
@@ -59,7 +59,7 @@ export default class TypeList extends React.Component {
                     }
                 }
             }
-        }) 
+        })
     }
     handleQtyChange(e) {
         let subtypeObj = {};
@@ -164,7 +164,7 @@ export default class TypeList extends React.Component {
                         style: {
                             fontSize: '14px',
                             fontWeight: '600',
-                            width: '61%',
+                            width: '55%',
                             marginRight: '1em',
                             marginBottom: 0,
                             padding: '0.2em 0.5em'

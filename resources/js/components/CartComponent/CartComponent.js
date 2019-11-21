@@ -42,40 +42,58 @@ export default class CartComponent extends React.Component {
         v = v.replace(/(\d{1})(\d{1,2})$/, "$1,$2") // coloca virgula antes dos ultimos 2 digitos
         return v;
     }
-    handlePriceChange(e, div) {
+    handlePriceChange(e, div, type2 = false) {
         e.target.value = this.moeda(e.target.value)
-        this.setTotalQtyPerBlockOnChange(div)
+        this.setTotalQtyPerBlockOnChange(div, type2)
+    }
+    mountCat0Json() {
+        let json = {}
+        for (let i of Array.from(Array(document.querySelectorAll('[data="0"]').length),(x,item)=>item)) {
+            const el = document.querySelectorAll('[data="0"]')[i]
+            const product = el.id.split('-')[0]
+            const size = el.id.split('-')[1]
+            let type = {}
+            for (let e of Array.from(Array((el.children.length - 2)), (x, it)=>it+1)) {
+                type = Object.assign({}, type, {
+                    [el.children[e].children[0].innerHTML.trim().split(' ')[0]] :
+                        Object.assign({}, type[el.children[e].children[0].innerHTML.trim().split(' ')[0]], {
+                            [el.children[e].children[0].innerHTML.trim().split(' ')[1]] :
+                                el.children[e].children[2].value
+                        })
+                })
+            }
+            json  = Object.assign({}, json, {
+                [product]: {
+                    tipo_categoria: 0,
+                    dados: Object.assign({}, json[product] ? json[product].dados : {}, {
+                        [size]: {
+                            valor_unitario: document.querySelectorAll('[data="0"]')[i].children[0].children[1].value,
+                            ...type
+                        }
+                    })
+                }
+            })
+        }
+        return json
     }
     handleFinishOrder() {
-        this.setState(
-            {
-                showSuccess: true
-            },
-            () =>
-                setTimeout(
-                    () =>
-                        this.setState({
-                            showSuccess: false
-                        }),
-                    5000
-                )
-        );
+        console.log(this.mountCat0Json())
     }
-    handlePlusQty(item, div) {
+    handlePlusQty(item, div, type2 = false) {
         const value = parseInt(
             document.querySelectorAll(`[data="${item}"]`)[0].value
         );
         document.querySelectorAll(`[data="${item}"]`)[0].value = value + 1;
-        this.setTotalQtyPerBlockOnChange(div)
+        this.setTotalQtyPerBlockOnChange(div, type2)
     }
-    handleMinusQty(item, div) {
+    handleMinusQty(item, div, type2 = false) {
         const value = parseInt(
             document.querySelectorAll(`[data="${item}"]`)[0].value
         );
         if (value > 0) {
             document.querySelectorAll(`[data="${item}"]`)[0].value =
                 value - 1;
-            this.setTotalQtyPerBlockOnChange(div)
+            this.setTotalQtyPerBlockOnChange(div, type2)
         }
     }
     getTotalQtyPerProduct(item) {
@@ -85,8 +103,8 @@ export default class CartComponent extends React.Component {
     }
     getTotalQtyCat1(item) {
         if (item !== undefined) {
-            return Object.keys(item).reduce((o, k) => 
-                Object.keys(item[k]).reduce((old, i) => parseInt(item[k][i]) + old, 0)     
+            return Object.keys(item).reduce((o, k) =>
+                Object.keys(item[k]).reduce((old, i) => parseInt(item[k][i]) + old, 0)
                 + o, 0
             );
         }
@@ -147,6 +165,7 @@ export default class CartComponent extends React.Component {
                 <div
                     id={`${item}-${i}`}
                     className="products"
+                    data="0"
                     style={{
                         marginTop: "1em"
                     }}
@@ -210,7 +229,7 @@ export default class CartComponent extends React.Component {
                                             padding: "0.4em",
                                             marginLeft: "1em",
                                             display: "inline-block",
-                                            width: "56%"
+                                            width: "50%"
                                         }}
                                         key="cat0-div2-s1"
                                     >
@@ -331,6 +350,7 @@ export default class CartComponent extends React.Component {
                     style={{
                         marginTop: "1em"
                     }}
+                    data="1"
                     key={"cat1" + item}
                 >
                     <div
@@ -386,7 +406,7 @@ export default class CartComponent extends React.Component {
                                             fontWeight: 600,
                                             padding: "0.4em",
                                             marginLeft: "1em",
-                                            width: "56%",
+                                            width: "50%",
                                             display: "inline-block"
                                         }}
                                         key="cat1-div2-s1"
@@ -509,6 +529,7 @@ export default class CartComponent extends React.Component {
                     style={{
                         marginTop: "1em"
                     }}
+                    data="2"
                     key={item}
                 >
                     <div
@@ -553,10 +574,10 @@ export default class CartComponent extends React.Component {
                                         padding: "0.4em",
                                         marginLeft: "1em",
                                         display: "inline-block",
-                                        width: "60%",
+                                        width: "50%",
                                         borderBottom: "1px solid #D7D7D7"
                                     }}
-                                    key={'cat2-div2-s1-' + item} 
+                                    key={'cat2-div2-s1-' + item}
                                 >
                                     {" "}
                                     {i}{" "}
@@ -570,13 +591,14 @@ export default class CartComponent extends React.Component {
                                         cursor: "pointer",
                                         marginLeft: "5%"
                                     }}
-                                    key={'cat2-div2-s2-' + item} 
-                                    onClick={() => this.handleMinusQty(`${item}-${i}`, `${item}`)}
+                                    key={'cat2-div2-s2-' + item}
+                                    onClick={() => this.handleMinusQty(`${item}-${i}`, `${item}`, true)}
                                 >
                                     {" "}
                                     -{" "}
                                 </span>{" "}
                                 <input
+                                    className="qty-cat2"
                                     data={`${item}-${i}`}
                                     style={{
                                         border: "none",
@@ -602,7 +624,7 @@ export default class CartComponent extends React.Component {
                                         padding: 0
                                     }}
                                     key="cat2-div2-s2"
-                                    onClick={() => this.handlePlusQty(`${item}-${i}`, `${item}`)}
+                                    onClick={() => this.handlePlusQty(`${item}-${i}`, `${item}`, true)}
                                 >
                                     {" "}
                                     +{" "}
@@ -631,6 +653,7 @@ export default class CartComponent extends React.Component {
                                     Valor Unitário{" "}
                                 </span>{" "}
                                 <input
+                                    className="price-cat2"
                                     style={{
                                         float: "right",
                                         border: "1px solid silver",
@@ -642,7 +665,7 @@ export default class CartComponent extends React.Component {
                                         width: "27%",
                                         textAlign: "center"
                                     }}
-                                    onChange={(e) => this.handlePriceChange(e, `${item}`)}
+                                    onChange={(e) => this.handlePriceChange(e, `${item}`, true)}
                                     defaultValue={
                                         this.props.location.state.prods[item].dados[i]
                                             .valor_unitario
@@ -715,6 +738,7 @@ export default class CartComponent extends React.Component {
                 style={{
                     marginTop: "1em"
                 }}
+                data="3"
                 key={item}
             >
                 <div
@@ -758,7 +782,7 @@ export default class CartComponent extends React.Component {
                             fontSize: "14px",
                             backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8"
                         }}
-                        key="cat3-div2"
+                        key={'cat3-div2' + el}
                     >
                         <span
                             style={{
@@ -876,30 +900,59 @@ export default class CartComponent extends React.Component {
             this.mountCat0List(item)
         );
     }
-    setTotalQtyPerBlockOnChange(div) {
+    setTotalQtyPerBlockOnChange(div, type2 = false) {
         let el = document.getElementById(div).children
         const length = el.length
-        const qty = Array.from(Array(length),(x,i)=>i)
-                            .reduce((old, item) => 
-                                (el[item].children[2] && 
+        if (type2) {
+            const qty = Array.from(Array(length),(x,i)=>i)
+                            .reduce((old, item) =>
+                                (el[item].children[0].children[2] &&
+                                    el[item].children[0].children[2].value
+                                        ? parseInt(el[item].children[0].children[2].value)
+                                        : 0)
+                            + old, 0)
+            el[(length - 1)].children[1].innerHTML = qty
+            this.setTotalPricePerBlockOnChange(div, qty, type2)
+
+        } else {
+            const qty = Array.from(Array(length),(x,i)=>i)
+                            .reduce((old, item) =>
+                                (el[item].children[2] &&
                                     el[item].children[2].value
                                         ? parseInt(el[item].children[2].value)
-                                        : 0)                                    
+                                        : 0)
                             + old, 0)
-        el[(length - 1)].children[1].innerHTML = qty
-        this.setTotalPricePerBlockOnChange(div, qty)
+            el[(length - 1)].children[1].innerHTML = qty
+            this.setTotalPricePerBlockOnChange(div, qty)
+        }
     }
-    setTotalPricePerBlockOnChange(div, qty) {
-        let el = document.getElementById(div).children[0].children[1]
-        const length = document.getElementById(div).children.length
-        const normPrice = el.value.replace('R$','')
-        const normPrice2 = normPrice.replace(',','.').trim()
-        const price = (parseFloat(normPrice2) * qty)
-        document.getElementById(div).children[length - 1].children[3].innerHTML = 
-            isNaN(price) ? 0 : price.toLocaleString(
-                'pt-br',
-                {minimumFractionDigits: 2}
-            )  
+    setTotalPricePerBlockOnChange(div, qty, type2 = false) {
+        if (type2) {
+            let el = document.getElementById(div).children
+            const length = el.length - 2
+            const price = Array.from(Array(length),(x,i)=>i + 1).reduce(function(old, item) {
+                const q = parseInt(el[item].children[0].children[2].value)
+                const normPrice = el[item].children[1].children[1].value.replace('R$','')
+                const normPrice2 = normPrice.replace(',','.').trim()
+                return (normPrice2 === '' ? 0 : (q * parseFloat(normPrice2))) + old
+            }, 0)
+            document.getElementById(div).children[length + 1].children[3].innerHTML =
+                isNaN(price) ? 0 : price.toLocaleString(
+                    'pt-br',
+                    {minimumFractionDigits: 2}
+                )
+        } else {
+            let el = document.getElementById(div).children[0].children[1]
+            const length = document.getElementById(div).children.length
+            const normPrice = el.value.replace('R$','')
+            const normPrice2 = normPrice.replace(',','.').trim()
+            const price = (parseFloat(normPrice2) * qty)
+            document.getElementById(div).children[length - 1].children[3].innerHTML =
+                isNaN(price) ? 0 : price.toLocaleString(
+                    'pt-br',
+                    {minimumFractionDigits: 2}
+                )
+        }
         this.setTotalQtyOnChange()
         this.setTotalPriceOnChange()
     }
@@ -914,13 +967,13 @@ export default class CartComponent extends React.Component {
                         .innerHTML
         } else {
             qty = Array.from(Array(listLength),(x,i)=>i)
-                            .reduce((old, item) => {
+                            .reduce((old, item) =>
                                 parseInt(
                                     list[item]
                                         .children[(list[item].children.length) - 1]
                                         .children[1]
                                         .innerHTML
-                                ) + old}, 0
+                                ) + old, 0
                             )
         }
         document.getElementById('totalQty').innerHTML = qty
@@ -937,14 +990,14 @@ export default class CartComponent extends React.Component {
                         .replace(',','.'))
         } else {
             price = Array.from(Array(listLength),(x,i)=>i)
-                            .reduce((old, item) => {
+                            .reduce((old, item) =>
                                 parseFloat(
                                     list[item]
                                         .children[(list[item].children.length) - 1]
                                         .children[3]
                                         .innerHTML
                                         .replace(',','.')
-                                ) + old}, 0
+                                ) + old, 0
                             )
         }
         const priceBr = price.toLocaleString(

@@ -8951,7 +8951,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n", ""]);
+exports.push([module.i, "\r\n\r\n", ""]);
 
 // exports
 
@@ -8970,7 +8970,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".footer {\n    position: fixed;\n    left: 0;\n    bottom: 0;\n    width: 100%;\n    background-color:#32338D;\n    color:    white;\n    font-style: normal;\n    font-weight: bold;\n    font-size: 20px;\n    line-height: 27px;\n    text-align: center;\n    padding: 0.3em 1em;\n    cursor: pointer;\n}", ""]);
+exports.push([module.i, ".footer {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    width: 100%;\r\n    background-color:#32338D;\r\n    color:    white;\r\n    font-style: normal;\r\n    font-weight: bold;\r\n    font-size: 20px;\r\n    line-height: 27px;\r\n    text-align: center;\r\n    padding: 0.3em 1em;\r\n    cursor: pointer;\r\n}", ""]);
 
 // exports
 
@@ -8989,7 +8989,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".footer {\n    position: fixed;\n    left: 0;\n    bottom: 0;\n    width: 100%;\n    background-color:#32338D;\n    color:    white;\n    font-style: normal;\n    font-weight: bold;\n    font-size: 20px;\n    line-height: 27px;\n    padding: 0.3em 1em;\n    margin: 0;\n    z-index: 1000;\n    text-align: left;\n}\n", ""]);
+exports.push([module.i, ".footer {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    width: 100%;\r\n    background-color:#32338D;\r\n    color:    white;\r\n    font-style: normal;\r\n    font-weight: bold;\r\n    font-size: 20px;\r\n    line-height: 27px;\r\n    padding: 0.3em 1em;\r\n    margin: 0;\r\n    z-index: 1000;\r\n    text-align: left;\r\n}\r\n", ""]);
 
 // exports
 
@@ -9008,7 +9008,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "body {\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Roboto\", \"Oxygen\",\n    \"Ubuntu\", \"Cantarell\", \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\",\n    sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, \"Courier New\",\n    monospace;\n}\n\n", ""]);
+exports.push([module.i, "body {\r\n  margin: 0;\r\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Roboto\", \"Oxygen\",\r\n    \"Ubuntu\", \"Cantarell\", \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\",\r\n    sans-serif;\r\n  -webkit-font-smoothing: antialiased;\r\n  -moz-osx-font-smoothing: grayscale;\r\n}\r\n\r\ncode {\r\n  font-family: source-code-pro, Menlo, Monaco, Consolas, \"Courier New\",\r\n    monospace;\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -87228,39 +87228,63 @@ function (_React$Component) {
   }, {
     key: "handlePriceChange",
     value: function handlePriceChange(e, div) {
+      var type2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       e.target.value = this.moeda(e.target.value);
-      this.setTotalQtyPerBlockOnChange(div);
+      this.setTotalQtyPerBlockOnChange(div, type2);
+    }
+  }, {
+    key: "mountCat0Json",
+    value: function mountCat0Json() {
+      var json = {};
+
+      for (var _i = 0, _Array$from = Array.from(Array(document.querySelectorAll('[data="0"]').length), function (x, item) {
+        return item;
+      }); _i < _Array$from.length; _i++) {
+        var i = _Array$from[_i];
+        var el = document.querySelectorAll('[data="0"]')[i];
+        var product = el.id.split('-')[0];
+        var size = el.id.split('-')[1];
+        var type = {};
+
+        for (var _i2 = 0, _Array$from2 = Array.from(Array(el.children.length - 2), function (x, it) {
+          return it + 1;
+        }); _i2 < _Array$from2.length; _i2++) {
+          var e = _Array$from2[_i2];
+          type = Object.assign({}, type, _defineProperty({}, el.children[e].children[0].innerHTML.trim().split(' ')[0], Object.assign({}, type[el.children[e].children[0].innerHTML.trim().split(' ')[0]], _defineProperty({}, el.children[e].children[0].innerHTML.trim().split(' ')[1], el.children[e].children[2].value))));
+        }
+
+        json = Object.assign({}, json, _defineProperty({}, product, {
+          tipo_categoria: 0,
+          dados: Object.assign({}, json[product] ? json[product].dados : {}, _defineProperty({}, size, _objectSpread({
+            valor_unitario: document.querySelectorAll('[data="0"]')[i].children[0].children[1].value
+          }, type)))
+        }));
+      }
+
+      return json;
     }
   }, {
     key: "handleFinishOrder",
     value: function handleFinishOrder() {
-      var _this2 = this;
-
-      this.setState({
-        showSuccess: true
-      }, function () {
-        return setTimeout(function () {
-          return _this2.setState({
-            showSuccess: false
-          });
-        }, 5000);
-      });
+      console.log(this.mountCat0Json());
     }
   }, {
     key: "handlePlusQty",
     value: function handlePlusQty(item, div) {
+      var type2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var value = parseInt(document.querySelectorAll("[data=\"".concat(item, "\"]"))[0].value);
       document.querySelectorAll("[data=\"".concat(item, "\"]"))[0].value = value + 1;
-      this.setTotalQtyPerBlockOnChange(div);
+      this.setTotalQtyPerBlockOnChange(div, type2);
     }
   }, {
     key: "handleMinusQty",
     value: function handleMinusQty(item, div) {
+      var type2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var value = parseInt(document.querySelectorAll("[data=\"".concat(item, "\"]"))[0].value);
 
       if (value > 0) {
         document.querySelectorAll("[data=\"".concat(item, "\"]"))[0].value = value - 1;
-        this.setTotalQtyPerBlockOnChange(div);
+        this.setTotalQtyPerBlockOnChange(div, type2);
       }
     }
   }, {
@@ -87335,13 +87359,14 @@ function (_React$Component) {
   }, {
     key: "mountCat0List",
     value: function mountCat0List(item) {
-      var _this3 = this;
+      var _this2 = this;
 
       if (this.props.location.state.prods[item].tipo_categoria === 0) {
         return Object.keys(this.props.location.state.prods[item].dados).map(function (i) {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             id: "".concat(item, "-").concat(i),
             className: "products",
+            data: "0",
             style: {
               marginTop: "1em"
             },
@@ -87372,13 +87397,13 @@ function (_React$Component) {
               textAlign: "center"
             },
             onChange: function onChange(e) {
-              return _this3.handlePriceChange(e, "".concat(item, "-").concat(i));
+              return _this2.handlePriceChange(e, "".concat(item, "-").concat(i));
             },
-            defaultValue: _this3.props.location.state.prods[item].dados[i].valor_unitario
-          }), " "), " ", Object.keys(_this3.props.location.state.prods[item].dados[i]).filter(function (i) {
+            defaultValue: _this2.props.location.state.prods[item].dados[i].valor_unitario
+          }), " "), " ", Object.keys(_this2.props.location.state.prods[item].dados[i]).filter(function (i) {
             return i !== "valor_unitario";
           }).map(function (el) {
-            return Object.keys(_this3.props.location.state.prods[item].dados[i][el]).map(function (e, idx) {
+            return Object.keys(_this2.props.location.state.prods[item].dados[i][el]).map(function (e, idx) {
               return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
                 style: {
                   padding: "0.7em 0.1em",
@@ -87393,7 +87418,7 @@ function (_React$Component) {
                   padding: "0.4em",
                   marginLeft: "1em",
                   display: "inline-block",
-                  width: "56%"
+                  width: "50%"
                 },
                 key: "cat0-div2-s1"
               }, " ", el + " " + e, " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
@@ -87407,7 +87432,7 @@ function (_React$Component) {
                 },
                 key: "cat0-div2-s2",
                 onClick: function onClick() {
-                  return _this3.handleMinusQty("".concat(item, "-").concat(i, "-").concat(el, "-").concat(e), "".concat(item, "-").concat(i));
+                  return _this2.handleMinusQty("".concat(item, "-").concat(i, "-").concat(el, "-").concat(e), "".concat(item, "-").concat(i));
                 }
               }, " ", "-", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
                 style: {
@@ -87419,7 +87444,7 @@ function (_React$Component) {
                 },
                 data: "".concat(item, "-").concat(i, "-").concat(el, "-").concat(e),
                 key: "cat0-div2-i1",
-                defaultValue: _this3.props.location.state.prods[item].dados[i][el][e]
+                defaultValue: _this2.props.location.state.prods[item].dados[i][el][e]
               }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
                 style: {
                   fontSize: "30px",
@@ -87432,7 +87457,7 @@ function (_React$Component) {
                 },
                 key: "cat0-div2-s3",
                 onClick: function onClick() {
-                  return _this3.handlePlusQty("".concat(item, "-").concat(i, "-").concat(el, "-").concat(e), "".concat(item, "-").concat(i));
+                  return _this2.handlePlusQty("".concat(item, "-").concat(i, "-").concat(el, "-").concat(e), "".concat(item, "-").concat(i));
                 }
               }, " ", "+", " "), " ");
             });
@@ -87453,7 +87478,7 @@ function (_React$Component) {
             key: "cat0-div3-s1"
           }, " ", "Quantidade:", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             key: "cat0-div3-s2"
-          }, " ", _this3.getTotalQtyCat0(_this3.props.location.state.prods[item].dados[i]), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          }, " ", _this2.getTotalQtyCat0(_this2.props.location.state.prods[item].dados[i]), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
               fontWeight: "bold",
               padding: "0.4em"
@@ -87467,7 +87492,7 @@ function (_React$Component) {
               marginLeft: "1em"
             },
             key: "cat0-div3-s4"
-          }, " ", _this3.getTotalPricePerProduct(_this3.props.location.state.prods[item].dados[i], _this3.props.location.state.prods[item].dados[i].valor_unitario), " "), " "), " ");
+          }, " ", _this2.getTotalPricePerProduct(_this2.props.location.state.prods[item].dados[i], _this2.props.location.state.prods[item].dados[i].valor_unitario), " "), " "), " ");
         });
       } else {
         return this.mountCat1List(item);
@@ -87476,7 +87501,7 @@ function (_React$Component) {
   }, {
     key: "mountCat1List",
     value: function mountCat1List(item) {
-      var _this4 = this;
+      var _this3 = this;
 
       if (this.props.location.state.prods[item].tipo_categoria === 1) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -87485,6 +87510,7 @@ function (_React$Component) {
           style: {
             marginTop: "1em"
           },
+          data: "1",
           key: "cat1" + item
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
@@ -87512,10 +87538,10 @@ function (_React$Component) {
           },
           defaultValue: this.props.location.state.prods[item].valor_unitario,
           onChange: function onChange(e) {
-            return _this4.handlePriceChange(e, "".concat(item));
+            return _this3.handlePriceChange(e, "".concat(item));
           }
         }), " "), " ", Object.keys(this.props.location.state.prods[item].dados).map(function (el) {
-          return Object.keys(_this4.props.location.state.prods[item].dados[el]).map(function (e, idx) {
+          return Object.keys(_this3.props.location.state.prods[item].dados[el]).map(function (e, idx) {
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
               style: {
                 padding: "0.7em 0.1em",
@@ -87529,7 +87555,7 @@ function (_React$Component) {
                 fontWeight: 600,
                 padding: "0.4em",
                 marginLeft: "1em",
-                width: "56%",
+                width: "50%",
                 display: "inline-block"
               },
               key: "cat1-div2-s1"
@@ -87544,7 +87570,7 @@ function (_React$Component) {
               },
               key: "cat1-div2-s2",
               onClick: function onClick() {
-                return _this4.handleMinusQty("".concat(item, "-").concat(el, "-").concat(e), "".concat(item));
+                return _this3.handleMinusQty("".concat(item, "-").concat(el, "-").concat(e), "".concat(item));
               }
             }, " ", "-", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
               data: "".concat(item, "-").concat(el, "-").concat(e),
@@ -87556,7 +87582,7 @@ function (_React$Component) {
                 textAlign: "center"
               },
               key: "cat1-div2-i",
-              defaultValue: _this4.props.location.state.prods[item].dados[el][e]
+              defaultValue: _this3.props.location.state.prods[item].dados[el][e]
             }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
               style: {
                 fontSize: "30px",
@@ -87569,7 +87595,7 @@ function (_React$Component) {
               },
               key: "cat1-div2-s3",
               onClick: function onClick() {
-                return _this4.handlePlusQty("".concat(item, "-").concat(el, "-").concat(e), "".concat(item));
+                return _this3.handlePlusQty("".concat(item, "-").concat(el, "-").concat(e), "".concat(item));
               }
             }, " ", "+", " "), " ");
           });
@@ -87612,7 +87638,7 @@ function (_React$Component) {
   }, {
     key: "mountCat2List",
     value: function mountCat2List(item) {
-      var _this5 = this;
+      var _this4 = this;
 
       if (this.props.location.state.prods[item].tipo_categoria === 2) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -87621,6 +87647,7 @@ function (_React$Component) {
           style: {
             marginTop: "1em"
           },
+          data: "2",
           key: item
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
@@ -87655,7 +87682,7 @@ function (_React$Component) {
               padding: "0.4em",
               marginLeft: "1em",
               display: "inline-block",
-              width: "60%",
+              width: "50%",
               borderBottom: "1px solid #D7D7D7"
             },
             key: 'cat2-div2-s1-' + item
@@ -87670,9 +87697,10 @@ function (_React$Component) {
             },
             key: 'cat2-div2-s2-' + item,
             onClick: function onClick() {
-              return _this5.handleMinusQty("".concat(item, "-").concat(i), "".concat(item));
+              return _this4.handleMinusQty("".concat(item, "-").concat(i), "".concat(item), true);
             }
           }, " ", "-", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            className: "qty-cat2",
             data: "".concat(item, "-").concat(i),
             style: {
               border: "none",
@@ -87681,7 +87709,7 @@ function (_React$Component) {
               backgroundColor: "inherit",
               textAlign: "center"
             },
-            defaultValue: _this5.props.location.state.prods[item].dados[i].quantidade,
+            defaultValue: _this4.props.location.state.prods[item].dados[i].quantidade,
             key: "cat2-div2-i1"
           }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             style: {
@@ -87695,7 +87723,7 @@ function (_React$Component) {
             },
             key: "cat2-div2-s2",
             onClick: function onClick() {
-              return _this5.handlePlusQty("".concat(item, "-").concat(i), "".concat(item));
+              return _this4.handlePlusQty("".concat(item, "-").concat(i), "".concat(item), true);
             }
           }, " ", "+", " "), " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             style: {
@@ -87714,6 +87742,7 @@ function (_React$Component) {
               fontWeight: "normal"
             }
           }, " ", "Valor Unit\xE1rio", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            className: "price-cat2",
             style: {
               "float": "right",
               border: "1px solid silver",
@@ -87726,9 +87755,9 @@ function (_React$Component) {
               textAlign: "center"
             },
             onChange: function onChange(e) {
-              return _this5.handlePriceChange(e, "".concat(item));
+              return _this4.handlePriceChange(e, "".concat(item), true);
             },
-            defaultValue: _this5.props.location.state.prods[item].dados[i].valor_unitario
+            defaultValue: _this4.props.location.state.prods[item].dados[i].valor_unitario
           }), " "), " ");
         }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
@@ -87767,7 +87796,7 @@ function (_React$Component) {
   }, {
     key: "mountCat3List",
     value: function mountCat3List(item) {
-      var _this6 = this;
+      var _this5 = this;
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: item,
@@ -87775,6 +87804,7 @@ function (_React$Component) {
         style: {
           marginTop: "1em"
         },
+        data: "3",
         key: item
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
@@ -87801,7 +87831,7 @@ function (_React$Component) {
           textAlign: "center"
         },
         onChange: function onChange(e) {
-          return _this6.handlePriceChange(e, "".concat(item));
+          return _this5.handlePriceChange(e, "".concat(item));
         },
         defaultValue: this.props.location.state.prods[item].valor_unitario
       }), " "), " ", Object.keys(this.props.location.state.prods[item].dados).map(function (el, idx) {
@@ -87812,7 +87842,7 @@ function (_React$Component) {
             fontSize: "14px",
             backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8"
           },
-          key: "cat3-div2"
+          key: 'cat3-div2' + el
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
             fontWeight: 600,
@@ -87833,7 +87863,7 @@ function (_React$Component) {
           },
           key: "cat3-s2",
           onClick: function onClick() {
-            return _this6.handleMinusQty("".concat(item, "-").concat(el), "".concat(item));
+            return _this5.handleMinusQty("".concat(item, "-").concat(el), "".concat(item));
           }
         }, " ", "-", " "), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           data: "".concat(item, "-").concat(el),
@@ -87844,7 +87874,7 @@ function (_React$Component) {
             backgroundColor: "inherit",
             textAlign: "center"
           },
-          defaultValue: _this6.props.location.state.prods[item].dados[el],
+          defaultValue: _this5.props.location.state.prods[item].dados[el],
           key: "cat3-i1"
         }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           style: {
@@ -87858,7 +87888,7 @@ function (_React$Component) {
           },
           key: "cat3-s3",
           onClick: function onClick() {
-            return _this6.handlePlusQty("".concat(item, "-").concat(el), "".concat(item));
+            return _this5.handlePlusQty("".concat(item, "-").concat(el), "".concat(item));
           }
         }, " ", "+", " "), " ");
       }), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -87894,36 +87924,72 @@ function (_React$Component) {
   }, {
     key: "mountProdList",
     value: function mountProdList() {
-      var _this7 = this;
+      var _this6 = this;
 
       return Object.keys(this.props.location.state.prods).map(function (item) {
-        return _this7.mountCat0List(item);
+        return _this6.mountCat0List(item);
       });
     }
   }, {
     key: "setTotalQtyPerBlockOnChange",
     value: function setTotalQtyPerBlockOnChange(div) {
+      var type2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       var el = document.getElementById(div).children;
       var length = el.length;
-      var qty = Array.from(Array(length), function (x, i) {
-        return i;
-      }).reduce(function (old, item) {
-        return (el[item].children[2] && el[item].children[2].value ? parseInt(el[item].children[2].value) : 0) + old;
-      }, 0);
-      el[length - 1].children[1].innerHTML = qty;
-      this.setTotalPricePerBlockOnChange(div, qty);
+
+      if (type2) {
+        var qty = Array.from(Array(length), function (x, i) {
+          return i;
+        }).reduce(function (old, item) {
+          return (el[item].children[0].children[2] && el[item].children[0].children[2].value ? parseInt(el[item].children[0].children[2].value) : 0) + old;
+        }, 0);
+        el[length - 1].children[1].innerHTML = qty;
+        this.setTotalPricePerBlockOnChange(div, qty, type2);
+      } else {
+        var _qty = Array.from(Array(length), function (x, i) {
+          return i;
+        }).reduce(function (old, item) {
+          return (el[item].children[2] && el[item].children[2].value ? parseInt(el[item].children[2].value) : 0) + old;
+        }, 0);
+
+        el[length - 1].children[1].innerHTML = _qty;
+        this.setTotalPricePerBlockOnChange(div, _qty);
+      }
     }
   }, {
     key: "setTotalPricePerBlockOnChange",
     value: function setTotalPricePerBlockOnChange(div, qty) {
-      var el = document.getElementById(div).children[0].children[1];
-      var length = document.getElementById(div).children.length;
-      var normPrice = el.value.replace('R$', '');
-      var normPrice2 = normPrice.replace(',', '.').trim();
-      var price = parseFloat(normPrice2) * qty;
-      document.getElementById(div).children[length - 1].children[3].innerHTML = isNaN(price) ? 0 : price.toLocaleString('pt-br', {
-        minimumFractionDigits: 2
-      });
+      var type2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+      if (type2) {
+        var el = document.getElementById(div).children;
+        var length = el.length - 2;
+        var price = Array.from(Array(length), function (x, i) {
+          return i + 1;
+        }).reduce(function (old, item) {
+          var q = parseInt(el[item].children[0].children[2].value);
+          var normPrice = el[item].children[1].children[1].value.replace('R$', '');
+          var normPrice2 = normPrice.replace(',', '.').trim();
+          return (normPrice2 === '' ? 0 : q * parseFloat(normPrice2)) + old;
+        }, 0);
+        document.getElementById(div).children[length + 1].children[3].innerHTML = isNaN(price) ? 0 : price.toLocaleString('pt-br', {
+          minimumFractionDigits: 2
+        });
+      } else {
+        var _el = document.getElementById(div).children[0].children[1];
+        var _length = document.getElementById(div).children.length;
+
+        var normPrice = _el.value.replace('R$', '');
+
+        var normPrice2 = normPrice.replace(',', '.').trim();
+
+        var _price = parseFloat(normPrice2) * qty;
+
+        document.getElementById(div).children[_length - 1].children[3].innerHTML = isNaN(_price) ? 0 : _price.toLocaleString('pt-br', {
+          minimumFractionDigits: 2
+        });
+      }
+
       this.setTotalQtyOnChange();
       this.setTotalPriceOnChange();
     }
@@ -87940,7 +88006,7 @@ function (_React$Component) {
         qty = Array.from(Array(listLength), function (x, i) {
           return i;
         }).reduce(function (old, item) {
-          parseInt(list[item].children[list[item].children.length - 1].children[1].innerHTML) + old;
+          return parseInt(list[item].children[list[item].children.length - 1].children[1].innerHTML) + old;
         }, 0);
       }
 
@@ -87959,7 +88025,7 @@ function (_React$Component) {
         price = Array.from(Array(listLength), function (x, i) {
           return i;
         }).reduce(function (old, item) {
-          parseFloat(list[item].children[list[item].children.length - 1].children[3].innerHTML.replace(',', '.')) + old;
+          return parseFloat(list[item].children[list[item].children.length - 1].children[3].innerHTML.replace(',', '.')) + old;
         }, 0);
       }
 
@@ -89951,7 +90017,7 @@ function (_React$Component) {
           style: {
             fontSize: '14px',
             fontWeight: '600',
-            width: '61%',
+            width: '55%',
             marginRight: '1em',
             marginBottom: 0,
             padding: '0.2em 0.5em'
@@ -90837,8 +90903,8 @@ function unregister() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/leandro/Documents/Projects/tema-festas-backend/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/leandro/Documents/Projects/tema-festas-backend/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\User\Documents\Projetos\tema-festas-backend\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\User\Documents\Projetos\tema-festas-backend\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
