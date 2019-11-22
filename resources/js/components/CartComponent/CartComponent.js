@@ -171,7 +171,7 @@ export default class CartComponent extends React.Component {
                 ? this.setState({ 
                     loader: false,
                     showAfterOrder: true,
-                    cdt: 'ok' 
+                    cdt: 'err' 
                 })
                 : this.setState({ 
                     loader: false,

@@ -89519,10 +89519,10 @@ function (_React$Component) {
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: _objectSpread({}, successDivStyle, {
-          backgroundColor: this.props.cdt === 'ok' ? "#32A1DD" : "red"
+          backgroundColor: this.props.cdt === 'ok' ? "#32A1DD" : "#E33333"
         })
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: this.props.cdt === 'ok' ? '/images/checked.svg' : '/images/traffic-cone.svg',
+        src: this.props.cdt === 'ok' ? '/images/checked.svg' : '/images/error.svg',
         alt: "user",
         style: {
           width: "15%",
@@ -89860,7 +89860,7 @@ function (_React$Component) {
           return response.data === 'success' ? _this2.setState({
             loader: false,
             showAfterOrder: true,
-            cdt: 'ok'
+            cdt: 'err'
           }) : _this2.setState({
             loader: false,
             showAfterOrder: true,

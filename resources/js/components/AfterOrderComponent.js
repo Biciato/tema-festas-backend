@@ -25,12 +25,12 @@ export default class AfterOrderComponent extends React.Component {
                     ...successDivStyle, 
                     backgroundColor: this.props.cdt === 'ok' 
                         ? "#32A1DD"
-                        : "red"
+                        : "#E33333"
                 }}>
                 <img
                     src={ this.props.cdt === 'ok' 
                             ? '/images/checked.svg'
-                            : '/images/traffic-cone.svg'
+                            : '/images/error.svg'
                         }
                     alt="user"
                     style={{
