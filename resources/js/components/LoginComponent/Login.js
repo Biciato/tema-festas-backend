@@ -68,9 +68,10 @@ export default class Login extends React.Component {
                                 alt="user"
                                 style={{
                                     width: '5%',
-                                    margin: '0.2em'
+                                    margin: '0.2em',
+                                    paddingBottom: '0.3em'
                                 }}>                            
-                        </img>
+                        </img> 
                         Login
                     </h5>
                     <Form onSubmit={this.handleSubmit}>

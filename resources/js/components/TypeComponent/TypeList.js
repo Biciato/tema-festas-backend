@@ -139,7 +139,7 @@ export default class TypeList extends React.Component {
                 types = Products.categories[2][this.props.prodName].map((item) => item.name)
                 break
             case 3:
-                types = Products.categories[3].etiquetas.names;
+                types = Products.categories[3].Etiquetas.names;
                 break
             default:
                 types = this.props.prodName.includes('ela') ?

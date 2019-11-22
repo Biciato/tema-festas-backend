@@ -173,7 +173,7 @@ export const Products = {
             ]
         },
         3 : { 
-            "etiquetas": {
+            "Etiquetas": {
                 price: 1.50,
                 names : [
                     "cas 1",

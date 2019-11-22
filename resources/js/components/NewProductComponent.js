@@ -73,7 +73,7 @@ export default class NewProductComponent extends React.Component {
                                 top: "10%",
                                 left: "5%"
                             }}>
-                        <Modal.Header key="mh">
+                        <Modal.Header key="mh" style={{border: 'none'}}>
                             <Modal.Title    style={{
                                                 width: "100%",
                                                 textAlign: "center"

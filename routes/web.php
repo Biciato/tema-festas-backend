@@ -11,6 +11,10 @@
 |
 */
 
+Route::get('/js/react-router.js.map', function () {
+    return redirect('/clientes');
+});
+
 Route::get('/', function () {
     return redirect('/clientes');
 });
