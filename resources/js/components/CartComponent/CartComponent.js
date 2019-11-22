@@ -3,6 +3,8 @@ import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 import AfterOrderComponent from "../AfterOrderComponent";
 import NewProductComponent from "../NewProductComponent";
+import Loader from 'react-loader-spinner'
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 export default class CartComponent extends React.Component {
     constructor(props) {
@@ -167,19 +169,21 @@ export default class CartComponent extends React.Component {
             })
             .then((response) => response.data === 'success' 
                 ? this.setState({ 
+                    loader: false,
                     showAfterOrder: true,
-                    cdt: 'err' 
+                    cdt: 'ok' 
                 })
                 : this.setState({ 
+                    loader: false,
                     showAfterOrder: true,
                     cdt: 'err' 
                 })
             )
-            /* .then(() => setTimeout(() => 
+            .then(() => setTimeout(() => 
                 this.setState({
                     redirect: true
                 })
-            , 5000))  */
+            , 5000))  
             .catch((error) => console.log(error) );
         }    
     }
@@ -271,14 +275,14 @@ export default class CartComponent extends React.Component {
                     className="products"
                     data="0"
                     style={{
-                        marginTop: "1em"
+                        marginTop: "2em"
                     }}
                     key={"cat0-" + i}
                 >
                     <div
                         style={{
                             padding: "0.1em",
-                            height: "2em",
+                            height: "2.5em",
                             marginLeft: "0.8em"
                         }}
                         key="cat0-div1"
@@ -301,6 +305,7 @@ export default class CartComponent extends React.Component {
                                 borderRadius: "5px",
                                 padding: "0.4em",
                                 color: "darkgray",
+                                fontSize: '14px',
                                 marginRight: "1em",
                                 width: "30%",
                                 textAlign: "center"
@@ -319,11 +324,12 @@ export default class CartComponent extends React.Component {
                             ).map((e, idx) => (
                                 <div
                                     style={{
-                                        padding: "0.7em 0.1em",
+                                        padding: "0.2em 0.1em",
                                         height: "4em",
                                         fontSize: "14px",
                                         backgroundColor:
-                                            idx % 2 === 0 ? "white" : "#F8F8F8"
+                                            idx % 2 === 0 ? "white" : "#F8F8F8",
+                                        color: '#2B2B2B'
                                     }}
                                     key={"cat0-div2-" + e}
                                 >
@@ -390,8 +396,8 @@ export default class CartComponent extends React.Component {
                         )}{" "}
                     <div
                         style={{
-                            padding: "0.1em",
-                            height: "2em",
+                            padding: "0.5em 0.1em",
+                            height: "2.5em",
                             margin: "0px 2em 0 1em",
                             borderBottom: "1px solid #D7D7D7",
                             fontSize: "14px"
@@ -417,7 +423,8 @@ export default class CartComponent extends React.Component {
                         <span
                             style={{
                                 fontWeight: "bold",
-                                padding: "0.4em"
+                                padding: "0.4em",
+                                marginLeft: '4em'
                             }}
                             key="cat0-div3-s3"
                         >
@@ -426,7 +433,6 @@ export default class CartComponent extends React.Component {
                         <span
                             style={{
                                 float: "right",
-                                padding: "0.4em",
                                 color: "darkgray",
                                 marginLeft: "1em"
                             }}
@@ -452,7 +458,7 @@ export default class CartComponent extends React.Component {
                     className="products"
                     id={`${item}`}
                     style={{
-                        marginTop: "1em"
+                        marginTop: "2em"
                     }}
                     data="1"
                     key={"cat1" + item}
@@ -484,7 +490,8 @@ export default class CartComponent extends React.Component {
                                 color: "darkgray",
                                 marginRight: "1em",
                                 width: "30%",
-                                textAlign: "center"
+                                textAlign: "center",
+                                fontSize: '14px'
                             }}
                             defaultValue={this.props.location.state.prods[item].valor_unitario}
                             onChange={(e) => this.handlePriceChange(e, `${item}`)}
@@ -497,11 +504,12 @@ export default class CartComponent extends React.Component {
                             ).map((e, idx) => (
                                 <div
                                     style={{
-                                        padding: "0.7em 0.1em",
+                                        padding: "0.2em 0.1em",
                                         height: "4em",
                                         fontSize: "14px",
                                         backgroundColor:
-                                            idx % 2 === 0 ? "white" : "#F8F8F8"
+                                            idx % 2 === 0 ? "white" : "#F8F8F8",
+                                        color: '#2B2B2B'
                                     }}
                                     key={"cat1-div2" + el + e}
                                 >
@@ -569,8 +577,8 @@ export default class CartComponent extends React.Component {
                     )}{" "}
                     <div
                         style={{
-                            padding: "0.1em",
-                            height: "2em",
+                            padding: "0.5em 0.1em",
+                            height: "2.5em",
                             margin: "0px 2em 0 1em",
                             borderBottom: "1px solid #D7D7D7",
                             fontSize: "14px"
@@ -596,7 +604,8 @@ export default class CartComponent extends React.Component {
                         <span
                             style={{
                                 fontWeight: "bold",
-                                padding: "0.4em"
+                                padding: "0.4em",
+                                marginLeft: '4em'
                             }}
                             key="cat1-div3-s3"
                         >
@@ -605,7 +614,6 @@ export default class CartComponent extends React.Component {
                         <span
                             style={{
                                 float: "right",
-                                padding: "0.4em",
                                 color: "darkgray",
                                 marginLeft: "1em"
                             }}
@@ -631,7 +639,7 @@ export default class CartComponent extends React.Component {
                     id={item}
                     className="products"
                     style={{
-                        marginTop: "1em"
+                        marginTop: "2em"
                     }}
                     data="2"
                     key={item}
@@ -660,7 +668,8 @@ export default class CartComponent extends React.Component {
                             style={{
                                 padding: "0 1em 1em 0",
                                 backgroundColor:
-                                    idx % 2 === 0 ? "white" : "#F8F8F8"
+                                    idx % 2 === 0 ? "white" : "#F8F8F8",
+                                color: '#2B2B2B'
                             }}
                             key={'cat2-div2-' + i}
                         >
@@ -780,8 +789,8 @@ export default class CartComponent extends React.Component {
                     ))}{" "}
                     <div
                         style={{
-                            padding: "0.1em",
-                            height: "2em",
+                            padding: "0.5em 0.1em",
+                            height: "2.5em",
                             margin: "0px 2em 0 1em",
                             borderBottom: "1px solid #D7D7D7",
                             fontSize: "14px"
@@ -807,7 +816,8 @@ export default class CartComponent extends React.Component {
                         <span
                             style={{
                                 fontWeight: "bold",
-                                padding: "0.4em"
+                                padding: "0.4em",
+                                marginLeft: '4em'
                             }}
                             key="cat2-div3-s2"
                         >
@@ -816,7 +826,6 @@ export default class CartComponent extends React.Component {
                         <span
                             style={{
                                 float: "right",
-                                padding: "0.4em",
                                 color: "darkgray",
                                 marginLeft: "1em"
                             }}
@@ -840,7 +849,7 @@ export default class CartComponent extends React.Component {
                 id={item}
                 className="products"
                 style={{
-                    marginTop: "1em"
+                    marginTop: "2em"
                 }}
                 data="3"
                 key={item}
@@ -848,7 +857,7 @@ export default class CartComponent extends React.Component {
                 <div
                     style={{
                         padding: "0.1em",
-                        height: "2em",
+                        height: "2.5em",
                         marginLeft: "0.8em"
                     }}
                     key="cat3-div1"
@@ -868,9 +877,10 @@ export default class CartComponent extends React.Component {
                             float: "right",
                             border: "1px solid silver",
                             borderRadius: "5px",
-                            padding: "0.4em",
                             color: "darkgray",
+                            fontSize: '14px',
                             marginRight: "1em",
+                            padding: '0.4em',
                             width: "30%",
                             textAlign: "center"
                         }}
@@ -881,10 +891,11 @@ export default class CartComponent extends React.Component {
                 {Object.keys(this.props.location.state.prods[item].dados).map((el, idx) => (
                     <div
                         style={{
-                            padding: "0.7em 0.1em",
+                            padding: "0.2em 0.1em",
                             height: "4em",
                             fontSize: "14px",
-                            backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8"
+                            backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8",
+                            color: '#2B2B2B'
                         }}
                         key={'cat3-div2' + el}
                     >
@@ -948,8 +959,8 @@ export default class CartComponent extends React.Component {
                 ))}{" "}
                 <div
                     style={{
-                        padding: "0.1em",
-                        height: "2em",
+                        padding: "0.5em 0.1em",
+                        height: "2.5em",
                         margin: "0 2em 0 1em",
                         borderBottom: "1px solid #D7D7D7",
                         fontSize: "14px"
@@ -974,7 +985,8 @@ export default class CartComponent extends React.Component {
                     <span
                         style={{
                             fontWeight: "bold",
-                            padding: "0.4em"
+                            padding: "0.4em",
+                            marginLeft: '4em'
                         }}
                     >
                         Total: R${" "}
@@ -982,7 +994,6 @@ export default class CartComponent extends React.Component {
                     <span
                         style={{
                             float: "right",
-                            padding: "0.4em",
                             color: "darkgray",
                             marginLeft: "1em"
                         }}
@@ -1114,12 +1125,17 @@ export default class CartComponent extends React.Component {
         )
         document.getElementById('totalPrice').innerHTML = priceBr
     }
-    renderRedirect() {
-        if (this.state.redirect) {
-          return <Redirect to='/clientes' />
-        }
-    }
     render() {
+        if (this.state.redirect) {
+            return <Redirect push to={{
+                pathname: "/pedido",
+                state: { 
+                    prods: this.props.location.state.prods,
+                    totalPrice: this.props.location.state.totalPrice,
+                    totalQty: this.props.location.state.totalQty 
+                }
+            }}/>
+        }
         return (
             <div
                 style={{
@@ -1127,8 +1143,9 @@ export default class CartComponent extends React.Component {
                     margin: 0
                 }}
             >
-                {this.renderRedirect()}
-                <NewProductComponent arrow={true} history={this.props.history}/>
+                <div style={{display: this.state.showAfterOrder ? 'none' : 'block'}}> 
+                    <NewProductComponent arrow={true} history={this.props.history}/>
+                </div>                
                 <div
                     key="cart-div2"
                     style={{
@@ -1172,7 +1189,7 @@ export default class CartComponent extends React.Component {
                             height: "2em",
                             color: "#32338D",
                             fontWeight: "bold",
-                            margin: "0px 2em 0 1em"
+                            margin: "2em 2em 0 1em"
                         }}
                         key="cart-div2-div1"
                     >
@@ -1224,7 +1241,14 @@ export default class CartComponent extends React.Component {
                     {" "}
                     {
                         this.state.loader 
-                            ?  this.renderLoader
+                            ?  <Loader
+                                    type="ThreeDots"
+                                    color="white"
+                                    height={25}
+                                    width={25}
+                                    timeout={3000} //3 secs
+                        
+                                />
                             : 'Finalizar Compra'
                     }
                 </div>{" "}

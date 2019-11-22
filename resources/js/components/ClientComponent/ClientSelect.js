@@ -1,5 +1,6 @@
 import React from 'react'
 import Select from 'react-select'
+import { Clients } from '../resources/clients'
 
 export default class ClientSelect extends React.Component {
     constructor(props) {
@@ -10,9 +11,9 @@ export default class ClientSelect extends React.Component {
         this.props.onClientSelect(client.value)
     }
     render() {
-        const clientList = [...Array(26)].map((_, i) => ({
-            value: `Cliente ${String.fromCharCode('A'.charCodeAt(0) + i)}`,
-            label: `Cliente ${String.fromCharCode('A'.charCodeAt(0) + i)}`
+        const clientList = Clients.map((client) => ({
+            value: client.toUpperCase(),
+            label: client.toUpperCase()
         }));
         return(
             <Select 

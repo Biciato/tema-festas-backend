@@ -28,7 +28,7 @@
             <h5 class="text-light">
                 <img src="/images/user.svg" 
                     alt="user"
-                    style="width: 5%; margin: 0.2em;">                            
+                    style="width: 5%; margin: 0.2em; padding-bottom: 0.3em;">                            
                 </img>
                 Login
             </h5>
@@ -37,17 +37,17 @@
 
                 <div class="form-group row justify-content-center text-center">
                     <div class="col-md-6">
-                        <input id="email" 
-                                type="email" 
-                                class="form-control @error('email') is-invalid @enderror" 
-                                name="email" 
-                                value="{{ old('email') }}" 
+                        <input id="name" 
+                                type="text" 
+                                class="form-control @error('name') is-invalid @enderror" 
+                                name="name" 
+                                value="{{ old('name') }}" 
                                 required 
                                 placeholder="Usuário"
-                                autocomplete="email" 
+                                autocomplete="name" 
                                 autofocus>
 
-                        @error('email')
+                        @error('name')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
