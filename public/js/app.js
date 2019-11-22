@@ -90296,7 +90296,7 @@ function (_React$Component) {
               padding: "0.4em",
               marginLeft: "1em",
               display: "inline-block",
-              width: "56%",
+              width: "59%",
               borderBottom: "1px solid #D7D7D7"
             },
             key: 'cat2-div2-s1-' + item
@@ -90319,7 +90319,7 @@ function (_React$Component) {
             style: {
               border: "none",
               display: "inline-block",
-              width: "15%",
+              width: "21%",
               backgroundColor: "inherit",
               textAlign: "center"
             },
@@ -90363,7 +90363,7 @@ function (_React$Component) {
               borderRadius: "5px",
               padding: "0.4em",
               color: "darkgray",
-              marginRight: "1em",
+              marginLeft: '10em',
               backgroundColor: "inherit",
               width: "27%",
               textAlign: "center"
