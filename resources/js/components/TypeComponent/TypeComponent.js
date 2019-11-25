@@ -16,7 +16,7 @@ export default class TypeComponent extends React.Component {
     this.handleSubtypeChange = this.handleSubtypeChange.bind(this);
     this.handlePriceChange = this.handlePriceChange.bind(this);
     this.state = { 
-      type: 'não possui', 
+      type: props.type ? props.type : 'não possui', 
       price: this.getProdPrice().toLocaleString('pt-br', {
         style: 'currency', 
         currency: 'BRL', 
@@ -95,14 +95,18 @@ export default class TypeComponent extends React.Component {
   }
 
   render() {
+    let typeSelectProps = {
+      onTypeChange: this.handleTypeChange,
+      key: 2,
+      prodName: this.props.prodName
+    } 
+    if (this.props.type) {
+      typeSelectProps.type = this.props.type
+    }
     return (
       e(Row, { bsPrefix: 'row m-1 mb-5' + (this.props.display ? ' d-none' : '') },
         e(Col, null, [
-          e(TypeSelect, {
-            onTypeChange: this.handleTypeChange,
-            key: 2,
-            prodName: this.props.prodName
-          }),
+          e(TypeSelect, typeSelectProps), 
           e(InputGroup, { 
               key: 3, 
               style: { width: '99%' },
@@ -135,8 +139,9 @@ export default class TypeComponent extends React.Component {
           e(TypeList, {
             type: this.state.type,
             key: 4,
+            size: this.props.size ? this.props.size : 'not has',
             prodName: this.props.prodName,
-            style: { borderBottom: 'none' },
+            prods: this.props.prods,
             onSubtypeChange: this.handleSubtypeChange
           })
         ])

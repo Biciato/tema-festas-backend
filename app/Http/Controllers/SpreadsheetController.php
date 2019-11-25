@@ -10,10 +10,12 @@ class SpreadsheetController extends Controller
     public function getOrder(Request $request) {
         try {
             file_put_contents(
-                storage_path('app/pedidos-json/pedido.json'),
+                storage_path('app/pedidos-json/' .$request->client. '/pedido.json'),
                 json_encode($request->order)
             );
-            $planilha = new GerenciadorPlanilha(storage_path('app/pedidos-excel/pedido.xls'));
+            $planilha = new GerenciadorPlanilha(
+                storage_path('app/pedidos-excel/' .$request->client. 'pedido.xls')
+            );
             $planilha->inserirPedido($request->order);
         } catch(Exception $e) {
             return $e;

@@ -49,7 +49,7 @@
 
                         @error('name')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+                                <strong>Combinação usuário / senha não confere</strong>
                             </span>
                         @enderror
                     </div>
@@ -67,7 +67,7 @@
 
                         @error('password')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+                                <strong>Combinação usuário / senha não confere</strong>
                             </span>
                         @enderror
                     </div>

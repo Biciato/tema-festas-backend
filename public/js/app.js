@@ -89705,7 +89705,8 @@ function (_React$Component) {
     _this.mountProdList = _this.mountProdList.bind(_assertThisInitialized(_this));
     _this.state = {
       showAfterOrder: false,
-      loader: false
+      loader: false,
+      redirect: _this.props.location.state === undefined ? true : false
     };
     return _this;
   }
@@ -89855,14 +89856,13 @@ function (_React$Component) {
           loader: true
         });
         axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/get-order', {
-          order: _objectSpread({}, this.mountCat0Json(), {}, this.mountCat1Json(), {}, this.mountCat2Json(), {}, this.mountCat3Json())
+          order: _objectSpread({}, this.mountCat0Json(), {}, this.mountCat1Json(), {}, this.mountCat2Json(), {}, this.mountCat3Json()),
+          client: this.props.location.state.client
         }).then(function (response) {
           return response.data === 'success' ? _this2.setState({
-            loader: false,
             showAfterOrder: true,
             cdt: 'err'
           }) : _this2.setState({
-            loader: false,
             showAfterOrder: true,
             cdt: 'err'
           });
@@ -90659,12 +90659,7 @@ function (_React$Component) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Redirect"], {
           push: true,
           to: {
-            pathname: "/pedido",
-            state: {
-              prods: this.props.location.state.prods,
-              totalPrice: this.props.location.state.totalPrice,
-              totalQty: this.props.location.state.totalQty
-            }
+            pathname: "/resumo"
           }
         });
       }
@@ -90878,8 +90873,10 @@ function (_React$Component) {
   }, {
     key: "handleClick",
     value: function handleClick() {
-      if (this.state.client !== null) {
-        window.location = "/pedido";
+      if (this.state.client === null) {
+        this.setState({
+          warning: true
+        });
       }
     }
   }, {
@@ -90900,14 +90897,24 @@ function (_React$Component) {
           margin: "0.2em 0.5em 0.4em 0"
         }
       }), "Clientes"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ClientSelect__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        warning: this.state.warning,
         key: 2,
         onClientSelect: this.handleClientSelect
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Link"], {
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: {
+          color: 'red',
+          display: this.state.warning ? 'block' : 'none'
+        }
+      }, "Selecione um Cliente"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Link"], {
+        onClick: this.handleClick,
         className: "footer text-center",
         key: 3,
         to: function to(location) {
           return _objectSpread({}, location, {
-            pathname: _this2.state.client ? "/pedido" : "/clientes"
+            pathname: _this2.state.client ? "/pedido" : "/clientes",
+            state: {
+              client: _this2.state.client
+            }
           });
         }
       }, "Fazer Pedido")));
@@ -90986,6 +90993,8 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       var clientList = _resources_clients__WEBPACK_IMPORTED_MODULE_2__["Clients"].map(function (client) {
         return {
           value: client.toUpperCase(),
@@ -90998,7 +91007,8 @@ function (_React$Component) {
           control: function control(styles) {
             return _objectSpread({}, styles, {
               fontSize: '14px',
-              fontWeight: '600'
+              fontWeight: '600',
+              borderColor: _this2.props.warning ? 'red' : 'hsl(0,0%,80%)'
             });
           }
         },
@@ -91074,7 +91084,8 @@ function (_React$Component) {
     _this.showModal = _this.showModal.bind(_assertThisInitialized(_this));
     _this.state = {
       redirect: false,
-      showModal: false
+      showModal: false,
+      local: null
     };
     return _this;
   }
@@ -91089,22 +91100,42 @@ function (_React$Component) {
   }, {
     key: "goBack",
     value: function goBack() {
-      this.props.history.goBack();
+      var _this2 = this;
+
+      this.setState({
+        local: 'back'
+      }, function () {
+        return _this2.setState({
+          redirect: true
+        });
+      });
     }
   }, {
     key: "redirect",
     value: function redirect() {
       this.setState({
-        redirect: true
+        redirect: true,
+        showModal: false
       });
     }
   }, {
     key: "renderRedirect",
     value: function renderRedirect() {
       if (this.state.redirect) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_3__["Redirect"], {
-          to: "/clientes"
-        });
+        if (window.location.pathname === '/pedido') {
+          window.location.reload();
+        } else {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_3__["Redirect"], {
+            push: true,
+            to: {
+              pathname: '/pedido',
+              state: {
+                "new": true,
+                client: this.props.history.location.state.client
+              }
+            }
+          });
+        }
       }
     }
   }, {
@@ -91266,6 +91297,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/esm/react-router.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -91311,20 +91350,21 @@ function (_React$Component) {
     _classCallCheck(this, ProductComponent);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ProductComponent).call(this, props));
+    _this.getCategorySet = _this.getCategorySet.bind(_assertThisInitialized(_this));
+    _this.getProdPrice = _this.getProdPrice.bind(_assertThisInitialized(_this));
     _this.handleProductChange = _this.handleProductChange.bind(_assertThisInitialized(_this));
     _this.handleSizeChange = _this.handleSizeChange.bind(_assertThisInitialized(_this));
     _this.handleSubtypeSet = _this.handleSubtypeSet.bind(_assertThisInitialized(_this));
     _this.handleTypeChange = _this.handleTypeChange.bind(_assertThisInitialized(_this));
-    _this.getCategorySet = _this.getCategorySet.bind(_assertThisInitialized(_this));
-    _this.getProdPrice = _this.getProdPrice.bind(_assertThisInitialized(_this));
     _this.handleCartClick = _this.handleCartClick.bind(_assertThisInitialized(_this));
-    _this.startNewOrder = _this.startNewOrder.bind(_assertThisInitialized(_this));
     _this.state = {
+      redirect: props.location.state === undefined || !props.location.state.client ? 'clientes' : false,
       prods: {},
       cpts: [{
         name: _NewProductComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
         props: {
-          key: "new-product"
+          key: "new-product",
+          history: _this.props.history
         }
       }, {
         name: _ProductSelect__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -91332,17 +91372,63 @@ function (_React$Component) {
           key: "product",
           onProductChange: _this.handleProductChange
         }
-      }, {
-        props: {
-          key: "total"
-        },
-        name: _TotalComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
       }]
     };
     return _this;
   }
 
   _createClass(ProductComponent, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      if (this.props.location.state["new"]) {
+        var cpts = this.state.cpts.slice(2);
+        this.setState({
+          cpts: [{
+            name: _NewProductComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
+            props: {
+              key: "new-product",
+              history: this.props.history
+            }
+          }, {
+            name: _ProductSelect__WEBPACK_IMPORTED_MODULE_1__["default"],
+            props: {
+              key: "product",
+              onProductChange: this.handleProductChange
+            }
+          }]
+        });
+      }
+    }
+  }, {
+    key: "getCategorySet",
+    value: function getCategorySet(categoryName) {
+      return Object.keys(this.state.categorias).find(function (item) {
+        return item === categoryName;
+      });
+    }
+  }, {
+    key: "getProdCategory",
+    value: function getProdCategory(prodName) {
+      return [0, 1, 2, 3].find(function (item) {
+        return _resources_products__WEBPACK_IMPORTED_MODULE_5__["Products"].categories[item][prodName];
+      });
+    }
+  }, {
+    key: "getProdPrice",
+    value: function getProdPrice(prodName) {
+      var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      if (this.getProdCategory(prodName) === 0) {
+        return _resources_products__WEBPACK_IMPORTED_MODULE_5__["Products"].categories[0][prodName].size.find(function (item) {
+          return item.name === size;
+        }).price;
+      } else {
+        return _resources_products__WEBPACK_IMPORTED_MODULE_5__["Products"].categories[this.getProdCategory(prodName)][prodName].price.toLocaleString("pt-br", {
+          minimumFractionDigits: 2
+        });
+      }
+    }
+  }, {
     key: "handleProductChange",
     value: function handleProductChange(prodName) {
       var prevProds = this.state.prods[prodName] ? this.state.prods[prodName] : {};
@@ -91356,7 +91442,7 @@ function (_React$Component) {
         prods[prodName].valor_unitario = this.getProdPrice(prodName);
       }
 
-      var cpts = [this.state.cpts[0], this.state.cpts[1], this.state.cpts[2]];
+      var cpts = [this.state.cpts[0], this.state.cpts[1]];
       var cpt = {};
 
       if (prods[prodName].tipo_categoria !== 0 || prodName.includes("ela")) {
@@ -91365,6 +91451,7 @@ function (_React$Component) {
           props: {
             onSubtypeSet: this.handleSubtypeSet,
             onTypeChange: this.handleTypeChange,
+            prods: this.state.prods,
             prodName: prodName,
             key: "type"
           }
@@ -91389,7 +91476,7 @@ function (_React$Component) {
   }, {
     key: "handleSizeChange",
     value: function handleSizeChange(size, prodName) {
-      var cpts = [this.state.cpts[0], this.state.cpts[1], this.state.cpts[2], this.state.cpts[3]];
+      var cpts = [this.state.cpts[0], this.state.cpts[1], this.state.cpts[2]];
       cpts.push({
         name: _TypeComponent_TypeComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
         props: {
@@ -91397,7 +91484,8 @@ function (_React$Component) {
           size: size,
           prodName: prodName,
           onSubtypeSet: this.handleSubtypeSet,
-          onTypeChange: this.handleTypeChange
+          onTypeChange: this.handleTypeChange,
+          prods: this.state.prods
         }
       });
       var prods = Object.assign({}, this.state.prods, _defineProperty({}, prodName, Object.assign({}, this.state.prods[prodName], {
@@ -91414,15 +91502,33 @@ function (_React$Component) {
     key: "handleTypeChange",
     value: function handleTypeChange(type, prodName) {
       var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+      var cpts = _toConsumableArray(this.state.cpts);
+
+      cpts.pop();
+      cpts.push({
+        name: _TypeComponent_TypeComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
+        props: {
+          key: "type",
+          size: size,
+          prodName: prodName,
+          onSubtypeSet: this.handleSubtypeSet,
+          onTypeChange: this.handleTypeChange,
+          prods: this.state.prods
+        }
+      });
       var prod = Object.assign({}, this.state);
 
       if (this.getProdCategory(prodName) === 0) {
-        prod.prods[prodName].dados[size] = Object.assign({}, this.state.prods[prodName].dados[size], _defineProperty({}, type, null));
+        prod.prods[prodName].dados[size] = Object.assign({}, this.state.prods[prodName].dados[size], _defineProperty({}, type, this.state.prods[prodName].dados[size][type] ? Object.assign({}, this.state.prods[prodName].dados[size][type]) : null));
         this.setState(prod);
       } else if (this.getProdCategory(prodName) === 1) {
         var prevDados = this.state.prods[prodName].dados ? this.state.prods[prodName].dados : {};
         prod.prods[prodName].dados = prevDados;
-        this.setState(prod);
+        this.setState({
+          prod: prod,
+          cpts: cpts
+        });
       }
     }
   }, {
@@ -91470,19 +91576,27 @@ function (_React$Component) {
           break;
       }
 
-      var newCpts = this.state.cpts.map(function (e, i) {
-        return i === 2 ? {
-          name: _TotalComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
-          props: {
-            key: "total",
-            prods: prods,
-            onCartClick: _this2.handleCartClick
-          }
-        } : e;
-      });
       this.setState({
-        cpts: newCpts,
         prods: prods
+      }, function () {
+        var cpts = _toConsumableArray(_this2.state.cpts);
+
+        cpts.pop();
+        cpts.push({
+          name: _TypeComponent_TypeComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
+          props: {
+            key: "type",
+            size: size,
+            prodName: prodName,
+            onSubtypeSet: _this2.handleSubtypeSet,
+            onTypeChange: _this2.handleTypeChange,
+            prods: _this2.state.prods
+          }
+        });
+
+        _this2.setState({
+          cpts: cpts
+        });
       });
     }
   }, {
@@ -91495,106 +91609,9 @@ function (_React$Component) {
         totalPrice: totalPrice
       }, function () {
         return _this3.setState({
-          redirect: true
+          redirect: 'resumo'
         });
       });
-    }
-  }, {
-    key: "handleModalClick",
-    value: function handleModalClick(cdt) {
-      var _this4 = this;
-
-      var state = Object.assign({}, this.state);
-
-      if (cdt === "accepted") {
-        state.mdShow = false;
-      } else if (cdt === "not_accepted") {
-        state.mdShow = false;
-      } else {
-        state.mdShow = true;
-      }
-
-      this.setState(state, function () {
-        return _this4.startNewOrder(cdt);
-      });
-    }
-  }, {
-    key: "getCategorySet",
-    value: function getCategorySet(categoryName) {
-      return Object.keys(this.state.categorias).find(function (item) {
-        return item === categoryName;
-      });
-    }
-  }, {
-    key: "getProdCategory",
-    value: function getProdCategory(prodName) {
-      return [0, 1, 2, 3].find(function (item) {
-        return _resources_products__WEBPACK_IMPORTED_MODULE_5__["Products"].categories[item][prodName];
-      });
-    }
-  }, {
-    key: "getProdPrice",
-    value: function getProdPrice(prodName) {
-      var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-      if (this.getProdCategory(prodName) === 0) {
-        return _resources_products__WEBPACK_IMPORTED_MODULE_5__["Products"].categories[0][prodName].size.find(function (item) {
-          return item.name === size;
-        }).price;
-      } else {
-        return _resources_products__WEBPACK_IMPORTED_MODULE_5__["Products"].categories[this.getProdCategory(prodName)][prodName].price.toLocaleString("pt-br", {
-          minimumFractionDigits: 2
-        });
-      }
-    }
-  }, {
-    key: "startNewOrder",
-    value: function startNewOrder(cdt) {
-      var _this5 = this;
-
-      if (cdt === "accepted") {
-        this.setState({
-          cpts: [{
-            name: "div",
-            props: {
-              key: "div",
-              onClick: function onClick() {
-                return _this5.handleModalClick("start");
-              },
-              style: {
-                textAlign: "end",
-                backgroundColor: "#F3F3F3",
-                margin: 0,
-                padding: "0.3em",
-                color: "#32338D",
-                cursor: "pointer",
-                fontSize: "12px"
-              }
-            },
-            children: [e("span", {
-              key: "span"
-            }, "iniciar novo pedido"), e("img", {
-              src: "/images/star.svg",
-              alt: "task",
-              style: {
-                width: "4%",
-                margin: "0.2em 0.4em 0.4em 0.3em"
-              }
-            })]
-          }, {
-            name: _ProductSelect__WEBPACK_IMPORTED_MODULE_1__["default"],
-            props: {
-              onProductChange: this.handleProductChange
-            }
-          }, {
-            name: _TotalComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
-            props: {
-              prods: {}
-            }
-          }],
-          prods: {}
-        });
-      }
     }
   }, {
     key: "render",
@@ -91603,16 +91620,16 @@ function (_React$Component) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router__WEBPACK_IMPORTED_MODULE_9__["Redirect"], {
           push: true,
           to: {
-            pathname: "/resumo",
-            state: {
+            pathname: "/".concat(this.state.redirect),
+            state: this.state.redirect === 'resumo' ? {
               prods: this.state.prods,
-              totalPrice: this.state.totalPrice,
-              totalQty: this.state.totalQty
-            }
+              client: this.props.location.state.client
+            } : undefined
           }
         });
       }
 
+      var cpts = this.props.location && this.props.location.state && this.props.location.state.prods ? this.mountCptFromResume() : this.state.cpts;
       return e(react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_6__["default"], {
         bsPrefix: 'row no-gutters'
       }, e(react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_7__["default"], {
@@ -91620,8 +91637,12 @@ function (_React$Component) {
           padding: 0
         },
         key: 1
-      }, this.state.cpts.map(function (item) {
+      }, cpts.map(function (item) {
         return e(item.name, item.props, item.children);
+      }), e(_TotalComponent__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        prods: this.state.prods,
+        key: 'total',
+        onCartClick: this.handleCartClick
       })));
     }
   }]);
@@ -91692,12 +91713,18 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ProductSelect).call(this));
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    _this.state = {
+      prodSelected: 'Produto'
+    };
     return _this;
   }
 
   _createClass(ProductSelect, [{
     key: "handleChange",
     value: function handleChange(product) {
+      this.setState({
+        prodSelected: product
+      });
       this.props.onProductChange(product.value);
     }
   }, {
@@ -91725,8 +91752,8 @@ function (_React$Component) {
         }),
         onChange: this.handleChange,
         defaultValue: {
-          value: 'Produto',
-          label: 'Produto'
+          value: this.state.prodSelected,
+          label: this.state.prodSelected
         },
         styles: {
           control: function control(styles) {
@@ -91809,8 +91836,8 @@ function (_React$Component) {
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
     _this.state = {
       selectedOption: {
-        value: 'Tamanho',
-        label: 'Tamanho'
+        value: props.size ? props.size : 'Tamanho',
+        label: props.size ? props.size : 'Tamanho'
       }
     };
     return _this;
@@ -92001,13 +92028,13 @@ function (_React$Component) {
   }, {
     key: "getTotalCat3",
     value: function getTotalCat3(prods) {
-      if (prods.etiquetas && prods.etiquetas.valor_unitario) {
-        var price = prods.etiquetas.valor_unitario;
+      if (prods.Etiquetas && prods.Etiquetas.valor_unitario) {
+        var price = prods.Etiquetas.valor_unitario;
         var normString = price.replace("R$", "");
         var normString2 = normString.replace(",", ".").trim();
         var unitPrice = parseFloat(normString2);
-        var qty = Object.keys(prods.etiquetas.dados).reduce(function (o, item) {
-          return (parseInt(prods.etiquetas.dados[item]) || 0) + o;
+        var qty = Object.keys(prods.Etiquetas.dados).reduce(function (o, item) {
+          return (parseInt(prods.Etiquetas.dados[item]) || 0) + o;
         }, 0);
         return unitPrice * qty;
       } else {
@@ -92213,9 +92240,9 @@ function (_React$Component) {
   }, {
     key: "getTotalQtyCat3",
     value: function getTotalQtyCat3(prods) {
-      if (prods["etiquetas"]) {
-        return Object.keys(prods["etiquetas"].dados).reduce(function (old, key) {
-          return (parseInt(prods["etiquetas"].dados[key]) || 0) + old;
+      if (prods["Etiquetas"]) {
+        return Object.keys(prods["Etiquetas"].dados).reduce(function (old, key) {
+          return (parseInt(prods["Etiquetas"].dados[key]) || 0) + old;
         }, 0);
       } else {
         return 0;
@@ -92333,7 +92360,7 @@ function (_React$Component) {
     _this.handleSubtypeChange = _this.handleSubtypeChange.bind(_assertThisInitialized(_this));
     _this.handlePriceChange = _this.handlePriceChange.bind(_assertThisInitialized(_this));
     _this.state = {
-      type: 'não possui',
+      type: props.type ? props.type : 'não possui',
       price: _this.getProdPrice().toLocaleString('pt-br', {
         style: 'currency',
         currency: 'BRL',
@@ -92451,13 +92478,19 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      return e(react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        bsPrefix: 'row m-1 mb-5' + (this.props.display ? ' d-none' : '')
-      }, e(react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_4__["default"], null, [e(_TypeSelect__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      var typeSelectProps = {
         onTypeChange: this.handleTypeChange,
         key: 2,
         prodName: this.props.prodName
-      }), e(react_bootstrap_InputGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      };
+
+      if (this.props.type) {
+        typeSelectProps.type = this.props.type;
+      }
+
+      return e(react_bootstrap_Row__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        bsPrefix: 'row m-1 mb-5' + (this.props.display ? ' d-none' : '')
+      }, e(react_bootstrap_Col__WEBPACK_IMPORTED_MODULE_4__["default"], null, [e(_TypeSelect__WEBPACK_IMPORTED_MODULE_1__["default"], typeSelectProps), e(react_bootstrap_InputGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
         key: 3,
         style: {
           width: '99%'
@@ -92486,10 +92519,9 @@ function (_React$Component) {
       })]), e(_TypeList__WEBPACK_IMPORTED_MODULE_2__["default"], {
         type: this.state.type,
         key: 4,
+        size: this.props.size ? this.props.size : 'not has',
         prodName: this.props.prodName,
-        style: {
-          borderBottom: 'none'
-        },
+        prods: this.props.prods,
         onSubtypeChange: this.handleSubtypeChange
       })]));
     }
@@ -92718,6 +92750,33 @@ function (_React$Component) {
       }).shift();
     }
   }, {
+    key: "getProdQty",
+    value: function getProdQty(item) {
+      if (this.props.prods[this.props.prodName]) {
+        if (this.props.prods[this.props.prodName].dados) {
+          if (this.props.prods[this.props.prodName].dados[this.props.size] && this.props.prods[this.props.prodName].dados[this.props.size][this.props.type] && this.props.prods[this.props.prodName].dados[this.props.size][this.props.type][item]) {
+            return this.props.prods[this.props.prodName].dados[this.props.size][this.props.type][item];
+          } else if (this.props.prods[this.props.prodName].dados[this.props.type] && this.props.prods[this.props.prodName].dados[this.props.type][item]) {
+            return this.props.prods[this.props.prodName].dados[this.props.type][item];
+          } else if (this.props.prods[this.props.prodName] !== 'Etiquetas' && this.props.prods[this.props.prodName].dados[item] && this.props.prods[this.props.prodName].dados[item].quantidade) {
+            return this.props.prods[this.props.prodName].dados[item].quantidade;
+          } else if (this.props.prodName === 'Etiquetas') {
+            if (this.props.prods[this.props.prodName].dados[item]) {
+              return this.props.prods[this.props.prodName].dados[item];
+            } else {
+              return 0;
+            }
+          } else {
+            return 0;
+          }
+        } else {
+          return 0;
+        }
+      } else {
+        return 0;
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this6 = this;
@@ -92775,11 +92834,11 @@ function (_React$Component) {
             cursor: 'pointer'
           }
         }, '-'), e(react_bootstrap_FormControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
-          key: _this6.props.type + item + 'c-2',
+          key: (_this6.props.size ? _this6.props.size : '') + _this6.props.type + item + 'c-2',
           min: 0,
           onChange: _this6.handleQtyChange,
           data: item + '-qty',
-          defaultValue: 0,
+          defaultValue: _this6.getProdQty(item),
           style: {
             border: 'none',
             display: 'inline-block',
@@ -92957,11 +93016,12 @@ function (_React$Component) {
         value: 'Não Possui',
         label: 'Não Possui'
       }];
+      var type = this.props.type ? this.props.type : 'Subtipo';
       return e(react_select__WEBPACK_IMPORTED_MODULE_1__["default"], {
         className: [2, 3].includes(this.getProdCategory()) || this.props.prodName.includes('ela') ? 'd-none' : '',
         defaultValue: {
-          value: 'Subtipo',
-          label: 'Subtipo'
+          value: type,
+          label: type
         },
         options: list,
         onChange: this.handleTypeChange,

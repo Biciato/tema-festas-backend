@@ -10,7 +10,12 @@ export default class SizeSelect extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.state = { selectedOption: {value: 'Tamanho', label: 'Tamanho'}}
+    this.state = { 
+      selectedOption: {
+        value: props.size ? props.size : 'Tamanho', 
+        label: props.size ? props.size : 'Tamanho'
+      }
+    }
   }
   componentDidUpdate(prevProps){
     if(prevProps.prodName !== this.props.prodName){

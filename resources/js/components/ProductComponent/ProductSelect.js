@@ -12,8 +12,13 @@ export default class ProductSelect extends React.Component {
   constructor() {
     super()
     this.handleChange = this.handleChange.bind(this)
+    this.state = { prodSelected: 'Produto' }
   }
+  
   handleChange(product) {
+    this.setState({
+      prodSelected: product
+    })
     this.props.onProductChange(product.value)
   }
   render() {
@@ -24,6 +29,7 @@ export default class ProductSelect extends React.Component {
       Products.categories[2],
       Products.categories[3]
     )
+    
     return (
       e(Row, {
           bsPrefix: 'row m-1' + (this.props.display ? ' d-none' : '')
@@ -43,7 +49,7 @@ export default class ProductSelect extends React.Component {
           e(Select, {
             options: Object.keys(prodList).map((item) => ({value: item, label: item})),
             onChange: this.handleChange,
-            defaultValue: {value:'Produto', label:'Produto'},
+            defaultValue: { value: this.state.prodSelected, label: this.state.prodSelected},
             styles: {
               control: styles => ({
                 ...styles,
