@@ -35,7 +35,8 @@ export default class NewProductComponent extends React.Component {
                 return <Redirect  push to={{
                     pathname: '/pedido',
                     state: {
-                        client: this.props.history.location.state.client
+                        client: this.props.history.location.state.client,
+                        prods: this.props.history.location.state.prods
                     }
                 }}  />
             }
@@ -56,7 +57,8 @@ export default class NewProductComponent extends React.Component {
                     fontSize: "12px"
                 }}>
                 <Prompt message={(location) => location.state = {
-                    client: this.props.history.location.state.client
+                    client: this.props.history.location.state.client,
+                    prods: this.props.history.location.state.prods
                 }} />
                 {this.renderRedirect()}
                 <img src="/images/arrow.svg"

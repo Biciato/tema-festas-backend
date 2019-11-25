@@ -1,48 +1,37 @@
-import React from "react";
-import ProductSelect from "./ProductSelect";
-import SizeSelect from "./SizeSelect";
-import TypeComponent from "../TypeComponent/TypeComponent";
-import TotalComponent from "./TotalComponent";
-import { Products } from "../resources/products";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import NewProductComponent from "../NewProductComponent";
-import { Redirect } from 'react-router';
+import React from "react"
+import ProductSelect from "./ProductSelect"
+import SizeSelect from "./SizeSelect"
+import TypeComponent from "../TypeComponent/TypeComponent"
+import TotalComponent from "./TotalComponent"
+import { Products } from "../resources/products"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
+import NewProductComponent from "../NewProductComponent"
+import { Redirect } from 'react-router'
 
 const e = React.createElement;
 
 export default class ProductComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.getCategorySet = this.getCategorySet.bind(this);
-        this.getProdPrice = this.getProdPrice.bind(this);
-        this.handleProductChange = this.handleProductChange.bind(this);
-        this.handleSizeChange = this.handleSizeChange.bind(this);
-        this.handleSubtypeSet = this.handleSubtypeSet.bind(this);
-        this.handleTypeChange = this.handleTypeChange.bind(this);
-        this.handleCartClick = this.handleCartClick.bind(this);
+        this.getCategorySet = this.getCategorySet.bind(this)
+        this.getProdPrice = this.getProdPrice.bind(this)
+        this.handleProductChange = this.handleProductChange.bind(this)
+        this.handleSizeChange = this.handleSizeChange.bind(this)
+        this.handleSubtypeSet = this.handleSubtypeSet.bind(this)
+        this.handleTypeChange = this.handleTypeChange.bind(this)
+        this.handleCartClick = this.handleCartClick.bind(this)
+        this.mountCptFromResume = this.mountCptFromResume.bind(this);
         this.state = {
             redirect: (props.location.state === undefined 
                         || !props.location.state.client)
                             ? 'clientes' 
                             : false,
             prods: {},
-            cpts: [
-                {
-                    name: NewProductComponent,
-                    props: {
-                        key: "new-product",
-                        history: this.props.history
-                    }
-                },
-                {
-                    name: ProductSelect,
-                    props: {
-                        key: "product",
-                        onProductChange: this.handleProductChange
-                    }
-                }
-            ]
+            prodName: '',
+            size: '',
+            type: '',
+            typeObj: {}
         };
     }
         
@@ -86,52 +75,9 @@ export default class ProductComponent extends React.Component {
         ) {
             prods[prodName].valor_unitario = this.getProdPrice(prodName);
         }
-        const cpts = [
-            this.state.cpts[0],
-            this.state.cpts[1]
-        ];
-        let cpt = {};
-        if (prods[prodName].tipo_categoria !== 0 || prodName.includes("ela")) {
-            cpt = {
-                name: TypeComponent,
-                props: {
-                    onSubtypeSet: this.handleSubtypeSet,
-                    onTypeChange: this.handleTypeChange,
-                    prods: this.state.prods,
-                    prodName,
-                    key: "type"
-                }
-            };
-        } else {
-            cpt = {
-                name: SizeSelect,
-                props: {
-                    onSizeChange: this.handleSizeChange,
-                    prodName,
-                    key: "size"
-                }
-            };
-        }
-        cpts.push({ ...cpt });
-        this.setState({ prods, cpts });
+        this.setState({ prodName });
     }
     handleSizeChange(size, prodName) {
-        const cpts = [
-            this.state.cpts[0],
-            this.state.cpts[1],
-            this.state.cpts[2]
-        ];
-        cpts.push({
-            name: TypeComponent,
-            props: {
-                key: "type",
-                size,
-                prodName,
-                onSubtypeSet: this.handleSubtypeSet,
-                onTypeChange: this.handleTypeChange,
-                prods: this.state.prods
-            }
-        });
         const prods = Object.assign({}, this.state.prods, {
             [prodName]: Object.assign({}, this.state.prods[prodName], {
                 dados: Object.assign({}, this.state.prods[prodName].dados, {
@@ -147,24 +93,11 @@ export default class ProductComponent extends React.Component {
             })
         });
         this.setState({
-            prods,
-            cpts
+            prodName,
+            size
         });
     }
     handleTypeChange(type, prodName, size = null) {
-        const cpts = [...this.state.cpts]
-        cpts.pop()
-        cpts.push({
-            name: TypeComponent,
-            props: {
-                key: "type",
-                size,
-                prodName,
-                onSubtypeSet: this.handleSubtypeSet,
-                onTypeChange: this.handleTypeChange,
-                prods: this.state.prods
-            }
-        });
         let prod = Object.assign({}, this.state);
         if (this.getProdCategory(prodName) === 0) {
             prod.prods[prodName].dados[size] = Object.assign(
@@ -185,7 +118,7 @@ export default class ProductComponent extends React.Component {
                 ? this.state.prods[prodName].dados
                 : {};
             prod.prods[prodName].dados = prevDados;
-            this.setState({prod, cpts});
+            this.setState({type, prodName, size});
         }
     }
     handleSubtypeSet(typeObj, prodName, size = null) {
@@ -314,22 +247,7 @@ export default class ProductComponent extends React.Component {
                 });
                 break;
         }
-        this.setState({ prods }, () => {
-            const cpts = [...this.state.cpts]
-            cpts.pop()
-                cpts.push({
-                name: TypeComponent,
-                props: {
-                    key: "type",
-                    size,
-                    prodName,
-                    onSubtypeSet: this.handleSubtypeSet,
-                    onTypeChange: this.handleTypeChange,
-                    prods: this.state.prods
-                }
-            });
-            this.setState({cpts})
-        });
+        this.setState({ prodName, size, typeObj });
     }
     handleCartClick(totalQty, totalPrice) {
         this.setState({ 
@@ -337,7 +255,11 @@ export default class ProductComponent extends React.Component {
             totalPrice: totalPrice
         }, () => this.setState({redirect: 'resumo'}));
     }
-    
+    mountCptFromResume() {
+        return cpts = {
+
+        }
+    }
     
     render() {
         if (this.state.redirect) {
@@ -349,26 +271,19 @@ export default class ProductComponent extends React.Component {
                 } : undefined
             }} />;
         }
-        const cpts = this.props.location 
-                        && this.props.location.state 
-                        && this.props.location.state.prods 
-                            ? this.mountCptFromResume()
-                            : this.state.cpts
-        return e(
-            Row,
-            {bsPrefix: 'row no-gutters'},
-            e(
-                Col,
-                { style: { padding: 0 }, key: 1 },
-                cpts.map(item =>
-                    e(item.name, item.props, item.children)
-                ),
-                e(TotalComponent, {
-                    prods: this.state.prods, 
-                    key: 'total',
-                    onCartClick: this.handleCartClick
-                })
-            ),
-        );
+        return (
+            <Row>
+                <Col>
+                    <ProductSelect />
+                    <SizeSelect prodName={this.state.prodName}/>
+                    <TypeComponent size={this.state.size}
+                                    prodName={this.state.prodName}
+                                    type={this.state.type}/>
+                    <TotalComponent prods={this.state.prods}
+                                        key="total"
+                                        onCartClick={this.handleCartClick}/>
+                </Col>
+            </Row>
+        )
     }
 }

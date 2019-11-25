@@ -103,6 +103,9 @@ export default class TypeComponent extends React.Component {
     if (this.props.type) {
       typeSelectProps.type = this.props.type
     }
+    if (!this.props.type) {
+      return null
+    }
     return (
       e(Row, { bsPrefix: 'row m-1 mb-5' + (this.props.display ? ' d-none' : '') },
         e(Col, null, [

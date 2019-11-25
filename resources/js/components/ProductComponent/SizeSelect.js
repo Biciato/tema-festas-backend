@@ -39,6 +39,9 @@ export default class SizeSelect extends React.Component {
   }
   
   render() {
+    if (!this.props.prodName || [2.,3].includes(this.getProdCategory())) {
+      return null
+    }
     const selectedOption = this.state.selectedOption;
     const sizeList = this.prodHasSize(this.getProdCategory())
       ? Products.categories[this.getProdCategory()][this.props.prodName].size
