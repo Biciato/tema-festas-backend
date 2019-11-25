@@ -45,29 +45,6 @@ export default class ProductComponent extends React.Component {
             ]
         };
     }
-    componentDidMount() {
-        if (this.props.location.state.new) {
-            const cpts = this.state.cpts.slice(2)
-            this.setState({
-                cpts: [
-                    {
-                        name: NewProductComponent,
-                        props: {
-                            key: "new-product",
-                            history: this.props.history
-                        }
-                    },
-                    {
-                        name: ProductSelect,
-                        props: {
-                            key: "product",
-                            onProductChange: this.handleProductChange
-                        }
-                    }
-                ]
-            })
-        }
-    }
         
     getCategorySet(categoryName) {
         return Object.keys(this.state.categorias).find(

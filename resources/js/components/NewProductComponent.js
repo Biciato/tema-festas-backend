@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Prompt } from 'react-router-dom'
 
 export default class NewProductComponent extends React.Component {
     constructor(props) {
@@ -17,6 +17,7 @@ export default class NewProductComponent extends React.Component {
             local: null
         }
     }
+    
     closeModal() {
         this.setState({ showModal: false })
     }
@@ -34,7 +35,6 @@ export default class NewProductComponent extends React.Component {
                 return <Redirect  push to={{
                     pathname: '/pedido',
                     state: {
-                        new: true,
                         client: this.props.history.location.state.client
                     }
                 }}  />
@@ -55,6 +55,9 @@ export default class NewProductComponent extends React.Component {
                     cursor: "pointer",
                     fontSize: "12px"
                 }}>
+                <Prompt message={(location) => location.state = {
+                    client: this.props.history.location.state.client
+                }} />
                 {this.renderRedirect()}
                 <img src="/images/arrow.svg"
                         key="img1"
