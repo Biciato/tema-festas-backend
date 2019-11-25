@@ -75,7 +75,7 @@ export default class ProductComponent extends React.Component {
         ) {
             prods[prodName].valor_unitario = this.getProdPrice(prodName);
         }
-        this.setState({ prodName });
+        this.setState({ prodName, prods });
     }
     handleSizeChange(size, prodName) {
         const prods = Object.assign({}, this.state.prods, {
@@ -94,7 +94,8 @@ export default class ProductComponent extends React.Component {
         });
         this.setState({
             prodName,
-            size
+            size,
+            prods
         });
     }
     handleTypeChange(type, prodName, size = null) {
@@ -274,11 +275,15 @@ export default class ProductComponent extends React.Component {
         return (
             <Row>
                 <Col>
-                    <ProductSelect />
-                    <SizeSelect prodName={this.state.prodName}/>
+                    <ProductSelect onProductChange={this.handleProductChange}/>
+                    <SizeSelect prodName={this.state.prodName}
+                                onSizeChange={this.handleSizeChange}/>
                     <TypeComponent size={this.state.size}
                                     prodName={this.state.prodName}
-                                    type={this.state.type}/>
+                                    type={this.state.type}
+                                    prods={this.state.prods}
+                                    onTypeChange={this.handleTypeChange}
+                                    onSubtypeSet={this.handleSubtypeSet}/>
                     <TotalComponent prods={this.state.prods}
                                         key="total"
                                         onCartClick={this.handleCartClick}/>
