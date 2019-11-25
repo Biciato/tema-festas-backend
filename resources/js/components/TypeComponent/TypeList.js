@@ -131,6 +131,36 @@ export default class TypeList extends React.Component {
             .map((i) => i.price)
             .shift();
     }
+    getProdQty(item) {
+        if (this.props.prods[this.props.prodName]) {
+            if (this.props.prods[this.props.prodName].dados) {
+                if (this.props.prods[this.props.prodName].dados[this.props.size] &&
+                    this.props.prods[this.props.prodName].dados[this.props.size][this.props.type] &&
+                        this.props.prods[this.props.prodName].dados[this.props.size][this.props.type][item]) {
+                    return this.props.prods[this.props.prodName].dados[this.props.size][this.props.type][item]            
+                } else if (this.props.prods[this.props.prodName].dados[this.props.type] &&
+                            this.props.prods[this.props.prodName].dados[this.props.type][item]) {
+                    return this.props.prods[this.props.prodName].dados[this.props.type][item]
+                } else if (this.props.prods[this.props.prodName] !== 'Etiquetas' &&
+                            this.props.prods[this.props.prodName].dados[item] && 
+                            this.props.prods[this.props.prodName].dados[item].quantidade) {
+                    return this.props.prods[this.props.prodName].dados[item].quantidade
+                } else if (this.props.prodName === 'Etiquetas') {
+                    if (this.props.prods[this.props.prodName].dados[item]) {
+                        return this.props.prods[this.props.prodName].dados[item]
+                    } else {
+                        return 0
+                    }
+                } else {
+                    return 0
+                }
+            } else {
+                return 0
+            }
+        } else {
+            return 0
+        }        
+    }
 
     render() {
         let types = [];
@@ -182,11 +212,11 @@ export default class TypeList extends React.Component {
                         }
                     }, '-'),
                     e(FormControl, {
-                        key: this.props.type + item + 'c-2',
+                        key: (this.props.size ? this.props.size : '') + this.props.type + item + 'c-2',
                         min: 0,
                         onChange: this.handleQtyChange,
                         data: item + '-qty',
-                        defaultValue: 0,
+                        defaultValue: this.getProdQty(item),
                         style: {
                             border: 'none',
                             display: 'inline-block',

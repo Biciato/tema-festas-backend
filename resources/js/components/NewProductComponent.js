@@ -13,21 +13,32 @@ export default class NewProductComponent extends React.Component {
         this.showModal = this.showModal.bind(this)
         this.state = {
             redirect: false,
-            showModal: false
+            showModal: false,
+            local: null
         }
     }
     closeModal() {
         this.setState({ showModal: false })
     }
     goBack() {
-        this.props.history.goBack()
+        this.setState({ local: 'back' }, () => this.setState( { redirect: true }))
     }
     redirect() {
-        this.setState({ redirect: true })
+        this.setState({ redirect: true, showModal: false })
     }
     renderRedirect() {
         if (this.state.redirect) {
-          return <Redirect to='/clientes' />
+            if (window.location.pathname === '/pedido') {
+                window.location.reload()
+            } else {
+                return <Redirect  push to={{
+                    pathname: '/pedido',
+                    state: {
+                        new: true,
+                        client: this.props.history.location.state.client
+                    }
+                }}  />
+            }
         }
     }
     showModal() {

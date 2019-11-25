@@ -22,7 +22,8 @@ export default class ClientSelect extends React.Component {
                     control: styles => ({
                       ...styles,
                       fontSize: '14px',
-                      fontWeight: '600'
+                      fontWeight: '600',
+                      borderColor: this.props.warning ? 'red' : 'hsl(0,0%,80%)'
                     })              
                   }}
                 defaultValue={{

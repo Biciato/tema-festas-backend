@@ -25,13 +25,16 @@ export default class TypeSelect extends React.Component {
         value: 'Não Possui',
         label: 'Não Possui'
       }]
+    const type = this.props.type
+                      ? this.props.type
+                      : 'Subtipo'
     return (
       e(Select, {
         className: 
           [2,3].includes(this.getProdCategory()) || this.props.prodName.includes('ela') 
             ? 'd-none' 
             : '',
-        defaultValue: {value: 'Subtipo', label: 'Subtipo'},
+        defaultValue: {value: type, label: type},
         options: list,
         onChange: this.handleTypeChange,
         styles: {

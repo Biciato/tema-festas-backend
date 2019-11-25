@@ -13136,7 +13136,7 @@ export const Products = [
       ]
     },
     {
-      "titulo": "etiquetas:",
+      "titulo": "Etiquetas:",
       "tipo_categoria": 3,
       "valor_unitario": "1.5",
       "tipos": [

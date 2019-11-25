@@ -25,7 +25,8 @@ export default class CartComponent extends React.Component {
         this.mountProdList = this.mountProdList.bind(this);
         this.state = {
             showAfterOrder: false,
-            loader: false
+            loader: false,
+            redirect: this.props.location.state === undefined ? true : false
         };
     }
     moeda(v) {
@@ -37,6 +38,7 @@ export default class CartComponent extends React.Component {
         v = v.replace(/(\d{1})(\d{1,2})$/, "$1,$2") // coloca virgula antes dos ultimos 2 digitos
         return v;
     }
+    
     handlePriceChange(e, div, type2 = false) {
         e.target.value = this.moeda(e.target.value)
         this.setTotalQtyPerBlockOnChange(div, type2)
@@ -165,16 +167,15 @@ export default class CartComponent extends React.Component {
                     ...this.mountCat1Json(),
                     ...this.mountCat2Json(),
                     ...this.mountCat3Json()
-                }
+                },
+                client: this.props.location.state.client
             })
             .then((response) => response.data === 'success' 
                 ? this.setState({ 
-                    loader: false,
                     showAfterOrder: true,
                     cdt: 'err' 
                 })
                 : this.setState({ 
-                    loader: false,
                     showAfterOrder: true,
                     cdt: 'err' 
                 })
@@ -1128,13 +1129,8 @@ export default class CartComponent extends React.Component {
     render() {
         if (this.state.redirect) {
             return <Redirect push to={{
-                pathname: "/pedido",
-                state: { 
-                    prods: this.props.location.state.prods,
-                    totalPrice: this.props.location.state.totalPrice,
-                    totalQty: this.props.location.state.totalQty 
-                }
-            }}/>
+                pathname: "/resumo"
+            }} />;
         }
         return (
             <div

@@ -34,13 +34,13 @@ export default class TotalComponent extends React.Component {
         }
     }
     getTotalCat3(prods) {
-        if (prods.etiquetas && prods.etiquetas.valor_unitario) {
-            let price = prods.etiquetas.valor_unitario;
+        if (prods.Etiquetas && prods.Etiquetas.valor_unitario) {
+            let price = prods.Etiquetas.valor_unitario;
             let normString = price.replace("R$", "");
             let normString2 = normString.replace(",", ".").trim();
             const unitPrice = parseFloat(normString2);
-            const qty = Object.keys(prods.etiquetas.dados).reduce(
-                (o, item) => (parseInt(prods.etiquetas.dados[item]) || 0) + o,
+            const qty = Object.keys(prods.Etiquetas.dados).reduce(
+                (o, item) => (parseInt(prods.Etiquetas.dados[item]) || 0) + o,
                 0
             );
             return unitPrice * qty;
@@ -247,10 +247,10 @@ export default class TotalComponent extends React.Component {
     }
 
     getTotalQtyCat3(prods) {
-        if (prods["etiquetas"]) {
-            return Object.keys(prods["etiquetas"].dados).reduce(
+        if (prods["Etiquetas"]) {
+            return Object.keys(prods["Etiquetas"].dados).reduce(
                 (old, key) =>
-                    (parseInt(prods["etiquetas"].dados[key]) || 0) + old,
+                    (parseInt(prods["Etiquetas"].dados[key]) || 0) + old,
                 0
             );
         } else {

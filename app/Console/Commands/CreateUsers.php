@@ -40,14 +40,9 @@ class CreateUsers extends Command
     public function handle()
     {
         $pass = bcrypt('temafestas123');
-        return collect(Fornecedor::all())->each(function($item) use($pass) {
-            if (is_null(User::whereName($item->dsc_nome)->first())) {
-                User::create([
-                    'name' => $item->dsc_nome,
-                    'email' => $item->dsc_nome,
-                    'password' => bcrypt($pass)
-                ]);
-            }            
+        return collect(User::all())->each(function($item) use($pass) {
+            $item->password = $pass;
+            $item->save();   
         });
     }
 }
