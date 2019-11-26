@@ -219,8 +219,8 @@ export default class CartComponent extends React.Component {
         }
     }
     getTotalPricePerProduct(item, price) {
-        let priceNorm = price.replace("R$", "");
-        let priceNorm2 = priceNorm.replace(",", ".").trim();
+        let priceNorm = typeof price === 'string' ? price.replace("R$", "") : 0;
+        let priceNorm2 = typeof price === 'string' ? priceNorm.replace(",", ".").trim() : 0;
         return (
             this.getTotalQtyCat0(item) * parseFloat(priceNorm2)
         ).toLocaleString('pt-br', {

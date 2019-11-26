@@ -45,7 +45,7 @@ export default class ProductComponent extends React.Component {
             ]
         };
     }
-        
+    
     getCategorySet(categoryName) {
         return Object.keys(this.state.categorias).find(
             item => item === categoryName
@@ -341,10 +341,30 @@ export default class ProductComponent extends React.Component {
     
     render() {
         if (this.state.redirect) {
+            let prods = this.state.prods
+            for (let i of Object.keys(this.state.prods)) {
+                if (prods[i].tipo_categoria === 0) {
+                    for (let el of Object.keys(prods[i].dados)) {
+                        if (Object.keys(prods[i].dados[el]).length === 1 ) {
+                            delete prods[i].dados[el]
+                        } else {
+                            for (let ob of Object.keys(prods[i].dados[el])) {
+                                if (prods[i].dados[el][ob] === null) {
+                                    delete prods[i].dados[el][ob]
+                                }
+                            }
+                        }
+                    }
+                } else  {
+                    if (Object.keys(prods[i].dados).length === 0 ) {
+                        delete prods[i]
+                    }
+                }
+            }
             return <Redirect push to={{
                 pathname: `/${this.state.redirect}`,
                 state: this.state.redirect === 'resumo' ? {
-                    prods: this.state.prods,
+                    prods,
                     client: this.props.location.state.client
                 } : undefined
             }} />;
