@@ -173,7 +173,7 @@ export default class CartComponent extends React.Component {
             .then((response) => response.data === 'success' 
                 ? this.setState({ 
                     showAfterOrder: true,
-                    cdt: 'err' 
+                    cdt: 'ok' 
                 })
                 : this.setState({ 
                     showAfterOrder: true,
