@@ -29,16 +29,9 @@ export default class NewProductComponent extends React.Component {
     }
     renderRedirect() {
         if (this.state.redirect) {
-            if (window.location.pathname === '/pedido') {
-                window.location.reload()
-            } else {
-                return <Redirect  push to={{
-                    pathname: '/pedido',
-                    state: {
-                        client: this.props.history.location.state.client
-                    }
-                }}  />
-            }
+            return <Redirect  push to={{
+                pathname: '/clientes'
+            }}  />
         }
     }
     showModal() {
