@@ -51,7 +51,7 @@ export default class SizeSelect extends React.Component {
         label: 'único'
       }]
     return (
-      e(Row, { bsPrefix: 'row m-1' + (this.props.display ? ' d-none' : '')},
+      e(Row, { bsPrefix: 'row mt-3' + (this.props.display ? ' d-none' : '')},
         e(Col, null,
           e(Select, {
             value: selectedOption,

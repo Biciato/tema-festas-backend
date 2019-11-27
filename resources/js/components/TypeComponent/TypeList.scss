@@ -1,4 +1,19 @@
-.col > * {
-  padding: 0.1em;
-  margin: 0.1em;
+
+.types-qty-input {
+  height: 100%;
+  margin: 4% 0;
+  padding-bottom: 5%;
+}
+
+@media (min-width: 500px) {
+  .list-label {
+      width: 66%;
+  }
+  .types-qty-input {
+    padding: 0;
+    margin: auto;
+  }
+  .qty-div {
+    padding: 3% 0;
+  }
 }

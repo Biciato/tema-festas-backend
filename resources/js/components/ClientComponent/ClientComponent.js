@@ -12,6 +12,11 @@ export default class ClientComponent extends React.Component {
         this.handleClientSelect = this.handleClientSelect.bind(this);
         this.state = { client: null };
     }
+    componentDidMount() {
+        if (localStorage.getItem('prods') !== null) {
+            localStorage.removeItem('prods')
+        }
+    }
     handleClientSelect(client) {
         this.setState({ client });
     }

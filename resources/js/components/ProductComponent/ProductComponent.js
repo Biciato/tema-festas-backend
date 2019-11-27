@@ -7,7 +7,7 @@ import { Products } from "../resources/products";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import NewProductComponent from "../NewProductComponent";
-import { Redirect } from 'react-router';
+import { Redirect, Prompt } from 'react-router';
 
 const e = React.createElement;
 
@@ -26,7 +26,7 @@ export default class ProductComponent extends React.Component {
                         || !props.location.state.client)
                             ? 'clientes' 
                             : false,
-            prods: {},
+            prods: this.getProds(props),
             cpts: [
                 {
                     name: NewProductComponent,
@@ -43,9 +43,18 @@ export default class ProductComponent extends React.Component {
                     }
                 }
             ]
-        };
+        }
     }
     
+    getProds(props) {
+        if (props.location && props.location.state && props.location.state.prods) {
+            return props.location.state.prods
+        } else if (localStorage.getItem("prods") !== null && Object.keys(localStorage.getItem('prods')).length !== 15) {
+            return JSON.parse(localStorage.getItem("prods"))
+        } else {
+            return {}
+        }
+    }
     getCategorySet(categoryName) {
         return Object.keys(this.state.categorias).find(
             item => item === categoryName
@@ -332,14 +341,18 @@ export default class ProductComponent extends React.Component {
         });
     }
     handleCartClick(totalQty, totalPrice) {
-        this.setState({ 
-            totalQty: totalQty,
-            totalPrice: totalPrice
-        }, () => this.setState({redirect: 'resumo'}));
-    }
-    
+        if (parseFloat(totalPrice) > 0) {
+            this.setState({ 
+                totalQty: totalQty,
+                totalPrice: totalPrice
+            }, () => this.setState({redirect: 'resumo'}));
+        }
+    }    
     
     render() {
+        if (Object.keys(this.state.prods).length > 0) {
+            localStorage.setItem('prods', JSON.stringify(this.state.prods))
+        }
         if (this.state.redirect) {
             let prods = this.state.prods
             for (let i of Object.keys(this.state.prods)) {
@@ -351,6 +364,24 @@ export default class ProductComponent extends React.Component {
                             for (let ob of Object.keys(prods[i].dados[el])) {
                                 if (prods[i].dados[el][ob] === null) {
                                     delete prods[i].dados[el][ob]
+                                    if (Object.keys(prods[i].dados[el]).length === 1 ) {
+                                        delete prods[i].dados[el]
+                                    }
+                                } else {
+                                    for (let obj of Object.keys(prods[i].dados[el][ob])) {
+                                        if (prods[i].dados[el][ob][obj] === '') {
+                                            delete prods[i].dados[el][ob][obj]
+                                            if (Object.keys(prods[i].dados[el][ob]).length === 0 ) {
+                                                delete prods[i].dados[el][ob]
+                                            }
+                                            if (Object.keys(prods[i].dados[el]).length === 1 ) {
+                                                delete prods[i].dados[el]
+                                            }
+                                            if (Object.keys(prods[i].dados).length === 0 ) {
+                                                delete prods[i]
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -363,24 +394,22 @@ export default class ProductComponent extends React.Component {
             }
             return <Redirect push to={{
                 pathname: `/${this.state.redirect}`,
-                state: this.state.redirect === 'resumo' ? {
+                state: {
                     prods,
-                    client: this.props.location.state.client
-                } : undefined
+                    client: this.props.location.state.client,
+                    totalQty: this.state.totalQty,
+                    totalPrice: this.state.totalPrice
+                } 
             }} />;
         }
-        const cpts = this.props.location 
-                        && this.props.location.state 
-                        && this.props.location.state.prods 
-                            ? this.mountCptFromResume()
-                            : this.state.cpts
+        
         return e(
             Row,
-            {bsPrefix: 'row no-gutters'},
+            {bsPrefix: 'row'},
             e(
                 Col,
-                { style: { padding: 0 }, key: 1 },
-                cpts.map(item =>
+                { key: 1 },
+                this.state.cpts.map(item =>
                     e(item.name, item.props, item.children)
                 ),
                 e(TotalComponent, {

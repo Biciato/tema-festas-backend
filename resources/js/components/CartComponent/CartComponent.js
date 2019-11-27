@@ -5,6 +5,9 @@ import AfterOrderComponent from "../AfterOrderComponent";
 import NewProductComponent from "../NewProductComponent";
 import Loader from 'react-loader-spinner'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+import './CartComponent.css'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 export default class CartComponent extends React.Component {
     constructor(props) {
@@ -40,7 +43,8 @@ export default class CartComponent extends React.Component {
     }
     
     handlePriceChange(e, div, type2 = false) {
-        e.target.value = this.moeda(e.target.value)
+        const price = e.target.value.replace('R$', '').trim()
+        e.target.value = 'R$ ' + this.moeda(price)
         this.setTotalQtyPerBlockOnChange(div, type2)
     }
     mountCat0Json() {
@@ -205,6 +209,14 @@ export default class CartComponent extends React.Component {
             this.setTotalQtyPerBlockOnChange(div, type2)
         }
     }
+    handleQtyChange(e, div, type2 = null) {
+        let qty = e.target.value.replace(/\D/g,'')
+        if (qty.indexOf(0) === 0) {
+            qty = qty.replace('0','')
+        }
+        e.target.value = qty
+        this.setTotalQtyPerBlockOnChange(div, type2)
+    }
     getTotalQtyPerProduct(item) {
         if (item !== undefined) {
             return Object.keys(item).reduce((o, k) => parseInt(item[k]) + o, 0);
@@ -292,7 +304,9 @@ export default class CartComponent extends React.Component {
                             style={{
                                 fontSize: "16px",
                                 fontWeight: "bold",
-                                padding: "0.4em"
+                                padding: "0.4em",
+                                display: "inline-block",
+                                maxWidth: '60%'
                             }}
                             key="cat0-div1-s1"
                         >
@@ -339,9 +353,9 @@ export default class CartComponent extends React.Component {
                                             fontWeight: 600,
                                             padding: "0.4em",
                                             marginLeft: "1em",
-                                            display: "inline-block",
-                                            width: "56%"
+                                            display: "inline-block"
                                         }}
+                                        className="types-list"
                                         key="cat0-div2-s1"
                                     >
                                         {" "}
@@ -354,7 +368,7 @@ export default class CartComponent extends React.Component {
                                             verticalAlign: "sub",
                                             color: "#32338D",
                                             cursor: "pointer",
-                                            marginLeft: "5%"
+                                            marginLeft: "8%"
                                         }}
                                         key="cat0-div2-s2"
                                         onClick={() => this.handleMinusQty(`${item}-${i}-${el}-${e}`, `${item}-${i}`)}
@@ -366,12 +380,13 @@ export default class CartComponent extends React.Component {
                                         style={{
                                             border: "none",
                                             display: "inline-block",
-                                            width: "20%",
+                                            width: "16%",
                                             backgroundColor: "inherit",
                                             textAlign: "center"
                                         }}
                                         data={`${item}-${i}-${el}-${e}`}
                                         key="cat0-div2-i1"
+                                        onChange={(e)=>this.handleQtyChange(e, `${item}-${i}`)}
                                         defaultValue={
                                             this.props.location.state.prods[item].dados[i][el][e]
                                         }
@@ -425,7 +440,7 @@ export default class CartComponent extends React.Component {
                             style={{
                                 fontWeight: "bold",
                                 padding: "0.4em",
-                                marginLeft: '4em'
+                                marginLeft: '5%'
                             }}
                             key="cat0-div3-s3"
                         >
@@ -476,7 +491,9 @@ export default class CartComponent extends React.Component {
                             style={{
                                 fontSize: "16px",
                                 fontWeight: "bold",
-                                padding: "0.4em"
+                                padding: "0.4em",
+                                display: "inline-block",
+                                maxWidth: '60%'
                             }}
                         >
                             {" "}
@@ -519,9 +536,9 @@ export default class CartComponent extends React.Component {
                                             fontWeight: 600,
                                             padding: "0.4em",
                                             marginLeft: "1em",
-                                            width: "56%",
                                             display: "inline-block"
                                         }}
+                                        className="types-list"
                                         key="cat1-div2-s1"
                                     >
                                         {" "}
@@ -533,7 +550,7 @@ export default class CartComponent extends React.Component {
                                             display: "inline-block",
                                             verticalAlign: "sub",
                                             color: "#32338D",
-                                            marginLeft: "5%",
+                                            marginLeft: "8%",
                                             cursor: "pointer"
                                         }}
                                         key="cat1-div2-s2"
@@ -547,11 +564,12 @@ export default class CartComponent extends React.Component {
                                         style={{
                                             border: "none",
                                             display: "inline-block",
-                                            width: "20%",
+                                            width: "16%",
                                             backgroundColor: "inherit",
                                             textAlign: "center"
                                         }}
                                         key="cat1-div2-i"
+                                        onChange={(e)=>this.handleQtyChange(e, `${item}`)}
                                         defaultValue={
                                             this.props.location.state.prods[item].dados[el][e]
                                         }
@@ -606,7 +624,7 @@ export default class CartComponent extends React.Component {
                             style={{
                                 fontWeight: "bold",
                                 padding: "0.4em",
-                                marginLeft: '4em'
+                                marginLeft: '5%'
                             }}
                             key="cat1-div3-s3"
                         >
@@ -649,7 +667,9 @@ export default class CartComponent extends React.Component {
                         style={{
                             padding: "0.1em",
                             height: "2em",
-                            marginLeft: "0.8em"
+                            marginLeft: "0.8em",
+                            display: "inline-block",
+                            maxWidth: '60%'
                         }}
                         key="cat2-div1"
                     >
@@ -688,9 +708,9 @@ export default class CartComponent extends React.Component {
                                         padding: "0.4em",
                                         marginLeft: "1em",
                                         display: "inline-block",
-                                        width: "59%",
                                         borderBottom: "1px solid #D7D7D7"
                                     }}
+                                    className="types-list-2"
                                     key={'cat2-div2-s1-' + item}
                                 >
                                     {" "}
@@ -703,7 +723,7 @@ export default class CartComponent extends React.Component {
                                         verticalAlign: "sub",
                                         color: "#32338D",
                                         cursor: "pointer",
-                                        marginLeft: "5%"
+                                        marginLeft: "9%"
                                     }}
                                     key={'cat2-div2-s2-' + item}
                                     onClick={() => this.handleMinusQty(`${item}-${i}`, `${item}`, true)}
@@ -717,10 +737,11 @@ export default class CartComponent extends React.Component {
                                     style={{
                                         border: "none",
                                         display: "inline-block",
-                                        width: "21%",
+                                        width: "17%",
                                         backgroundColor: "inherit",
                                         textAlign: "center"
                                     }}
+                                    onChange={(e)=>this.handleQtyChange(e, `${item}`, true)}
                                     defaultValue={
                                         this.props.location.state.prods[item].dados[i]
                                             .quantidade
@@ -818,7 +839,7 @@ export default class CartComponent extends React.Component {
                             style={{
                                 fontWeight: "bold",
                                 padding: "0.4em",
-                                marginLeft: '4em'
+                                marginLeft: '5%'
                             }}
                             key="cat2-div3-s2"
                         >
@@ -867,7 +888,9 @@ export default class CartComponent extends React.Component {
                         style={{
                             fontSize: "16px",
                             fontWeight: "bold",
-                            padding: "0.4em"
+                            padding: "0.4em",
+                            display: "inline-block",
+                            maxWidth: '60%'
                         }}
                     >
                         {" "}
@@ -906,56 +929,59 @@ export default class CartComponent extends React.Component {
                                 padding: "0.4em",
                                 marginLeft: "1em",
                                 display: "inline-block",
-                                width: "56%"
                             }}
+                            className="types-list"
                             key="cat3-s1"
                         >
                             {" "}
                             {el}{" "}
                         </span>{" "}
-                        <span
-                            style={{
-                                fontSize: "30px",
-                                display: "inline-block",
-                                verticalAlign: "sub",
-                                color: "#32338D",
-                                cursor: "pointer",
-                                marginLeft: "5%"
-                            }}
-                            key="cat3-s2"
-                            onClick={() => this.handleMinusQty(`${item}-${el}`, `${item}`)}
-                        >
-                            {" "}
-                            -{" "}
-                        </span>{" "}
-                        <input
-                            data={`${item}-${el}`}
-                            style={{
-                                border: "none",
-                                display: "inline-block",
-                                width: "20%",
-                                backgroundColor: "inherit",
-                                textAlign: "center"
-                            }}
-                            defaultValue={this.props.location.state.prods[item].dados[el]}
-                            key="cat3-i1"
-                        />
-                        <span
-                            style={{
-                                fontSize: "30px",
-                                display: "inline-block",
-                                verticalAlign: "sub",
-                                color: "#32338D",
-                                cursor: "pointer",
-                                margin: 0,
-                                padding: 0
-                            }}
-                            key="cat3-s3"
-                            onClick={() => this.handlePlusQty(`${item}-${el}`, `${item}`)}
-                        >
-                            {" "}
-                            +{" "}
-                        </span>{" "}
+                        <div>
+                            <span
+                                style={{
+                                    fontSize: "30px",
+                                    display: "inline-block",
+                                    verticalAlign: "sub",
+                                    color: "#32338D",
+                                    cursor: "pointer",
+                                    marginLeft: "8%"
+                                }}
+                                key="cat3-s2"
+                                onClick={() => this.handleMinusQty(`${item}-${el}`, `${item}`)}
+                            >
+                                {" "}
+                                -{" "}
+                            </span>{" "}
+                            <input
+                                data={`${item}-${el}`}
+                                style={{
+                                    border: "none",
+                                    display: "inline-block",
+                                    width: "16%",
+                                    backgroundColor: "inherit",
+                                    textAlign: "center"
+                                }}
+                                defaultValue={this.props.location.state.prods[item].dados[el]}
+                                onChange={(e)=>this.handleQtyChange(e, `${item}`)}
+                                key="cat3-i1"
+                            />
+                            <span
+                                style={{
+                                    fontSize: "30px",
+                                    display: "inline-block",
+                                    verticalAlign: "sub",
+                                    color: "#32338D",
+                                    cursor: "pointer",
+                                    margin: 0,
+                                    padding: 0
+                                }}
+                                key="cat3-s3"
+                                onClick={() => this.handlePlusQty(`${item}-${el}`, `${item}`)}
+                            >
+                                {" "}
+                                +{" "}
+                            </span>{" "}
+                        </div>
                     </div>
                 ))}{" "}
                 <div
@@ -987,7 +1013,7 @@ export default class CartComponent extends React.Component {
                         style={{
                             fontWeight: "bold",
                             padding: "0.4em",
-                            marginLeft: '4em'
+                            marginLeft: '5%'
                         }}
                     >
                         Total: R${" "}
@@ -1133,122 +1159,120 @@ export default class CartComponent extends React.Component {
             }} />;
         }
         return (
-            <div
-                style={{
-                    padding: 0,
-                    margin: 0
-                }}
-            >
-                <div style={{display: this.state.showAfterOrder ? 'none' : 'block'}}> 
-                    <NewProductComponent arrow={true} history={this.props.history}/>
-                </div>                
-                <div
-                    key="cart-div2"
-                    style={{
-                        display: this.state.showSuccess ? "none" : "flex",
-                        flexDirection: "column",
-                        display: this.state.showAfterOrder ? 'none' : 'block'
-                    }}
-                >
-                    <h5
-                        className="text-left mt-3"
-                        key="cart-h5-1"
-                        style={{
-                            padding: "0 0.5em"
-                        }}
-                    >
-                        <img
-                            src="/images/shopping-bag.svg"
-                            alt="user"
-                            style={{
-                                width: "5%",
-                                margin: "0 0.3em"
-                            }}
-                        >
-                        </img>
-                        Seus itens{" "}
-                    </h5>{" "}
-                    <h6
-                        className="text-left ml-3 px-1"
-                        key="cart-h6-1"
-                        style={{
-                            padding: "0 0.5em",
-                            fontSize: "14px"
-                        }}
-                    >
-                        Nº do pedido 8824{" "}
-                    </h6>{" "}
-                    {this.mountProdList()}{" "}
+            <Row>
+                <Col bsPrefix="col p-0">
+                    <div style={{display: this.state.showAfterOrder ? 'none' : 'block'}}> 
+                        <NewProductComponent arrow={true} history={this.props.history}/>
+                    </div>                
                     <div
+                        key="cart-div2"
                         style={{
-                            padding: "0.1em",
-                            height: "2em",
-                            color: "#32338D",
-                            fontWeight: "bold",
-                            margin: "2em 2em 0 1em"
+                            display: this.state.showSuccess ? "none" : "flex",
+                            flexDirection: "column",
+                            display: this.state.showAfterOrder ? 'none' : 'block',
+                            marginTop: '15%'
                         }}
-                        key="cart-div2-div1"
                     >
-                        <span key="cart-div2-div1-s1"> Quantidade: </span>{" "}
-                        <span
-                            key="cart-div2-div1-s2"
-                            id="totalQty"
+                        <h5
+                            className="text-left mt-3"
+                            key="cart-h5-1"
                             style={{
-                                float: "right"
+                                padding: "0 0.5em"
                             }}
                         >
-                            {" "}
-                            {this.props.location.state.totalQty}{" "}
-                        </span>{" "}
+                            <img
+                                src="/images/shopping-bag.svg"
+                                alt="user"
+                                style={{
+                                    width: "5%",
+                                    margin: "0 0.3em"
+                                }}
+                            >
+                            </img>
+                            Seus itens{" "}
+                        </h5>{" "}
+                        <h6
+                            className="text-left ml-3 px-1"
+                            key="cart-h6-1"
+                            style={{
+                                padding: "0 0.5em",
+                                fontSize: "14px"
+                            }}
+                        >
+                            Nº do pedido 8824{" "}
+                        </h6>{" "}
+                        {this.mountProdList()}{" "}
+                        <div
+                            style={{
+                                padding: "0.1em",
+                                height: "2em",
+                                color: "#32338D",
+                                fontWeight: "bold",
+                                margin: "2em 2em 0 1em"
+                            }}
+                            key="cart-div2-div1"
+                        >
+                            <span key="cart-div2-div1-s1"> Quantidade: </span>{" "}
+                            <span
+                                key="cart-div2-div1-s2"
+                                id="totalQty"
+                                style={{
+                                    float: "right"
+                                }}
+                            >
+                                {" "}
+                                {this.props.location.state.totalQty}{" "}
+                            </span>{" "}
+                        </div>{" "}
+                        <div
+                            style={{
+                                padding: "0.1em",
+                                height: "2em",
+                                color: "#32338D",
+                                fontWeight: "bold",
+                                margin: "0px 2em 4em 1em"
+                            }}
+                            key="cart-div2-div2"
+                        >
+                            <span key="cart-div2-div2-s1"> Valor: </span>{" "}
+                            <span
+                                id="totalPrice"
+                                key="cart-div2-div2-s2"
+                                style={{
+                                    float: "right"
+                                }}
+                            >
+                                {" "}
+                                R$ {this.props.location.state.totalPrice}{" "}
+                            </span>{" "}
+                        </div>{" "}
                     </div>{" "}
+                    <AfterOrderComponent show={this.state.showAfterOrder} cdt={this.state.cdt}/>
                     <div
+                        className="footer-cart text-center"
                         style={{
-                            padding: "0.1em",
-                            height: "2em",
-                            color: "#32338D",
-                            fontWeight: "bold",
-                            margin: "0px 2em 4em 1em"
+                            backgroundColor: "#32338D",
+                            display: this.state.showAfterOrder ? 'none' : 'block'
                         }}
-                        key="cart-div2-div2"
+                        onClick={this.handleFinishOrder}
+                        key="cart-div-3"
                     >
-                        <span key="cart-div2-div2-s1"> Valor: </span>{" "}
-                        <span
-                            id="totalPrice"
-                            key="cart-div2-div2-s2"
-                            style={{
-                                float: "right"
-                            }}
-                        >
-                            {" "}
-                            R$ {this.props.location.state.totalPrice}{" "}
-                        </span>{" "}
+                        {" "}
+                        {
+                            this.state.loader 
+                                ?  <Loader
+                                        type="ThreeDots"
+                                        color="white"
+                                        height={25}
+                                        width={25}
+                                        timeout={3000} //3 secs
+                            
+                                    />
+                                : 'Finalizar Compra'
+                        }
                     </div>{" "}
-                </div>{" "}
-                <AfterOrderComponent show={this.state.showAfterOrder} cdt={this.state.cdt}/>
-                <div
-                    className="footer text-center"
-                    style={{
-                        backgroundColor: "#32338D",
-                        display: this.state.showAfterOrder ? 'none' : 'block'
-                    }}
-                    onClick={this.handleFinishOrder}
-                    key="cart-div-3"
-                >
-                    {" "}
-                    {
-                        this.state.loader 
-                            ?  <Loader
-                                    type="ThreeDots"
-                                    color="white"
-                                    height={25}
-                                    width={25}
-                                    timeout={3000} //3 secs
-                        
-                                />
-                            : 'Finalizar Compra'
-                    }
-                </div>{" "}
-            </div>
+                </Col>
+            </Row>
         );
     }
 }

@@ -104,13 +104,13 @@ export default class TypeComponent extends React.Component {
       typeSelectProps.type = this.props.type
     }
     return (
-      e(Row, { bsPrefix: 'row m-1 mb-5' + (this.props.display ? ' d-none' : '') },
+      e(Row, { bsPrefix: 'row mb-5 mt-3' + (this.props.display ? ' d-none' : '') },
         e(Col, null, [
           e(TypeSelect, typeSelectProps), 
           e(InputGroup, { 
               key: 3, 
               style: { width: '99%' },
-              className: this.getProdCategory() === 2 ? 'd-none' : '' 
+              className: this.getProdCategory() === 2 ? 'd-none' : 'mt-3' 
             }, [
               e('label', {
                 key: 'c-1',

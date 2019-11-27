@@ -1,24 +1,35 @@
-.footer {
+.footer-cart {
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
+    max-width: 500px;
     background-color:#32338D;
     color:    white;
     font-style: normal;
     font-weight: bold;
     font-size: 20px;
     line-height: 27px;
+    padding: 0.3em 1em;
+    margin: 0;
+    z-index: 1000;
     text-align: center;
-    padding: 0.3em 1em  !important;
-    margin: 0 !important;
-    cursor: pointer;
+}
+
+.types-list {
+    width: 56%;
+}
+
+.types-list-2 {
+    width: 59%;
 }
 
 @media (min-width: 500px) {
-    .footer {
-        position: relative;
-        top: 20%;
+    .footer-cart {
         left: 32%;
     }
+    .types-list {
+        width: 61%;
+    }
 }
+

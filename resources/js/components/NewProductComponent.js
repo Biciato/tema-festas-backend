@@ -2,6 +2,7 @@ import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import { Redirect, Prompt } from 'react-router-dom'
+import './NewComponent.css'
 
 export default class NewProductComponent extends React.Component {
     constructor(props) {
@@ -14,7 +15,10 @@ export default class NewProductComponent extends React.Component {
         this.state = {
             redirect: false,
             showModal: false,
-            local: null
+            local: null,
+            prods: props.history && props.history.location && props.history.location.state && props.history.location.state.prods 
+                    ? props.history.location.state.prods
+                    : {}
         }
     }
     
@@ -22,15 +26,15 @@ export default class NewProductComponent extends React.Component {
         this.setState({ showModal: false })
     }
     goBack() {
-        this.setState({ local: 'back' }, () => this.setState( { redirect: true }))
+        this.setState({ local: 'pedido' }, () => this.setState( { redirect: true }))
     }
     redirect() {
-        this.setState({ redirect: true, showModal: false })
+        this.setState({ local: 'clientes' }, () => this.setState( { redirect: true }))
     }
     renderRedirect() {
         if (this.state.redirect) {
             return <Redirect  push to={{
-                pathname: '/clientes'
+                pathname: '/' + this.state.local
             }}  />
         }
     }
@@ -39,18 +43,23 @@ export default class NewProductComponent extends React.Component {
     }
     render() {
         return(
-            <div style={{
-                    textAlign: "end",
-                    backgroundColor: "#F3F3F3",
-                    margin: 0,
-                    padding: "0.3em",
-                    color: "#32338D",
-                    cursor: "pointer",
-                    fontSize: "12px"
-                }}>
-                <Prompt message={(location) => location.state = {
-                    client: this.props.history.location.state.client
-                }} />
+            <div className="new-cp"  
+                    style={{
+                        textAlign: "end",
+                        backgroundColor: "#F3F3F3",
+                        margin: 0,
+                        padding: "0.3em",
+                        color: "#32338D",
+                        cursor: "pointer",
+                        fontSize: "12px",
+                        position: 'fixed'
+                    }}>
+                <Prompt message={(location) => {
+                    localStorage.setItem('prods', JSON.stringify(this.state.prods)),
+                    location.state = {
+                        client: this.props.history.location.state.client,
+                        prods: this.state.prods 
+                }}} />
                 {this.renderRedirect()}
                 <img src="/images/arrow.svg"
                         key="img1"

@@ -62,6 +62,10 @@ export default class TypeList extends React.Component {
         })
     }
     handleQtyChange(e) {
+        let qty = e.target.value.replace(/\D/g,'')
+        if (qty.indexOf(0) === 0) {
+            qty = qty.replace('0','')
+        }
         let subtypeObj = {};
         if (this.getProdCategory() === 2) {
             const price = document.querySelectorAll(
@@ -69,7 +73,7 @@ export default class TypeList extends React.Component {
             )[0].value;
             subtypeObj = {
                 [e.target.attributes.data.value.replace('-qty', '')]: {
-                    qty: e.target.value,
+                    qty,
                     price: price.toLocaleString('pt-br', {
                         minimumFractionDigits: 2,
                         currency: 'BRL',
@@ -80,7 +84,7 @@ export default class TypeList extends React.Component {
         } else {
             subtypeObj = {
                 [e.target.attributes.data.value.replace('-qty', '')]: {
-                    qty: e.target.value
+                    qty
                 }
             }
         }
@@ -182,81 +186,91 @@ export default class TypeList extends React.Component {
         return types.map((item, idx) => {
             return e(
                 Row, {
-                    key: idx,
+                    key: idx + 'type',
                     style: {
                         backgroundColor: ((idx % 2) === 0 ? 'white' : '#F8F8F8')
                     },
                 },
-                e(Col, null, [
+                e(Col, {style:{display:'flex', justifyContent: 'space-between', flexWrap: 'wrap'}, key: 'col-' + idx }, [
                     e('label', {
                         variant: 'info',
+                        className: 'list-label',
                         key: 'c-0',
                         style: {
                             fontSize: '14px',
                             fontWeight: '600',
-                            width: '60%',
                             marginRight: '1em',
                             marginBottom: 0,
-                            padding: '0.2em 0.5em'
+                            padding: this.getProdCategory() !== 2 ? '6% 3%' : '6% 3% 1%',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '160px',
+                            overflow: 'hidden',
+                            maxHeight: '70px'
                         }
                     }, item),
-                    e('span', {
-                        onClick: () => this.handleMinusQty(item),
-                        key: 'c-1',
-                        style: {
-                            fontSize: '30px',
-                            display: 'inline-block',
-                            verticalAlign: 'sub',
-                            color: '#32338D',
-                            cursor: 'pointer'
-                        }
-                    }, '-'),
-                    e(FormControl, {
-                        key: (this.props.size ? this.props.size : '') + this.props.type + item + 'c-2',
-                        min: 0,
-                        onChange: this.handleQtyChange,
-                        data: item + '-qty',
-                        defaultValue: this.getProdQty(item),
-                        style: {
-                            border: 'none',
-                            display: 'inline-block',
-                            width: '20%',
-                            backgroundColor: 'inherit',
-                            textAlign: 'center'
-                        }
-                    }),
-                    e('span', {
-                        onClick: () => this.handlePlusQty(item),
-                        key: 'b-1',
-                        style: {
-                            fontSize: '30px',
-                            display: 'inline-block',
-                            verticalAlign: 'sub',
-                            color: '#32338D',
-                            cursor: 'pointer',
-                            margin: 0,
-                            padding: 0
-                        }
-                    }, '+'),
+                    e('div', {className: 'qty-div', key: idx + '-div',style: {display: 'flex', float: 'right', width: '33%'}}, 
+                        e('span', {
+                            onClick: () => this.handleMinusQty(item),
+                            key: 'c-1-' + idx,
+                            style: {
+                                fontSize: '30px',
+                                display: 'inline-block',
+                                verticalAlign: 'sub',
+                                color: '#32338D',
+                                cursor: 'pointer'
+                            }
+                        }, '-'),
+                        e(FormControl, {
+                            key: (this.props.size ? this.props.size : '') + this.props.type + item + 'c-2',
+                            className: 'types-qty-input',
+                            min: 0,
+                            onChange: this.handleQtyChange,
+                            data: item + '-qty',
+                            value: this.getProdQty(item),
+                            style: {
+                                border: 'none',
+                                display: 'inline-block',
+                                backgroundColor: 'inherit',
+                                textAlign: 'center',
+                                width: '73%'                                
+                            }
+                        }),
+                        e('span', {
+                            onClick: () => this.handlePlusQty(item),
+                            key: 'b-1-' + idx,
+                            style: {
+                                fontSize: '30px',
+                                display: 'inline-block',
+                                verticalAlign: 'sub',
+                                color: '#32338D',
+                                cursor: 'pointer',
+                                margin: 0,
+                                padding: 0
+                            }
+                        }, '+')
+                    ),
                     e(InputGroup, {
-                        key: 'b-2',
+                        key: 'b-2-' + idx,
                         size: 'sm',
+                        style: {
+                            marginBottom: '5%'
+                        },
                         className: this.getProdCategory() !== 2 ? 'd-none' : ''
                     }, [
                         e('label', {
-                            key: 'c-1',
+                            key: 'c-3-' + idx,
                             style: {
                                 width: '61%',
                                 marginRight: '1em',
+                                fontSize: '14px',
                                 marginBottom: 0,
                                 padding: '0.2em 0.5em',
                                 color: '#747474',
                                 borderTop: '1px solid #D7D7D7',
-                                paddingTop: '0.7em'
                             }
                         }, 'Valor Unitário'),
                         e(FormControl, {
-                            key: 'c-2',
+                            key: 'c-2-' + idx,
                             value: this.getProdCategory() === 2 ?
                                 this.state.subtypeObj[item] ?
                                 this.state.subtypeObj[item].price :

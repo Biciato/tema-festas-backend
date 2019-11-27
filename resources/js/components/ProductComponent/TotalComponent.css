@@ -1,8 +1,9 @@
-.footer {
+.footer-total {
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
+    max-width: 500px;
     background-color:#32338D;
     color:    white;
     font-style: normal;
@@ -12,5 +13,12 @@
     padding: 0.3em 1em;
     margin: 0;
     z-index: 1000;
-    text-align: left;
+    text-align: center;
 }
+
+@media (min-width: 500px) {
+    .footer-total {
+        left: 32%;
+    }
+}
+

@@ -19,6 +19,13 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        #app {
+            max-width: 500px;
+            margin: auto;
+        }
+    </style>
+
 </head>
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

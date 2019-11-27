@@ -1,0 +1,12 @@
+.new-cp {
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+@media (min-width: 500px) {
+    .new-cp {
+        left: 33%;
+        width: 34%;
+    }
+}

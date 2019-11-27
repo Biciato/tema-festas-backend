@@ -14,7 +14,7 @@ export default function App() {
         <Router>
             <Switch>
                 <Route path="/clientes" component={ClientComponent}/>
-                <Route path="/pedido" component={ProductComponent}/>
+                <Route path="/pedido" render={(props) => <ProductComponent {...props} />}/>
                 <Route path="/resumo" render={(props) => <CartComponent {...props} />}/>
             </Switch>
         </Router>

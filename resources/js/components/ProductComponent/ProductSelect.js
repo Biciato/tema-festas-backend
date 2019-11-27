@@ -32,7 +32,7 @@ export default class ProductSelect extends React.Component {
     
     return (
       e(Row, {
-          bsPrefix: 'row m-1' + (this.props.display ? ' d-none' : '')
+          bsPrefix: 'row mt-4' + (this.props.display ? ' d-none' : '')
         },
         e(Col, null, 
           e('h5', {className: "text-left mt-3", key: 1}, 

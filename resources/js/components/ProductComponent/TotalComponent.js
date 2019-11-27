@@ -20,6 +20,19 @@ export default class TotalComponent extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.state = { totalPrice: "0,00", totalQty: 0 };
     }
+    componentDidMount() {
+        if (this.props.prods) {
+            this.setState({
+                totalPrice: (
+                    this.getTotalCat0(this.props.prods) +
+                    this.getTotalCat1(this.props.prods) +
+                    this.getTotalCat2(this.props.prods) +
+                    this.getTotalCat3(this.props.prods)
+                ).toLocaleString("pt-br", { minimumFractionDigits: 2 }),
+                totalQty: this.getTotalQty()
+            });
+        }
+    }
     componentDidUpdate(prevProps) {
         if (prevProps.prods !== this.props.prods) {
             this.setState({
@@ -275,7 +288,7 @@ export default class TotalComponent extends React.Component {
     render() {
         return (
             <div
-                className={"footer" + (this.props.display ? " d-none" : "")}
+                className={"footer-total" + (this.props.display ? " d-none" : "")}
                 style={{ textAlign: "left" }}
                 onClick={this.handleClick}
             >
