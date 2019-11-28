@@ -28,7 +28,7 @@ export default class ClientComponent extends React.Component {
     render() {
         return (
             <Row bsPrefix="row m-1">
-                <Col>
+                <Col bsPrefix="col text-center">
                     <h5 className="text-left mt-3" key={1}>
                         <img
                             src="/images/groupe-users.svg"
@@ -50,7 +50,7 @@ export default class ClientComponent extends React.Component {
                     </div>
                     <Link
                         onClick={this.handleClick}
-                        className="footer text-center"
+                        className="footer mt-4"
                         key={3}
                         to={location => ({
                             ...location,

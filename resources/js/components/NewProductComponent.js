@@ -47,12 +47,10 @@ export default class NewProductComponent extends React.Component {
                     style={{
                         textAlign: "end",
                         backgroundColor: "#F3F3F3",
-                        margin: 0,
                         padding: "0.3em",
                         color: "#32338D",
                         cursor: "pointer",
                         fontSize: "12px",
-                        position: 'fixed'
                     }}>
                 <Prompt message={(location) => {
                     location.state = {

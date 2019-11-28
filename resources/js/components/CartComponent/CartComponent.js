@@ -732,8 +732,7 @@ export default class CartComponent extends React.Component {
                                         display: "inline-block",
                                         verticalAlign: "sub",
                                         color: "#32338D",
-                                        cursor: "pointer",
-                                        marginLeft: "1em"
+                                        cursor: "pointer"
                                     }}
                                     className="types-list-2-minus"
                                     key={'cat2-div2-s2-' + item}
@@ -748,7 +747,7 @@ export default class CartComponent extends React.Component {
                                     style={{
                                         border: "none",
                                         display: "inline-block",
-                                        width: "17%",
+                                        width: "5em",
                                         backgroundColor: "inherit",
                                         textAlign: "center"
                                     }}
@@ -806,7 +805,6 @@ export default class CartComponent extends React.Component {
                                         borderRadius: "5px",
                                         padding: "0.4em",
                                         color: "darkgray",
-                                        marginLeft: '10em',
                                         backgroundColor: "inherit",
                                         width: "8em",
                                         textAlign: "center"
@@ -1188,11 +1186,11 @@ export default class CartComponent extends React.Component {
                     </div>                
                     <div
                         key="cart-div2"
+                        className="init-div"
                         style={{
                             display: this.state.showSuccess ? "none" : "flex",
                             flexDirection: "column",
                             display: this.state.showAfterOrder ? 'none' : 'block',
-                            marginTop: '15%'
                         }}
                     >
                         <h5

@@ -35,6 +35,8 @@ export default class TotalComponent extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.prods !== this.props.prods) {
+            console.log('teste')
+
             this.setState({
                 totalPrice: (
                     this.getTotalCat0(this.props.prods) +

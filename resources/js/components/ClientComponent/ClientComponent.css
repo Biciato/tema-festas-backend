@@ -18,7 +18,8 @@
 @media (min-width: 500px) {
     .footer {
         position: relative;
-        top: 20%;
-        left: 32%;
+        display: inline-block;
+        margin: 2em;
+        width: 10em;
     }
 }

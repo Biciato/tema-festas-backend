@@ -16,23 +16,35 @@
     text-align: center;
 }
 
+.init-div {
+    margin-top: 3em;
+}
+
+
 .types-list {
     width: 56%;
 }
 
 .types-list-2 {
-    width: 59%;
+    width: 10em;
+}
+
+.types-list-2-minus {
+    margin-left: 1.3em;
 }
 
 @media (min-width: 500px) {
     .footer-cart {
         left: auto;
     }
-    .types-list {
-        width: 61%;
+    .types-list-2 {
+        width: 21em;
     }
     .types-list-2-minus {
         margin-left: 2.1em;
+    }
+    .init-div {
+        margin-top: 0;
     }
 }
 

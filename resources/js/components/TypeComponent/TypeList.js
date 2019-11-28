@@ -209,7 +209,6 @@ export default class TypeList extends React.Component {
                             marginBottom: 0,
                             padding: this.getProdCategory() !== 2 ? '6% 3%' : '6% 3% 1%',
                             textOverflow: 'ellipsis',
-                            maxWidth: '160px',
                             overflow: 'hidden',
                             maxHeight: '70px'
                         }

@@ -58,7 +58,7 @@ export default class TypeComponent extends React.Component {
   }
   handlePriceChange(e) {
     const price = 'R$ ' + this.moeda(e.target.value);
-    this.setState({price}, ()=> this.props.onPriceChange(price, this.props.prodName)) 
+    this.setState({price}, ()=> this.props.onPriceChange(price, this.props.prodName, this.props.size)) 
   }
   getProdCategory() {
     return [0, 1, 2, 3].find((item) => 
@@ -113,7 +113,6 @@ export default class TypeComponent extends React.Component {
           e(TypeSelect, typeSelectProps), 
           e(InputGroup, { 
               key: 3, 
-              style: { width: '99%' },
               className: this.getProdCategory() === 2 ? 'd-none' : 'mt-3' 
             }, [
               e('label', {

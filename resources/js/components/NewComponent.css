@@ -1,12 +1,12 @@
 .new-cp {
-    top: 0;
-    left: 0;
     width: 100%;
+    z-index: 1000;
+    position: fixed;
+    left: 0
 }
 
 @media (min-width: 500px) {
     .new-cp {
-        left: auto;
-        width: 39em;
+        position: relative;
     }
 }

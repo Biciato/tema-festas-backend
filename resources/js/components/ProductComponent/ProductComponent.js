@@ -138,6 +138,7 @@ export default class ProductComponent extends React.Component {
                 key: "type",
                 size,
                 prodName,
+                onPriceChange: this.handlePriceChange,
                 onSubtypeSet: this.handleSubtypeSet,
                 onTypeChange: this.handleTypeChange,
                 prods: this.state.prods
@@ -162,8 +163,14 @@ export default class ProductComponent extends React.Component {
             cpts
         });
     }
-    handlePriceChange(price, prodName) {
-
+    handlePriceChange(price, prodName, size = null) {
+        let prods = this.state.prods
+        if (size && prods[prodName] && prods[prodName].dados[size]) {
+            prods[prodName].dados[size].valor_unitario = price
+        } else if (prods[prodName]) {
+            prods[prodName].valor_unitario = price
+        }
+        this.setState({prods})
     }
     handleTypeChange(type, prodName, size = null, price = null) {
         const cpts = [...this.state.cpts]
@@ -174,6 +181,7 @@ export default class ProductComponent extends React.Component {
                 key: "type",
                 size,
                 prodName,
+                onPriceChange: this.handlePriceChange,
                 onSubtypeSet: this.handleSubtypeSet,
                 onTypeChange: this.handleTypeChange,
                 prods: this.state.prods
@@ -345,6 +353,7 @@ export default class ProductComponent extends React.Component {
                     key: "type",
                     size,
                     prodName,
+                    onPriceChange: this.handlePriceChange,
                     onSubtypeSet: this.handleSubtypeSet,
                     onTypeChange: this.handleTypeChange,
                     prods: this.state.prods
