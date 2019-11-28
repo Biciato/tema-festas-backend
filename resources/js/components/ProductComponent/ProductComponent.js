@@ -16,6 +16,7 @@ export default class ProductComponent extends React.Component {
         super(props);
         this.getCategorySet = this.getCategorySet.bind(this);
         this.getProdPrice = this.getProdPrice.bind(this);
+        this.handlePriceChange = this.handlePriceChange.bind(this);
         this.handleProductChange = this.handleProductChange.bind(this);
         this.handleSizeChange = this.handleSizeChange.bind(this);
         this.handleSubtypeSet = this.handleSubtypeSet.bind(this);
@@ -47,10 +48,10 @@ export default class ProductComponent extends React.Component {
     }
     
     getProds(props) {
-        if (props.location && props.location.state && props.location.state.prods) {
-            return props.location.state.prods
-        } else if (localStorage.getItem("prods") !== null && Object.keys(localStorage.getItem('prods')).length !== 15) {
+        if (localStorage.getItem("prods") !== null && Object.keys(localStorage.getItem('prods')).length !== 15) {
             return JSON.parse(localStorage.getItem("prods"))
+        } else if (props.location && props.location.state && props.location.state.prods) {
+            return props.location.state.prods
         } else {
             return {}
         }
@@ -104,6 +105,7 @@ export default class ProductComponent extends React.Component {
             cpt = {
                 name: TypeComponent,
                 props: {
+                    onPriceChange: this.handlePriceChange,
                     onSubtypeSet: this.handleSubtypeSet,
                     onTypeChange: this.handleTypeChange,
                     prods: this.state.prods,
@@ -159,6 +161,9 @@ export default class ProductComponent extends React.Component {
             prods,
             cpts
         });
+    }
+    handlePriceChange(price, prodName) {
+
     }
     handleTypeChange(type, prodName, size = null, price = null) {
         const cpts = [...this.state.cpts]

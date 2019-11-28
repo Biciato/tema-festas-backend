@@ -27,20 +27,18 @@ export default class CartComponent extends React.Component {
         this.mountCat2List = this.mountCat2List.bind(this);
         this.mountCat3List = this.mountCat3List.bind(this);
         this.mountProdList = this.mountProdList.bind(this);
-        this.redirectAfterSuccess = this.redirectAfterSuccess.bind(this);
         this.state = {
             showAfterOrder: false,
             loader: false,
             redirect: this.props.location.state === undefined ? true : false
         };
     }
-    moeda(v) {
-        v = v.replace(/\D/g, "") // permite digitar apenas numero
-        v = v.replace(/(\d{1})(\d{14})$/, "$1.$2") // coloca ponto antes dos ultimos digitos
-        v = v.replace(/(\d{1})(\d{11})$/, "$1.$2") // coloca ponto antes dos ultimos 11 digitos
-        v = v.replace(/(\d{1})(\d{8})$/, "$1.$2") // coloca ponto antes dos ultimos 8 digitos
-        v = v.replace(/(\d{1})(\d{5})$/, "$1.$2") // coloca ponto antes dos ultimos 5 digitos
-        v = v.replace(/(\d{1})(\d{1,2})$/, "$1,$2") // coloca virgula antes dos ultimos 2 digitos
+    moeda(i) {
+        let v = i.replace('R$', '').trim().replace(/\D/g,'');
+        v = (v/100).toFixed(2) + '';
+        v = v.replace(".", ",");
+        v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+        v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
         return v;
     }
     
@@ -61,7 +59,7 @@ export default class CartComponent extends React.Component {
                     [el.children[e].children[0].innerHTML.trim().split(' ')[0]] :
                         Object.assign({}, type[el.children[e].children[0].innerHTML.trim().split(' ')[0]], {
                             [el.children[e].children[0].innerHTML.trim().split(' ')[1]] :
-                                el.children[e].children[2].value
+                                el.children[e].children[1].children[1].value
                         })
                 })
             }
@@ -93,7 +91,7 @@ export default class CartComponent extends React.Component {
                     [el.children[e].children[0].innerHTML.trim().split(' ')[0]] :
                         Object.assign({}, type[el.children[e].children[0].innerHTML.trim().split(' ')[0]], {
                             [el.children[e].children[0].innerHTML.trim().split(' ')[1]] :
-                                el.children[e].children[2].value
+                                el.children[e].children[1].children[1].value
                         })
                 })
             }
@@ -149,7 +147,7 @@ export default class CartComponent extends React.Component {
                 .map((e) => 
                     types = Object.assign({}, types, {
                         [el.children[e].children[0].innerHTML] :
-                            el.children[e].children[2].value
+                            el.children[e].children[1].children[1].value
                     })
                 )
             return {
@@ -183,7 +181,10 @@ export default class CartComponent extends React.Component {
                 client: this.props.location.state.client
             })
             .then((response) => response.data === 'success' 
-                ? this.redirectAfterSuccess()
+                ? this.setState({ 
+                    showAfterOrder: true,
+                    cdt: 'ok' 
+                })
                 : this.setState({ 
                     showAfterOrder: true,
                     cdt: 'err' 
@@ -323,7 +324,7 @@ export default class CartComponent extends React.Component {
                                 color: "darkgray",
                                 fontSize: '14px',
                                 marginRight: "1em",
-                                width: "30%",
+                                width: "8em",
                                 textAlign: "center"
                             }}
                             onChange={(e) => this.handlePriceChange(e, `${item}-${i}`)}
@@ -345,7 +346,10 @@ export default class CartComponent extends React.Component {
                                         fontSize: "14px",
                                         backgroundColor:
                                             idx % 2 === 0 ? "white" : "#F8F8F8",
-                                        color: '#2B2B2B'
+                                        color: '#2B2B2B',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        width: '100%'
                                     }}
                                     key={"cat0-div2-" + e}
                                 >
@@ -362,52 +366,53 @@ export default class CartComponent extends React.Component {
                                         {" "}
                                         {el + " " + e}{" "}
                                     </span>{" "}
-                                    <span
-                                        style={{
-                                            fontSize: "30px",
-                                            display: "inline-block",
-                                            verticalAlign: "sub",
-                                            color: "#32338D",
-                                            cursor: "pointer",
-                                            marginLeft: "8%"
-                                        }}
-                                        key="cat0-div2-s2"
-                                        onClick={() => this.handleMinusQty(`${item}-${i}-${el}-${e}`, `${item}-${i}`)}
-                                    >
-                                        {" "}
-                                        -{" "}
-                                    </span>{" "}
-                                    <input
-                                        style={{
-                                            border: "none",
-                                            display: "inline-block",
-                                            width: "16%",
-                                            backgroundColor: "inherit",
-                                            textAlign: "center"
-                                        }}
-                                        data={`${item}-${i}-${el}-${e}`}
-                                        key="cat0-div2-i1"
-                                        onChange={(e)=>this.handleQtyChange(e, `${item}-${i}`)}
-                                        defaultValue={
-                                            this.props.location.state.prods[item].dados[i][el][e]
-                                        }
-                                    />{" "}
-                                    <span
-                                        style={{
-                                            fontSize: "30px",
-                                            display: "inline-block",
-                                            verticalAlign: "sub",
-                                            color: "#32338D",
-                                            cursor: "pointer",
-                                            margin: 0,
-                                            padding: 0
-                                        }}
-                                        key="cat0-div2-s3"
-                                        onClick={() => this.handlePlusQty(`${item}-${i}-${el}-${e}`, `${item}-${i}`)}
-                                    >
-                                        {" "}
-                                        +{" "}
-                                    </span>{" "}
+                                    <div style={{marginRight: '1em'}}>
+                                        <span
+                                            style={{
+                                                fontSize: "30px",
+                                                display: "inline-block",
+                                                verticalAlign: "sub",
+                                                color: "#32338D",
+                                                cursor: "pointer",
+                                            }}
+                                            key="cat0-div2-s2"
+                                            onClick={() => this.handleMinusQty(`${item}-${i}-${el}-${e}`, `${item}-${i}`)}
+                                        >
+                                            {" "}
+                                            -{" "}
+                                        </span>{" "}
+                                        <input
+                                            style={{
+                                                border: "none",
+                                                display: "inline-block",
+                                                width: "5em",
+                                                backgroundColor: "inherit",
+                                                textAlign: "center"
+                                            }}
+                                            data={`${item}-${i}-${el}-${e}`}
+                                            key="cat0-div2-i1"
+                                            onChange={(e)=>this.handleQtyChange(e, `${item}-${i}`)}
+                                            defaultValue={
+                                                this.props.location.state.prods[item].dados[i][el][e]
+                                            }
+                                        />{" "}
+                                        <span
+                                            style={{
+                                                fontSize: "30px",
+                                                display: "inline-block",
+                                                verticalAlign: "sub",
+                                                color: "#32338D",
+                                                cursor: "pointer",
+                                                margin: 0,
+                                                padding: 0
+                                            }}
+                                            key="cat0-div2-s3"
+                                            onClick={() => this.handlePlusQty(`${item}-${i}-${el}-${e}`, `${item}-${i}`)}
+                                        >
+                                            {" "}
+                                            +{" "}
+                                        </span>{" "}
+                                    </div>
                                 </div>
                             ))
                         )}{" "}
@@ -508,7 +513,7 @@ export default class CartComponent extends React.Component {
                                 padding: "0.4em",
                                 color: "darkgray",
                                 marginRight: "1em",
-                                width: "30%",
+                                width: "8em",
                                 textAlign: "center",
                                 fontSize: '14px'
                             }}
@@ -728,8 +733,9 @@ export default class CartComponent extends React.Component {
                                         verticalAlign: "sub",
                                         color: "#32338D",
                                         cursor: "pointer",
-                                        marginLeft: "9%"
+                                        marginLeft: "1em"
                                     }}
+                                    className="types-list-2-minus"
                                     key={'cat2-div2-s2-' + item}
                                     onClick={() => this.handleMinusQty(`${item}-${i}`, `${item}`, true)}
                                 >
@@ -802,7 +808,7 @@ export default class CartComponent extends React.Component {
                                         color: "darkgray",
                                         marginLeft: '10em',
                                         backgroundColor: "inherit",
-                                        width: "27%",
+                                        width: "8em",
                                         textAlign: "center"
                                     }}
                                     onChange={(e) => this.handlePriceChange(e, `${item}`, true)}
@@ -910,7 +916,7 @@ export default class CartComponent extends React.Component {
                             fontSize: '14px',
                             marginRight: "1em",
                             padding: '0.4em',
-                            width: "30%",
+                            width: "8em",
                             textAlign: "center"
                         }}
                         onChange={(e) => this.handlePriceChange(e, `${item}`)}
@@ -1048,19 +1054,7 @@ export default class CartComponent extends React.Component {
             this.mountCat0List(item)
         );
     }
-    redirectAfterSuccess() {
-        this.setState({ 
-            showAfterOrder: true,
-            cdt: 'ok' 
-        }, () => 
-            setTimeout(() => 
-                this.setState({
-                    redirect: true
-                })
-            , 5000)
-        )  
 
-    }
     setTotalQtyPerBlockOnChange(div, type2 = false) {
         let el = document.getElementById(div).children
         const length = el.length
@@ -1078,9 +1072,10 @@ export default class CartComponent extends React.Component {
         } else {
             const qty = Array.from(Array(length),(x,i)=>i)
                             .reduce((old, item) =>
-                                (el[item].children[2] &&
-                                    el[item].children[2].value
-                                        ? parseInt(el[item].children[2].value)
+                                (el[item].children[1] &&
+                                    el[item].children[1].children[1] &&
+                                        el[item].children[1].children[1].value
+                                        ? parseInt(el[item].children[1].children[1].value)
                                         : 0)
                             + old, 0)
             el[(length - 1)].children[1].innerHTML = qty
@@ -1172,6 +1167,12 @@ export default class CartComponent extends React.Component {
             }
         )
         document.getElementById('totalPrice').innerHTML = priceBr
+        localStorage.setItem('prods' , JSON.stringify({
+            ...this.mountCat0Json(),
+            ...this.mountCat1Json(),
+            ...this.mountCat2Json(),
+            ...this.mountCat3Json()
+        }))
     }
     render() {
         if (this.state.redirect) {
@@ -1275,7 +1276,7 @@ export default class CartComponent extends React.Component {
                         className="footer-cart text-center"
                         style={{
                             backgroundColor: "#32338D",
-                            display: this.state.showAfterOrder ? 'none' : 'block'
+                            display: this.state.showAfterOrder ? 'none' : 'inline-block'
                         }}
                         onClick={this.handleFinishOrder}
                         key="cart-div-3"

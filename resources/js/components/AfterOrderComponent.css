@@ -1,4 +1,4 @@
-.footer-cart {
+.footer-after {
     position: fixed;
     left: 0;
     bottom: 0;
@@ -16,23 +16,10 @@
     text-align: center;
 }
 
-.types-list {
-    width: 56%;
-}
-
-.types-list-2 {
-    width: 59%;
-}
-
 @media (min-width: 500px) {
-    .footer-cart {
-        left: auto;
-    }
-    .types-list {
-        width: 61%;
-    }
-    .types-list-2-minus {
-        margin-left: 2.1em;
+    .footer-after {
+        position: relative;
+        top: 5em;
     }
 }
 

@@ -36,14 +36,13 @@ export default class TypeComponent extends React.Component {
         });
     }
   }
-  moeda(v){
-    v = v.replace(/\D/g,"") // permite digitar apenas numero
-    v = v.replace(/(\d{1})(\d{14})$/,"$1.$2") // coloca ponto antes dos ultimos digitos
-    v = v.replace(/(\d{1})(\d{11})$/,"$1.$2") // coloca ponto antes dos ultimos 11 digitos
-    v = v.replace(/(\d{1})(\d{8})$/,"$1.$2") // coloca ponto antes dos ultimos 8 digitos
-    v = v.replace(/(\d{1})(\d{5})$/,"$1.$2") // coloca ponto antes dos ultimos 5 digitos
-    v = v.replace(/(\d{1})(\d{1,2})$/,"$1,$2") // coloca virgula antes dos ultimos 2 digitos
-    return 'R$ ' + v;
+  moeda(i){
+    let v = i.replace('R$', '').trim().replace(/\D/g,'');
+    v = (v/100).toFixed(2) + '';
+    v = v.replace(".", ",");
+    v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+    v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
+    return v;
   }
 
   handleTypeChange(type) {
@@ -58,22 +57,8 @@ export default class TypeComponent extends React.Component {
     });
   }
   handlePriceChange(e) {
-    const price = this.moeda(e.target.value);
-    if (this.state.subtype) {
-      const state = Object.assign({}, this.state, {
-        price
-      })
-      this.setState(state, () => {
-        this.props.onSubtypeSet(this.state, this.props.prodName, this.props.size)
-      });  
-    } else {
-      const state = Object.assign({}, this.state, {
-        price
-      })
-      this.setState(state, () => 
-        this.props.onTypeChange(this.props.type, this.props.prodName, this.props.size, price)
-      );  
-    } 
+    const price = 'R$ ' + this.moeda(e.target.value);
+    this.setState({price}, ()=> this.props.onPriceChange(price, this.props.prodName)) 
   }
   getProdCategory() {
     return [0, 1, 2, 3].find((item) => 

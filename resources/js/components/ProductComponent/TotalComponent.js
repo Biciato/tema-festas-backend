@@ -168,7 +168,7 @@ export default class TotalComponent extends React.Component {
     getCat0PerSubtypes(item, type, subtype) {
         let price = this.props.prods[item].dados[type].valor_unitario === 'R$ ' ? 'R$ 0' : this.props.prods[item].dados[type].valor_unitario;
         let normString = typeof price === 'string' ? price.replace("R$", "") : 0;
-        let normString2 = typeof price === 'string' ? normString.replace(/\./g,'').replace(",", ".").trim() : 0;
+        let normString2 = typeof price === 'string' ? normString.replace(",", ".").replace(/\./g,'').trim() : 0;
         if (this.props.prods[item].dados[type][subtype] !== null) {
             return (
                 Object.keys(this.props.prods[item].dados[type][subtype])
@@ -183,7 +183,7 @@ export default class TotalComponent extends React.Component {
                                 this.props.prods[item].dados[type][subtype][k]
                             ) || 0) + o,
                         0
-                    ) * normString2
+                    ) * (parseInt(normString2) / 100)
             );
         } else {
             return 0;

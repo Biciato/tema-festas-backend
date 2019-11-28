@@ -55,7 +55,6 @@ export default class NewProductComponent extends React.Component {
                         position: 'fixed'
                     }}>
                 <Prompt message={(location) => {
-                    localStorage.setItem('prods', JSON.stringify(this.state.prods)),
                     location.state = {
                         client: this.props.history.location.state.client,
                         prods: this.state.prods 

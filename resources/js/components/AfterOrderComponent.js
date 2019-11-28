@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import './AfterOrderComponent.css'
 
 const successDivStyle = {
     height: "calc(100vh - 40px)",
@@ -68,7 +69,7 @@ export default class AfterOrderComponent extends React.Component {
                                 }}>Voltar</span>
                 </p>
                 <Link
-                    className="footer text-center"
+                    className="footer-after text-center"
                     to="/clientes"
                     key="cart-div-3"
                     style={{
