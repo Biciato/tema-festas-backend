@@ -6,7 +6,7 @@
 
 @media (min-width: 500px) {
     .new-cp {
-        left: 33%;
-        width: 34%;
+        left: auto;
+        width: 39em;
     }
 }

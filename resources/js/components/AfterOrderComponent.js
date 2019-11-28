@@ -15,6 +15,10 @@ const successDivStyle = {
 export default class AfterOrderComponent extends React.Component {
     constructor(props) {
         super(props)
+        this.handleBackClick = this.handleBackClick.bind(this)
+    }
+    handleBackClick() {
+        this.props.onBackClick()
     }
     render() {
         if (!this.props.show) {
@@ -52,6 +56,17 @@ export default class AfterOrderComponent extends React.Component {
                             ou contate o suporte!`
                     }
                 </p>{" "}
+                <p style={{display: this.props.cdt === 'ok' ? 'none' : ''}}>
+                    Deseja Voltar ? <br></br><br></br><br></br>
+                        <span onClick={this.handleBackClick} 
+                                style={{
+                                    cursor: 'pointer',
+                                    color: 'red',                            
+                                    backgroundColor: 'white',
+                                    padding: '0.5em 1em',
+                                    top: '0em'
+                                }}>Voltar</span>
+                </p>
                 <Link
                     className="footer text-center"
                     to="/clientes"

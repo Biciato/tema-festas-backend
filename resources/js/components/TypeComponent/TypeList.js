@@ -104,7 +104,7 @@ export default class TypeList extends React.Component {
         const subtypeObj = {
             [e.target.attributes.data.value]: {
                 qty,
-                price: this.moeda(price)
+                price: 'R$ ' + this.moeda(price)
             }
         }
         this.setState({
@@ -130,6 +130,13 @@ export default class TypeList extends React.Component {
         return [0, 1, 2, 3].find((item) => Products.categories[item][this.props.prodName]);
     }
     getItemPrice(item) {
+        if (this.props.prods 
+            && this.props.prodName
+            && this.props.prods[this.props.prodName] 
+            && this.props.prods[this.props.prodName].dados 
+            && this.props.prods[this.props.prodName].dados[item]) {
+                return this.props.prods[this.props.prodName].dados[item].valor_unitario
+        }
         return Products.categories[2][this.props.prodName]
             .filter((i) => i.name === item)
             .map((i) => i.price)

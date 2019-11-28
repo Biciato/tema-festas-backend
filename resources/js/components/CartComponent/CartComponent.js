@@ -13,6 +13,7 @@ export default class CartComponent extends React.Component {
     constructor(props) {
         super(props);
         this.handlePlusQty = this.handlePlusQty.bind(this);
+        this.handleBackClick = this.handleBackClick.bind(this);
         this.handleMinusQty = this.handleMinusQty.bind(this);
         this.handleFinishOrder = this.handleFinishOrder.bind(this);
         this.handlePriceChange = this.handlePriceChange.bind(this);
@@ -26,6 +27,7 @@ export default class CartComponent extends React.Component {
         this.mountCat2List = this.mountCat2List.bind(this);
         this.mountCat3List = this.mountCat3List.bind(this);
         this.mountProdList = this.mountProdList.bind(this);
+        this.redirectAfterSuccess = this.redirectAfterSuccess.bind(this);
         this.state = {
             showAfterOrder: false,
             loader: false,
@@ -162,6 +164,12 @@ export default class CartComponent extends React.Component {
             }
         }
     }
+    handleBackClick() {
+        this.setState({
+            loader: false,
+            showAfterOrder: false
+        })
+    }
     handleFinishOrder() {
         if (!this.state.loader) {
             this.setState({loader: true})
@@ -175,23 +183,16 @@ export default class CartComponent extends React.Component {
                 client: this.props.location.state.client
             })
             .then((response) => response.data === 'success' 
-                ? this.setState({ 
-                    showAfterOrder: true,
-                    cdt: 'ok' 
-                })
+                ? this.redirectAfterSuccess()
                 : this.setState({ 
                     showAfterOrder: true,
                     cdt: 'err' 
                 })
             )
-            .then(() => setTimeout(() => 
-                this.setState({
-                    redirect: true
-                })
-            , 5000))  
             .catch((error) => console.log(error) );
         }    
     }
+    
     handlePlusQty(item, div, type2 = false) {
         const value = parseInt(
             document.querySelectorAll(`[data="${item}"]`)[0].value
@@ -232,7 +233,7 @@ export default class CartComponent extends React.Component {
     }
     getTotalPricePerProduct(item, price) {
         let priceNorm = typeof price === 'string' ? price.replace("R$", "") : 0;
-        let priceNorm2 = typeof price === 'string' ? priceNorm.replace(",", ".").trim() : 0;
+        let priceNorm2 = typeof price === 'string' ? priceNorm.replace(/\./g,'').replace(",", ".").trim() : 0;
         return (
             this.getTotalQtyCat0(item) * parseFloat(priceNorm2)
         ).toLocaleString('pt-br', {
@@ -252,7 +253,7 @@ export default class CartComponent extends React.Component {
             return Object.keys(item)
                 .reduce(function(o, k) {
                     let priceNorm = item[k].valor_unitario.replace("R$", "");
-                    let priceNorm2 = priceNorm.replace(",", ".").trim();
+                    let priceNorm2 = priceNorm.replace(/\./g,'').replace(",", ".").trim();
                     return (
                         parseInt(item[k].quantidade) * parseFloat(priceNorm2) +
                         o
@@ -527,7 +528,10 @@ export default class CartComponent extends React.Component {
                                         fontSize: "14px",
                                         backgroundColor:
                                             idx % 2 === 0 ? "white" : "#F8F8F8",
-                                        color: '#2B2B2B'
+                                        color: '#2B2B2B',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        width: '100%'
                                     }}
                                     key={"cat1-div2" + el + e}
                                 >
@@ -544,52 +548,53 @@ export default class CartComponent extends React.Component {
                                         {" "}
                                         {`${el} ${e}`}{" "}
                                     </span>{" "}
-                                    <span
-                                        style={{
-                                            fontSize: "30px",
-                                            display: "inline-block",
-                                            verticalAlign: "sub",
-                                            color: "#32338D",
-                                            marginLeft: "8%",
-                                            cursor: "pointer"
-                                        }}
-                                        key="cat1-div2-s2"
-                                        onClick={() => this.handleMinusQty(`${item}-${el}-${e}`, `${item}`)}
-                                    >
-                                        {" "}
-                                        -{" "}
-                                    </span>{" "}
-                                    <input
-                                        data={`${item}-${el}-${e}`}
-                                        style={{
-                                            border: "none",
-                                            display: "inline-block",
-                                            width: "16%",
-                                            backgroundColor: "inherit",
-                                            textAlign: "center"
-                                        }}
-                                        key="cat1-div2-i"
-                                        onChange={(e)=>this.handleQtyChange(e, `${item}`)}
-                                        defaultValue={
-                                            this.props.location.state.prods[item].dados[el][e]
-                                        }
-                                    />{" "}
-                                    <span
-                                        style={{
-                                            fontSize: "30px",
-                                            display: "inline-block",
-                                            verticalAlign: "sub",
-                                            color: "#32338D",
-                                            cursor: "pointer",
-                                            margin: 0,
-                                            padding: 0
-                                        }}
-                                        key="cat1-div2-s3"
-                                        onClick={() => this.handlePlusQty(`${item}-${el}-${e}`, `${item}`)}
-                                    >
-                                        {" "}
-                                        +{" "}
-                                    </span>{" "}
+                                    <div style={{marginRight: '1em'}}>
+                                        <span
+                                            style={{
+                                                fontSize: "30px",
+                                                display: "inline-block",
+                                                verticalAlign: "sub",
+                                                color: "#32338D",
+                                                cursor: "pointer"
+                                            }}
+                                            key="cat1-div2-s2"
+                                            onClick={() => this.handleMinusQty(`${item}-${el}-${e}`, `${item}`)}
+                                        >
+                                            {" "}
+                                            -{" "}
+                                        </span>{" "}
+                                        <input
+                                            data={`${item}-${el}-${e}`}
+                                            style={{
+                                                border: "none",
+                                                display: "inline-block",
+                                                width: "5em",
+                                                backgroundColor: "inherit",
+                                                textAlign: "center"
+                                            }}
+                                            key="cat1-div2-i"
+                                            onChange={(e)=>this.handleQtyChange(e, `${item}`)}
+                                            defaultValue={
+                                                this.props.location.state.prods[item].dados[el][e]
+                                            }
+                                        />{" "}
+                                        <span
+                                            style={{
+                                                fontSize: "30px",
+                                                display: "inline-block",
+                                                verticalAlign: "sub",
+                                                color: "#32338D",
+                                                cursor: "pointer",
+                                                margin: 0,
+                                                padding: 0
+                                            }}
+                                            key="cat1-div2-s3"
+                                            onClick={() => this.handlePlusQty(`${item}-${el}-${e}`, `${item}`)}
+                                        >
+                                            {" "}
+                                            +{" "}
+                                        </span>{" "}
+                                    </div>
                                 </div>
                             ))
                         )
@@ -919,7 +924,9 @@ export default class CartComponent extends React.Component {
                             height: "4em",
                             fontSize: "14px",
                             backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8",
-                            color: '#2B2B2B'
+                            color: '#2B2B2B',
+                            display: 'flex',
+                            justifyContent: 'space-between'
                         }}
                         key={'cat3-div2' + el}
                     >
@@ -936,7 +943,7 @@ export default class CartComponent extends React.Component {
                             {" "}
                             {el}{" "}
                         </span>{" "}
-                        <div>
+                        <div style={{marginRight: '1em'}}>
                             <span
                                 style={{
                                     fontSize: "30px",
@@ -944,7 +951,6 @@ export default class CartComponent extends React.Component {
                                     verticalAlign: "sub",
                                     color: "#32338D",
                                     cursor: "pointer",
-                                    marginLeft: "8%"
                                 }}
                                 key="cat3-s2"
                                 onClick={() => this.handleMinusQty(`${item}-${el}`, `${item}`)}
@@ -957,7 +963,7 @@ export default class CartComponent extends React.Component {
                                 style={{
                                     border: "none",
                                     display: "inline-block",
-                                    width: "16%",
+                                    width: "5em",
                                     backgroundColor: "inherit",
                                     textAlign: "center"
                                 }}
@@ -1042,6 +1048,19 @@ export default class CartComponent extends React.Component {
             this.mountCat0List(item)
         );
     }
+    redirectAfterSuccess() {
+        this.setState({ 
+            showAfterOrder: true,
+            cdt: 'ok' 
+        }, () => 
+            setTimeout(() => 
+                this.setState({
+                    redirect: true
+                })
+            , 5000)
+        )  
+
+    }
     setTotalQtyPerBlockOnChange(div, type2 = false) {
         let el = document.getElementById(div).children
         const length = el.length
@@ -1075,7 +1094,7 @@ export default class CartComponent extends React.Component {
             const price = Array.from(Array(length),(x,i)=>i + 1).reduce(function(old, item) {
                 const q = parseInt(el[item].children[0].children[2].value)
                 const normPrice = el[item].children[1].children[1].value.replace('R$','')
-                const normPrice2 = normPrice.replace(',','.').trim()
+                const normPrice2 = normPrice.replace(/\./g,'').replace(',','.').trim()
                 return (normPrice2 === '' ? 0 : (q * parseFloat(normPrice2))) + old
             }, 0)
             document.getElementById(div).children[length + 1].children[3].innerHTML =
@@ -1087,7 +1106,7 @@ export default class CartComponent extends React.Component {
             let el = document.getElementById(div).children[0].children[1]
             const length = document.getElementById(div).children.length
             const normPrice = el.value.replace('R$','')
-            const normPrice2 = normPrice.replace(',','.').trim()
+            const normPrice2 = normPrice.replace(/\./g,'').replace(',','.').trim()
             const price = (parseFloat(normPrice2) * qty)
             document.getElementById(div).children[length - 1].children[3].innerHTML =
                 isNaN(price) ? 0 : price.toLocaleString(
@@ -1129,6 +1148,7 @@ export default class CartComponent extends React.Component {
                         .children[(list[0].children.length) - 1]
                         .children[3]
                         .innerHTML
+                        .replace(/\./g,'')
                         .replace(',','.'))
         } else {
             price = Array.from(Array(listLength),(x,i)=>i)
@@ -1138,6 +1158,7 @@ export default class CartComponent extends React.Component {
                                         .children[(list[item].children.length) - 1]
                                         .children[3]
                                         .innerHTML
+                                        .replace(/\./g,'')
                                         .replace(',','.')
                                 ) + old, 0
                             )
@@ -1155,7 +1176,7 @@ export default class CartComponent extends React.Component {
     render() {
         if (this.state.redirect) {
             return <Redirect push to={{
-                pathname: "/resumo"
+                pathname: "/clientes"
             }} />;
         }
         return (
@@ -1247,7 +1268,9 @@ export default class CartComponent extends React.Component {
                             </span>{" "}
                         </div>{" "}
                     </div>{" "}
-                    <AfterOrderComponent show={this.state.showAfterOrder} cdt={this.state.cdt}/>
+                    <AfterOrderComponent show={this.state.showAfterOrder} 
+                                            cdt={this.state.cdt}
+                                            onBackClick={this.handleBackClick}/>
                     <div
                         className="footer-cart text-center"
                         style={{

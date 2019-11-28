@@ -160,7 +160,7 @@ export default class ProductComponent extends React.Component {
             cpts
         });
     }
-    handleTypeChange(type, prodName, size = null) {
+    handleTypeChange(type, prodName, size = null, price = null) {
         const cpts = [...this.state.cpts]
         cpts.pop()
         cpts.push({
@@ -174,27 +174,35 @@ export default class ProductComponent extends React.Component {
                 prods: this.state.prods
             }
         });
-        let prod = Object.assign({}, this.state);
+        let prods = Object.assign({}, this.state.prods);
         if (this.getProdCategory(prodName) === 0) {
-            prod.prods[prodName].dados[size] = Object.assign(
-                {},
-                this.state.prods[prodName].dados[size],
-                {
-                    [type]: this.state.prods[prodName].dados[size][type] 
-                                ? Object.assign(
-                                    {},
-                                    this.state.prods[prodName].dados[size][type]
-                                )
-                                : null
-                }
-            );
-            this.setState(prod);
-        } else if (this.getProdCategory(prodName) === 1) {
+            if (type !== undefined) {
+                prods[prodName].dados[size] = Object.assign(
+                    {},
+                    this.state.prods[prodName].dados[size],
+                    {
+                        [type]: this.state.prods[prodName].dados[size][type] 
+                                    ? Object.assign(
+                                        {},
+                                        this.state.prods[prodName].dados[size][type]
+                                    )
+                                    : null
+                    }
+                );
+            }
+            if (price) {
+                prods[prodName].dados[size].valor_unitario = price
+            }
+            this.setState({prods});
+        } else if (this.getProdCategory(prodName) === 1 || this.getProdCategory(prodName) === 3) {
             const prevDados = this.state.prods[prodName].dados
                 ? this.state.prods[prodName].dados
                 : {};
-            prod.prods[prodName].dados = prevDados;
-            this.setState({prod, cpts});
+            prods[prodName].dados = prevDados;
+            if (price) {
+                prods[prodName].valor_unitario = price
+            }
+            this.setState({prods, cpts});
         }
     }
     handleSubtypeSet(typeObj, prodName, size = null) {
@@ -386,6 +394,20 @@ export default class ProductComponent extends React.Component {
                             }
                         }
                     }
+                } else if (prods[i].tipo_categoria === 2) {
+                     if (Object.keys(prods[i].dados).length === 0) {
+                         delete prods[i]
+                         
+                     } else {
+                        for (let el of Object.keys(prods[i].dados)) {
+                            if (prods[i].dados[el].quantidade === '0' || prods[i].dados[el].valor_unitario === 'R$ ') {
+                                delete prods[i].dados[el]
+                                if (Object.keys(prods[i].dados).length === 0) {
+                                   delete prods[i]
+                                }
+                            }
+                        }
+                     }  
                 } else  {
                     if (Object.keys(prods[i].dados).length === 0 ) {
                         delete prods[i]

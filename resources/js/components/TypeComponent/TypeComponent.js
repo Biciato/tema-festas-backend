@@ -70,7 +70,9 @@ export default class TypeComponent extends React.Component {
       const state = Object.assign({}, this.state, {
         price
       })
-      this.setState(state);  
+      this.setState(state, () => 
+        this.props.onTypeChange(this.props.type, this.props.prodName, this.props.size, price)
+      );  
     } 
   }
   getProdCategory() {
@@ -79,18 +81,35 @@ export default class TypeComponent extends React.Component {
     );
   }
   getProdPrice() {
-    switch (this.getProdCategory()) {
-      case 0:
-        return Products.categories[0][this.props.prodName].size
-          .filter((item) => item.name === this.props.size)
-          .map((item) => item.price)
-          .shift();
-      case 1:
-        return Products.categories[1][this.props.prodName].price;
-      case 2:
-        return 0;
-      default:
-        return 1.50;
+    if (this.props.prods[this.props.prodName]) {
+      if (this.getProdCategory() === 0) {
+        if (this.props.prods[this.props.prodName].dados[this.props.size]) {
+          return this.props.prods[this.props.prodName].dados[this.props.size].valor_unitario
+        } else {
+          return Products.categories[0][this.props.prodName].size
+            .filter((item) => item.name === this.props.size)
+            .map((item) => item.price)
+            .shift();
+        }
+      } else if(this.getProdCategory() === 2) {
+        return 0
+      } else {
+        return this.props.prods[this.props.prodName].valor_unitario 
+      } 
+    } else {
+      switch (this.getProdCategory()) {
+        case 0:
+          return Products.categories[0][this.props.prodName].size
+            .filter((item) => item.name === this.props.size)
+            .map((item) => item.price)
+            .shift();
+        case 1:
+          return Products.categories[1][this.props.prodName].price;
+        case 2:
+          return 0;
+        default:
+          return 1.50;
+      }
     }
   }
 

@@ -23,7 +23,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center text-center h-100" style="background-color: #32A1DD">
-        <div class="col-md-6 justify-content-center text-center">
+        <div class="col-md-12 col-sm-6 justify-content-center text-center">
             <img src="/images/logo.png" alt="logo" style="width: 40%; margin: 2em auto;"></img>
             <h5 class="text-light">
                 <img src="/images/user.svg" 
@@ -36,7 +36,7 @@
                 @csrf
 
                 <div class="form-group row justify-content-center text-center">
-                    <div class="col-md-6">
+                    <div class="col-md-12 col-sm-6">
                         <input id="name" 
                                 type="text" 
                                 class="form-control @error('name') is-invalid @enderror" 
@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="form-group row justify-content-center text-center">
-                    <div class="col-md-6">
+                    <div class="col-md-12 col-sm-6">
                         <input id="password" 
                                 type="password" 
                                 class="form-control @error('password') is-invalid @enderror" 
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <div class="form-group row mb-0 justify-content-center text-center">
-                    <div class="col-md-6">
+                    <div class="col-md-12 col-sm-6">
                         <button type="submit" class="login-btn">
                             Entrar
                         </button>

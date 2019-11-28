@@ -48,9 +48,9 @@ export default class TotalComponent extends React.Component {
     }
     getTotalCat3(prods) {
         if (prods.Etiquetas && prods.Etiquetas.valor_unitario) {
-            let price = prods.Etiquetas.valor_unitario;
+            let price = prods.Etiquetas.valor_unitario === 'R$ ' ? 'R$ 0' : prods.Etiquetas.valor_unitario;
             let normString = price.replace("R$", "");
-            let normString2 = normString.replace(",", ".").trim();
+            let normString2 = normString.replace(/\./g,'').replace(",", ".").trim();
             const unitPrice = parseFloat(normString2);
             const qty = Object.keys(prods.Etiquetas.dados).reduce(
                 (o, item) => (parseInt(prods.Etiquetas.dados[item]) || 0) + o,
@@ -74,9 +74,9 @@ export default class TotalComponent extends React.Component {
 
     getCat1UnitPrice(item) {
         if (this.props.prods[item] && this.props.prods[item].valor_unitario) {
-            let price = this.props.prods[item].valor_unitario;
+            let price = this.props.prods[item].valor_unitario === 'R$ ' ? 'R$ 0' : this.props.prods[item].valor_unitario
             let normString = price.replace("R$", "");
-            let normString2 = normString.replace(",", ".").trim();
+            let normString2 = normString.replace(/\./g,'').replace(",", ".").trim();
             return parseFloat(normString2);
         } else {
             return 0;
@@ -124,8 +124,9 @@ export default class TotalComponent extends React.Component {
         }
     }
     getNormPrice(price) {
-        let priceNorm = price.replace("R$", "");
-        let priceNorm2 = priceNorm.replace(",", ".").trim();
+        let NormPrice = price === 'R$ ' ? 'R$ 0' : price
+        let priceNorm = NormPrice.replace("R$", "");
+        let priceNorm2 = priceNorm.replace(/\./g,'').replace(",", ".").trim();
         return parseFloat(priceNorm2);
     }
     getTotalCat0(prods) {
@@ -165,9 +166,9 @@ export default class TotalComponent extends React.Component {
     }
 
     getCat0PerSubtypes(item, type, subtype) {
-        let price = this.props.prods[item].dados[type].valor_unitario;
+        let price = this.props.prods[item].dados[type].valor_unitario === 'R$ ' ? 'R$ 0' : this.props.prods[item].dados[type].valor_unitario;
         let normString = typeof price === 'string' ? price.replace("R$", "") : 0;
-        let normString2 = typeof price === 'string' ? normString.replace(",", ".").trim() : 0;
+        let normString2 = typeof price === 'string' ? normString.replace(/\./g,'').replace(",", ".").trim() : 0;
         if (this.props.prods[item].dados[type][subtype] !== null) {
             return (
                 Object.keys(this.props.prods[item].dados[type][subtype])
