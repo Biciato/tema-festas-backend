@@ -34,6 +34,7 @@ export default class TotalComponent extends React.Component {
         }
     }
     componentDidUpdate(prevProps) {
+        console.log(prevProps, this.props.prods)
         if (prevProps.prods !== this.props.prods) {
             console.log('teste')
 

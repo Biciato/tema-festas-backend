@@ -9,7 +9,7 @@ import {
 import {
     Products
 } from '../resources/products'
-import './TypeList.scss';
+import './TypeList.css';
 
 const e = React.createElement
 
