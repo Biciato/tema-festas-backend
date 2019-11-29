@@ -655,7 +655,6 @@ export default class CartComponent extends React.Component {
                                 fontWeight: "bold",
                                 padding: "0.4em",
                                 display: "inline-block",
-                                maxWidth: '10em',
                                 color: "#32338D"
                             }}
                             key="cat0-div1-s1"
@@ -848,12 +847,12 @@ export default class CartComponent extends React.Component {
                         key="cat1-div1"
                     >
                         <span
+                            className="item-label"
                             style={{
                                 fontSize: "16px",
                                 fontWeight: "bold",
                                 padding: "0.4em",
                                 display: "inline-block",
-                                maxWidth: '10em',
                                 color: "#32338D"
                             }}
                         >
@@ -1264,12 +1263,12 @@ export default class CartComponent extends React.Component {
                     key="cat3-div1"
                 >
                     <span
+                        className="item-label"
                         style={{
                             fontSize: "16px",
                             fontWeight: "bold",
                             padding: "0.4em",
                             display: "inline-block",
-                            maxWidth: '10em',
                             color: "#32338D"
                         }}
                     >
@@ -1598,16 +1597,6 @@ export default class CartComponent extends React.Component {
                             </img>
                             Seu Pedido{" "}
                         </h5>{" "}
-                        <h6
-                            className="text-left ml-3 px-1"
-                            key="cart-h6-1"
-                            style={{
-                                padding: "0 0.5em",
-                                fontSize: "14px"
-                            }}
-                        >
-                            Nº do pedido <span>{this.state.order}</span>{" "}
-                        </h6>{" "}
                         {this.mountProdList()}{" "}
                         <div
                             style={{
