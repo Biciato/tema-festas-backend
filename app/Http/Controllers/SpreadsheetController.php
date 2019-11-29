@@ -8,7 +8,7 @@ use App\Pedido;
 
 class SpreadsheetController extends Controller
 {
-    public function getOrder(Pedido $pedido, Request $request) {
+    public function getOrder(Request $request) {
         try {
             $client = str_replace(' ', '_', $request->client);
             $username = str_replace(' ', '_', auth()->user()->name);
@@ -47,9 +47,7 @@ class SpreadsheetController extends Controller
         } catch(Exception $e) {
             return $e;
         } finally {
-            $pedido->update([
-                'total_pedido' => $request->total
-            ]);
+            
             return 'success';
         }
     }

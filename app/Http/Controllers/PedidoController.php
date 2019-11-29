@@ -8,8 +8,6 @@ use App\Pedido;
 class PedidoController extends Controller
 {
     public function createOrder(Request $request) {
-        return auth()->user()->pedidos()->create([
-            'cliente' => $request->client
-        ]);
+        return ['data' => ['id' => 10]];
     }
 }

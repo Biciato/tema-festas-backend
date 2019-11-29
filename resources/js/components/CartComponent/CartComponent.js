@@ -44,10 +44,24 @@ export default class CartComponent extends React.Component {
             showAfterOrder: false,
             loader: false,
             redirect: props.location.state === undefined ? true : false,
-            prods: this.getProds(props),
-            totalPrice: props.location.state.totalPrice,
-            totalQty: props.location.state.totalQty
+            prods: this.getProds(props)
         };
+    }
+    componentDidMount() {
+        this.setState({
+            totalPrice: (
+                this.getTotalCat0Total(this.state.prods) +
+                this.getTotalCat1Total(this.state.prods) +
+                this.getTotalCat2Total(this.state.prods) +
+                this.getTotalCat3Total(this.state.prods)
+            ).toLocaleString("pt-br", { minimumFractionDigits: 2 }),
+            totalQty: (
+                this.getTotalQtyCat0Total(this.state.prods) +
+                this.getTotalQtyCat1Total(this.state.prods) +
+                this.getTotalQtyCat2Total(this.state.prods) +
+                this.getTotalQtyCat3Total(this.state.prods)
+            )
+        })
     }
     getTotalCat3Total(prods) {
         if (prods.Etiquetas && prods.Etiquetas.valor_unitario) {
@@ -65,7 +79,7 @@ export default class CartComponent extends React.Component {
         }
     }
     getTotalCat1Total(prods) {
-        return this.getCat1Prods(prods).reduce(
+        return this.getCat1ProdsTotal(prods).reduce(
             (o, item) =>
                 this.getCat1UnitPrice(item) * this.getCat1Qties(item) + o,
             0
@@ -453,17 +467,16 @@ export default class CartComponent extends React.Component {
                     client: this.props.location.state.client,
                     total: total
                 })
-                .then((response) => response.data === 'success'
-                    ? this.setState({
-                        showAfterOrder: true,
-                        cdt: 'ok'
-                    })
-                    : this.setState({
-                        showAfterOrder: true,
-                        cdt: 'err'
-                    })
+                .then(() => this.setState({
+                                        showAfterOrder: true,
+                                        cdt: 'ok'
+                                    })
                 )
-                .catch((error) => console.log(error) );
+                .catch(() => this.setState({
+                                showAfterOrder: true,
+                                cdt: 'err'
+                            }) 
+                );
             }
         }
     }
@@ -1487,9 +1500,7 @@ export default class CartComponent extends React.Component {
         const priceBr = price.toLocaleString(
             'pt-br',
             {
-                minimumFractionDigits: 2,
-                currency: 'BRL',
-                style: 'currency'
+                minimumFractionDigits: 2
             }
         )
         this.setState({totalPrice: priceBr})
@@ -1506,18 +1517,7 @@ export default class CartComponent extends React.Component {
                 pathname: "/clientes"
             }} />;
         }
-        const totalPrice = (
-            this.getTotalCat0Total(this.state.prods) +
-            this.getTotalCat1Total(this.state.prods) +
-            this.getTotalCat2Total(this.state.prods) +
-            this.getTotalCat3Total(this.state.prods)
-        ).toLocaleString("pt-br", { minimumFractionDigits: 2 })
-        const totalQty = (
-            this.getTotalQtyCat0Total(this.state.prods) +
-            this.getTotalQtyCat1Total(this.state.prods) +
-            this.getTotalQtyCat2Total(this.state.prods) +
-            this.getTotalQtyCat3Total(this.state.prods)
-        )
+        
         return (
             <Row>
                 <Col bsPrefix="col p-0">
@@ -1584,7 +1584,7 @@ export default class CartComponent extends React.Component {
                                 }}
                             >
                                 {" "}
-                                {totalQty}{" "}
+                                {this.state.totalQty}{" "}
                             </span>{" "}
                         </div>{" "}
                         <div
@@ -1606,7 +1606,7 @@ export default class CartComponent extends React.Component {
                                 }}
                             >
                                 {" "}
-                                R$ {totalPrice}{" "}
+                                R$ {this.state.totalPrice}{" "}
                             </span>{" "}
                         </div>{" "}
                     </div>{" "}
