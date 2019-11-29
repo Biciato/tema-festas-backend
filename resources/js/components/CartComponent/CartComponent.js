@@ -654,7 +654,7 @@ export default class CartComponent extends React.Component {
                                 fontWeight: "bold",
                                 padding: "0.4em",
                                 display: "inline-block",
-                                maxWidth: '60%',
+                                maxWidth: '10em',
                                 color: "#32338D"
                             }}
                             key="cat0-div1-s1"
@@ -852,7 +852,7 @@ export default class CartComponent extends React.Component {
                                 fontWeight: "bold",
                                 padding: "0.4em",
                                 display: "inline-block",
-                                maxWidth: '60%',
+                                maxWidth: '10em',
                                 color: "#32338D"
                             }}
                         >
@@ -1268,7 +1268,7 @@ export default class CartComponent extends React.Component {
                             fontWeight: "bold",
                             padding: "0.4em",
                             display: "inline-block",
-                            maxWidth: '60%',
+                            maxWidth: '10em',
                             color: "#32338D"
                         }}
                     >
