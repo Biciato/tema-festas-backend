@@ -3,7 +3,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ClientSelect from "./ClientSelect";
 import "./ClientComponent.css";
-import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import axios from 'axios'
 
 export default class ClientComponent extends React.Component {
     constructor(props) {
@@ -23,9 +24,24 @@ export default class ClientComponent extends React.Component {
     handleClick() {
         if (this.state.client === null) {
             this.setState({warning: true})
-        } 
+        } else {
+            axios.post('/create-order', {client: this.state.client})
+                .then((response) => this.setState({
+                    order: response.data.id
+                }, () => this.setState({redirect: true})))
+                .catch((error) => console.log(error) );
+        }
     }
     render() {
+        if (this.state.redirect) {
+            return <Redirect push to={{
+                        pathname: '/pedido',
+                        state: {
+                            client: this.state.client,
+                            order: this.state.order
+                        }
+                    }}/>
+        }
         return (
             <Row bsPrefix="row m-1">
                 <Col bsPrefix="col text-center">
@@ -48,22 +64,11 @@ export default class ClientComponent extends React.Component {
                     <div style={{color: 'red', display: this.state.warning ? 'block' : 'none'}}>
                         Selecione um Cliente
                     </div>
-                    <Link
-                        onClick={this.handleClick}
-                        className="footer mt-4"
-                        key={3}
-                        to={location => ({
-                            ...location,
-                            pathname: this.state.client
-                                ? "/pedido"
-                                : "/clientes",
-                            state: {
-                                client: this.state.client
-                            }
-                        })}
-                    >
-                        Fazer Pedido
-                    </Link>
+                    <div onClick={this.handleClick}
+                            className="footer mt-4"
+                            key={3}>
+                            Fazer Pedido
+                    </div>
                 </Col>
             </Row>
         );

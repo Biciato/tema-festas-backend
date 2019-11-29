@@ -23,9 +23,12 @@ export default class ProductComponent extends React.Component {
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleCartClick = this.handleCartClick.bind(this);
         this.state = {
-            redirect: (props.location.state === undefined 
+            order: (props.location && props.location.state && props.location.state.order)
+                        ? props.location.state.order
+                        : 'Sem número',
+            redirect: (props.location.state === undefined
                         || !props.location.state.client)
-                            ? 'clientes' 
+                            ? 'clientes'
                             : false,
             prods: this.getProds(props),
             cpts: [
@@ -46,7 +49,7 @@ export default class ProductComponent extends React.Component {
             ]
         }
     }
-    
+
     getProds(props) {
         if (localStorage.getItem("prods") !== null && Object.keys(localStorage.getItem('prods')).length !== 15) {
             return JSON.parse(localStorage.getItem("prods"))
@@ -194,7 +197,7 @@ export default class ProductComponent extends React.Component {
                     {},
                     this.state.prods[prodName].dados[size],
                     {
-                        [type]: this.state.prods[prodName].dados[size][type] 
+                        [type]: this.state.prods[prodName].dados[size][type]
                                     ? Object.assign(
                                         {},
                                         this.state.prods[prodName].dados[size][type]
@@ -364,13 +367,13 @@ export default class ProductComponent extends React.Component {
     }
     handleCartClick(totalQty, totalPrice) {
         if (parseFloat(totalPrice) > 0) {
-            this.setState({ 
+            this.setState({
                 totalQty: totalQty,
                 totalPrice: totalPrice
             }, () => this.setState({redirect: 'resumo'}));
         }
-    }    
-    
+    }
+
     render() {
         if (Object.keys(this.state.prods).length > 0) {
             localStorage.setItem('prods', JSON.stringify(this.state.prods))
@@ -411,7 +414,7 @@ export default class ProductComponent extends React.Component {
                 } else if (prods[i].tipo_categoria === 2) {
                      if (Object.keys(prods[i].dados).length === 0) {
                          delete prods[i]
-                         
+
                      } else {
                         for (let el of Object.keys(prods[i].dados)) {
                             if (prods[i].dados[el].quantidade === '0' || prods[i].dados[el].valor_unitario === 'R$ ') {
@@ -421,7 +424,7 @@ export default class ProductComponent extends React.Component {
                                 }
                             }
                         }
-                     }  
+                     }
                 } else  {
                     if (Object.keys(prods[i].dados).length === 0 ) {
                         delete prods[i]
@@ -433,12 +436,13 @@ export default class ProductComponent extends React.Component {
                 state: {
                     prods,
                     client: this.props.location.state.client,
+                    order: this.state.order,
                     totalQty: this.state.totalQty,
                     totalPrice: this.state.totalPrice
-                } 
+                }
             }} />;
         }
-        
+
         return e(
             Row,
             {bsPrefix: 'row'},
@@ -449,7 +453,7 @@ export default class ProductComponent extends React.Component {
                     e(item.name, item.props, item.children)
                 ),
                 e(TotalComponent, {
-                    prods: this.state.prods, 
+                    prods: this.state.prods,
                     key: 'total',
                     onCartClick: this.handleCartClick
                 })

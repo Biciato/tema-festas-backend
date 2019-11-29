@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Aigen\TemaFesta\GerenciadorPlanilha;
+use App\Pedido;
 
 class SpreadsheetController extends Controller
 {
-    public function getOrder(Request $request) {
+    public function getOrder(Pedido $pedido, Request $request) {
         try {
             $client = str_replace(' ', '_', $request->client);
             $username = str_replace(' ', '_', auth()->user()->name);
-            $date = str_replace(' ', '_', now()); 
+            $date = str_replace(' ', '_', now());
             $date = str_replace(':', '_', $date);
             $filename = $username . '-' . $date;
 
@@ -22,9 +23,9 @@ class SpreadsheetController extends Controller
             }
             file_put_contents(
                 storage_path(
-                    'app/pedidos-json/' 
+                    'app/pedidos-json/'
                     .$client
-                    . '/' 
+                    . '/'
                     . $filename
                     .'.json'),
                 json_encode($request->order)
@@ -36,9 +37,9 @@ class SpreadsheetController extends Controller
             }
             $planilha = new GerenciadorPlanilha(
                 storage_path(
-                    'app/pedidos-excel/' 
+                    'app/pedidos-excel/'
                     .$client
-                    . '/' 
+                    . '/'
                     . $filename
                     .'.xls')
             );
@@ -46,6 +47,9 @@ class SpreadsheetController extends Controller
         } catch(Exception $e) {
             return $e;
         } finally {
+            $pedido->update([
+                'total_pedido' => $request->total
+            ]);
             return 'success';
         }
     }

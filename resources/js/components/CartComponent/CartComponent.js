@@ -28,6 +28,7 @@ export default class CartComponent extends React.Component {
         this.mountCat3List = this.mountCat3List.bind(this);
         this.mountProdList = this.mountProdList.bind(this);
         this.state = {
+            order: props.location.state.order,
             showAfterOrder: false,
             loader: false,
             redirect: this.props.location.state === undefined ? true : false
@@ -41,7 +42,7 @@ export default class CartComponent extends React.Component {
         v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
         return v;
     }
-    
+
     handlePriceChange(e, div, type2 = false) {
         const price = e.target.value.replace('R$', '').trim()
         e.target.value = 'R$ ' + this.moeda(price)
@@ -117,7 +118,7 @@ export default class CartComponent extends React.Component {
             const product = el.id
             let types = {}
             Array.from(Array(el.children.length - 2), (x,i)=>i+1)
-                .map((e) => 
+                .map((e) =>
                     types = Object.assign({}, types, {
                         [el.children[e].children[0].children[0].innerHTML] : {
                             quantidade: el.children[e].children[0].children[2].value,
@@ -125,7 +126,7 @@ export default class CartComponent extends React.Component {
                                 .replace('R$','')
                                 .replace(',','.')
                                 .trim()
-                        }                            
+                        }
                     })
                 )
             json  = Object.assign({}, json, {
@@ -144,7 +145,7 @@ export default class CartComponent extends React.Component {
         if (el) {
             let types = {}
             Array.from(Array(el.children.length - 2), (x,i)=>i+1)
-                .map((e) => 
+                .map((e) =>
                     types = Object.assign({}, types, {
                         [el.children[e].children[0].innerHTML] :
                             el.children[e].children[1].children[1].value
@@ -169,31 +170,33 @@ export default class CartComponent extends React.Component {
         })
     }
     handleFinishOrder() {
+        const total = document.getElementById('totalPrice').innerText
         if (!this.state.loader) {
             this.setState({loader: true})
-            axios.post('/get-order', {
+            axios.post('/get-order/' + this.state.order, {
                 order: {
                     ...this.mountCat0Json(),
                     ...this.mountCat1Json(),
                     ...this.mountCat2Json(),
                     ...this.mountCat3Json()
                 },
-                client: this.props.location.state.client
+                client: this.props.location.state.client,
+                total: total
             })
-            .then((response) => response.data === 'success' 
-                ? this.setState({ 
+            .then((response) => response.data === 'success'
+                ? this.setState({
                     showAfterOrder: true,
-                    cdt: 'ok' 
+                    cdt: 'ok'
                 })
-                : this.setState({ 
+                : this.setState({
                     showAfterOrder: true,
-                    cdt: 'err' 
+                    cdt: 'err'
                 })
             )
             .catch((error) => console.log(error) );
-        }    
+        }
     }
-    
+
     handlePlusQty(item, div, type2 = false) {
         const value = parseInt(
             document.querySelectorAll(`[data="${item}"]`)[0].value
@@ -1181,9 +1184,9 @@ export default class CartComponent extends React.Component {
         return (
             <Row>
                 <Col bsPrefix="col p-0">
-                    <div style={{display: this.state.showAfterOrder ? 'none' : 'block'}}> 
+                    <div style={{display: this.state.showAfterOrder ? 'none' : 'block'}}>
                         <NewProductComponent arrow={true} history={this.props.history}/>
-                    </div>                
+                    </div>
                     <div
                         key="cart-div2"
                         className="init-div"
@@ -1219,7 +1222,7 @@ export default class CartComponent extends React.Component {
                                 fontSize: "14px"
                             }}
                         >
-                            Nº do pedido 8824{" "}
+                            Nº do pedido <span>{this.state.order}</span>{" "}
                         </h6>{" "}
                         {this.mountProdList()}{" "}
                         <div
@@ -1267,7 +1270,7 @@ export default class CartComponent extends React.Component {
                             </span>{" "}
                         </div>{" "}
                     </div>{" "}
-                    <AfterOrderComponent show={this.state.showAfterOrder} 
+                    <AfterOrderComponent show={this.state.showAfterOrder}
                                             cdt={this.state.cdt}
                                             onBackClick={this.handleBackClick}/>
                     <div
@@ -1281,14 +1284,14 @@ export default class CartComponent extends React.Component {
                     >
                         {" "}
                         {
-                            this.state.loader 
+                            this.state.loader
                                 ?  <Loader
                                         type="ThreeDots"
                                         color="white"
                                         height={25}
                                         width={25}
                                         timeout={3000} //3 secs
-                            
+
                                     />
                                 : 'Finalizar Compra'
                         }

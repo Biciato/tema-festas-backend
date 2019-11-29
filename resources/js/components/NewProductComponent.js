@@ -13,15 +13,18 @@ export default class NewProductComponent extends React.Component {
         this.renderRedirect = this.renderRedirect.bind(this)
         this.showModal = this.showModal.bind(this)
         this.state = {
+            order: props.history && props.history.location && props.history.location.state && props.history.location.state.order
+                    ? props.history.location.state.order
+                    : {},
             redirect: false,
             showModal: false,
             local: null,
-            prods: props.history && props.history.location && props.history.location.state && props.history.location.state.prods 
+            prods: props.history && props.history.location && props.history.location.state && props.history.location.state.prods
                     ? props.history.location.state.prods
                     : {}
         }
     }
-    
+
     closeModal() {
         this.setState({ showModal: false })
     }
@@ -34,7 +37,10 @@ export default class NewProductComponent extends React.Component {
     renderRedirect() {
         if (this.state.redirect) {
             return <Redirect  push to={{
-                pathname: '/' + this.state.local
+                pathname: '/' + this.state.local,
+                state: {
+                    order: this.state.order
+                }
             }}  />
         }
     }
@@ -43,7 +49,7 @@ export default class NewProductComponent extends React.Component {
     }
     render() {
         return(
-            <div className="new-cp"  
+            <div className="new-cp"
                     style={{
                         textAlign: "end",
                         backgroundColor: "#F3F3F3",
@@ -55,7 +61,8 @@ export default class NewProductComponent extends React.Component {
                 <Prompt message={(location) => {
                     location.state = {
                         client: this.props.history.location.state.client,
-                        prods: this.state.prods 
+                        prods: this.state.prods,
+                        order: this.state.order
                 }}} />
                 {this.renderRedirect()}
                 <img src="/images/arrow.svg"
@@ -79,7 +86,7 @@ export default class NewProductComponent extends React.Component {
                         }}>
                 </img>
                 <div onClick={e => e.stopPropagation()}>
-                    <Modal key="modal" 
+                    <Modal key="modal"
                             show={this.state.showModal}
                             style={{
                                 width: "90%",
