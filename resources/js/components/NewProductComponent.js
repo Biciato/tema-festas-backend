@@ -62,7 +62,9 @@ export default class NewProductComponent extends React.Component {
                     location.state = {
                         client: this.props.history.location.state.client,
                         prods: this.state.prods,
-                        order: this.state.order
+                        order: this.state.order,
+                        totalPriceFromReload: this.props.totalPrice,
+                        totalQtyFromReload: this.props.totalQty
                 }}} />
                 {this.renderRedirect()}
                 <img src="/images/arrow.svg"

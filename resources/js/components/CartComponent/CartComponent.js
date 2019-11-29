@@ -8,6 +8,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import './CartComponent.css'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { Products } from "../resources/products";
 
 export default class CartComponent extends React.Component {
     constructor(props) {
@@ -27,12 +28,263 @@ export default class CartComponent extends React.Component {
         this.mountCat2List = this.mountCat2List.bind(this);
         this.mountCat3List = this.mountCat3List.bind(this);
         this.mountProdList = this.mountProdList.bind(this);
+        this.getTotalCat1Total = this.getTotalCat1Total.bind(this)
+        this.getCat1UnitPriceTotal = this.getCat1UnitPriceTotal.bind(this)
+        this.getCat1QtiesTotal = this.getCat1QtiesTotal.bind(this)
+        this.getCat1QtiesTotal = this.getCat1QtiesTotal.bind(this)
+        this.getCat2TotalPerProdTotal = this.getCat2TotalPerProdTotal.bind(this)
+        this.getTotalCat0Total = this.getTotalCat0Total.bind(this)
+        this.getCat0TotalPerProdTotal = this.getCat0TotalPerProdTotal.bind(this)
+        this.getCat0PerTypesTotal = this.getCat0PerTypesTotal.bind(this)
+        this.getCat0PerSubtypesTotal = this.getCat0PerSubtypesTotal.bind(this)
+        this.getTotalQtyCat0Total = this.getTotalQtyCat0Total.bind(this)
+        this.getTotalQtyTotal = this.getTotalQtyTotal.bind(this)
         this.state = {
             order: props.location.state.order,
             showAfterOrder: false,
             loader: false,
-            redirect: this.props.location.state === undefined ? true : false
+            redirect: props.location.state === undefined ? true : false,
+            prods: this.getProds(props),
+            totalPrice: props.location.state.totalPrice,
+            totalQty: props.location.state.totalQty
         };
+    }
+    getTotalCat3Total(prods) {
+        if (prods.Etiquetas && prods.Etiquetas.valor_unitario) {
+            let price = prods.Etiquetas.valor_unitario === 'R$ ' ? 'R$ 0' : prods.Etiquetas.valor_unitario;
+            let normString = price.replace("R$", "");
+            let normString2 = normString.replace(/\./g,'').replace(",", ".").trim();
+            const unitPrice = parseFloat(normString2);
+            const qty = Object.keys(prods.Etiquetas.dados).reduce(
+                (o, item) => (parseInt(prods.Etiquetas.dados[item]) || 0) + o,
+                0
+            );
+            return unitPrice * qty;
+        } else {
+            return 0;
+        }
+    }
+    getTotalCat1Total(prods) {
+        return this.getCat1Prods(prods).reduce(
+            (o, item) =>
+                this.getCat1UnitPrice(item) * this.getCat1Qties(item) + o,
+            0
+        );
+    }
+    getCat1ProdsTotal(prods) {
+        return Object.keys(prods).filter(item => Products.categories[1][item]);
+    }
+
+    getCat1UnitPriceTotal(item) {
+        if (this.state.prods[item] && this.state.prods[item].valor_unitario) {
+            let price = this.state.prods[item].valor_unitario === 'R$ ' ? 'R$ 0' : this.state.prods[item].valor_unitario
+            let normString = price.replace("R$", "");
+            let normString2 = normString.replace(/\./g,'').replace(",", ".").trim();
+            return parseFloat(normString2);
+        } else {
+            return 0;
+        }
+    }
+    getCat1QtiesTotal(item) {
+        if (this.state.prods[item] && this.state.prods[item].dados) {
+            return Object.keys(this.state.prods[item].dados).reduce(
+                (old, i) =>
+                    Object.keys(this.state.prods[item].dados[i]).reduce(
+                        (o, k) =>
+                            (parseInt(this.state.prods[item].dados[i][k]) ||
+                                0) + o,
+                        0
+                    ) + old,
+                0
+            );
+        } else {
+            return 0;
+        }
+    }
+    getTotalCat2Total(prods) {
+        return this.getCat2ProdsTotal(prods).reduce(
+            (o, item) => this.getCat2TotalPerProdTotal(item) + o,
+            0
+        );
+    }
+    getCat2ProdsTotal(prods) {
+        return Object.keys(prods).filter(item => Products.categories[2][item]);
+    }
+    getCat2TotalPerProdTotal(item) {
+        if (this.state.prods[item] && this.state.prods[item].dados) {
+            return Object.keys(this.state.prods[item].dados).reduce(
+                (o, k) =>
+                    (parseInt(this.state.prods[item].dados[k].quantidade) ||
+                        0) *
+                        this.getNormPrice(
+                            this.state.prods[item].dados[k].valor_unitario
+                        ) +
+                    o,
+                0
+            );
+        } else {
+            return 0;
+        }
+    }
+    getNormPrice(price) {
+        let NormPrice = price === 'R$ ' ? 'R$ 0' : price
+        let priceNorm = NormPrice.replace("R$", "");
+        let priceNorm2 = priceNorm.replace(/\./g,'').replace(",", ".").trim();
+        return parseFloat(priceNorm2);
+    }
+    getTotalCat0Total(prods) {
+        if (prods) {
+            return this.getCat0ProdsTotal(prods).reduce(
+                (o, item) => this.getCat0TotalPerProdTotal(item) + o,
+                0
+            );
+        }
+    }
+    getCat0ProdsTotal(prods) {
+        return Object.keys(prods).filter(item => Products.categories[0][item]);
+    }
+    getCat0TotalPerProdTotal(item) {
+        if (this.state.prods[item].dados !== "") {
+            return Object.keys(this.state.prods[item].dados).reduce(
+                (o, k) => this.getCat0PerTypesTotal(item, k) + o,
+                0
+            );
+        } else {
+            return 0;
+        }
+    }
+
+    getCat0PerTypesTotal(item, type) {
+        if (this.state.prods[item].dados[type] !== null) {
+            return Object.keys(this.state.prods[item].dados[type])
+                .filter(item => item !== "valor_unitario")
+                .reduce(
+                    (old, key) =>
+                        this.getCat0PerSubtypesTotal(item, type, key) + old,
+                    0
+                );
+        } else {
+            return 0;
+        }
+    }
+
+    getCat0PerSubtypesTotal(item, type, subtype) {
+        let price = this.state.prods[item].dados[type].valor_unitario === 'R$ ' ? 'R$ 0' : this.state.prods[item].dados[type].valor_unitario;
+        let normString = typeof price === 'string' ? price.replace("R$", "") : 0;
+        let normString2 = typeof price === 'string' ? normString.replace(",", ".").replace(/\./g,'').trim() : 0;
+        if (this.state.prods[item].dados[type][subtype] !== null) {
+            return (
+                Object.keys(this.state.prods[item].dados[type][subtype])
+                    .filter(
+                        st =>
+                            this.state.prods[item].dados[type][subtype][st] !==
+                            ""
+                    )
+                    .reduce(
+                        (o, k) =>
+                            (parseInt(
+                                this.state.prods[item].dados[type][subtype][k]
+                            ) || 0) + o,
+                        0
+                    ) * (parseInt(normString2) / 100)
+            );
+        } else {
+            return 0;
+        }
+    }
+    getTotalQtyCat0Total(prods) {
+        return Object.keys(prods)
+            .filter(el => prods[el].tipo_categoria === 0)
+            .reduce(
+                (old, key) =>
+                    Object.keys(prods[key].dados).reduce(
+                        (ol, ke) =>
+                            Object.keys(prods[key].dados[ke])
+                                .filter(
+                                    e =>
+                                        e !== "valor_unitario" ||
+                                        prods[key].dados[ke][e] !== null
+                                )
+                                .reduce(
+                                    (o, k) =>
+                                        this.getTotalQtyCat0LastLevel(
+                                            prods,
+                                            key,
+                                            ke,
+                                            k
+                                        ) + o,
+                                    0
+                                ) + ol,
+                        0
+                    ) + old,
+                0
+            );
+    }
+    getTotalQtyCat0LastLevel(prods, key, ke, k) {
+        if (k !== "valor_unitario" && prods[key].dados[ke][k] !== null) {
+            return Object.keys(prods[key].dados[ke][k]).reduce(
+                (l, i) => (parseInt(prods[key].dados[ke][k][i]) || 0) + l,
+                0
+            );
+        } else {
+            return 0;
+        }
+    }
+    getTotalQtyCat1Total(prods) {
+        return Object.keys(prods)
+            .filter(el => prods[el].tipo_categoria === 1)
+            .reduce(
+                (old, key) =>
+                    Object.keys(prods[key].dados).reduce(
+                        (ol, ke) =>
+                            Object.keys(prods[key].dados[ke]).reduce(
+                                (o, k) =>
+                                    (parseInt(prods[key].dados[ke][k]) || 0) +
+                                    o,
+                                0
+                            ) + ol,
+                        0
+                    ) + old,
+                0
+            );
+    }
+    getTotalQtyCat2Total(prods) {
+        return Object.keys(prods)
+            .filter(el => prods[el].tipo_categoria === 2)
+            .reduce(
+                (old, key) =>
+                    Object.keys(prods[key].dados).reduce(
+                        (ol, ke) =>
+                            (parseInt(prods[key].dados[ke].quantidade) || 0) +
+                            ol,
+                        0
+                    ) + old,
+                0
+            );
+    }
+
+    getTotalQtyCat3Total(prods) {
+        if (prods["Etiquetas"]) {
+            return Object.keys(prods["Etiquetas"].dados).reduce(
+                (old, key) =>
+                    (parseInt(prods["Etiquetas"].dados[key]) || 0) + old,
+                0
+            );
+        } else {
+            return 0;
+        }
+    }
+    getTotalQtyTotal() {
+        if (this.state.prods !== null) {
+            return (
+                this.getTotalQtyCat0(this.props.prods) +
+                this.getTotalQtyCat1(this.props.prods) +
+                this.getTotalQtyCat2(this.props.prods) +
+                this.getTotalQtyCat3(this.props.prods)
+            );
+        } else {
+            return 0;
+        }
     }
     moeda(i) {
         let v = i.replace('R$', '').trim().replace(/\D/g,'');
@@ -47,6 +299,15 @@ export default class CartComponent extends React.Component {
         const price = e.target.value.replace('R$', '').trim()
         e.target.value = 'R$ ' + this.moeda(price)
         this.setTotalQtyPerBlockOnChange(div, type2)
+    }
+    getProds(props) {
+        if (localStorage.getItem("prods") !== null && Object.keys(localStorage.getItem('prods')).length !== 15) {
+            return JSON.parse(localStorage.getItem("prods"))
+        } else if (props.location && props.location.state && props.location.state.prods) {
+            return props.location.state.prods
+        } else {
+            return {}
+        }
     }
     mountCat0Json(toFn) {
         let json = {}
@@ -179,29 +440,31 @@ export default class CartComponent extends React.Component {
     }
     handleFinishOrder() {
         const total = document.getElementById('totalPrice').innerText
-        if (!this.state.loader) {
-            this.setState({loader: true})
-            axios.post('/get-order/' + this.state.order, {
-                order: {
-                    ...this.mountCat0Json('ajax'),
-                    ...this.mountCat1Json('ajax'),
-                    ...this.mountCat2Json('ajax'),
-                    ...this.mountCat3Json('ajax')
-                },
-                client: this.props.location.state.client,
-                total: total
-            })
-            .then((response) => response.data === 'success'
-                ? this.setState({
-                    showAfterOrder: true,
-                    cdt: 'ok'
+        if (parseInt(total.replace(',','').replace('R$','').trim()) > 0) {
+            if (!this.state.loader) {
+                this.setState({loader: true})
+                axios.post('/get-order/' + this.state.order, {
+                    order: {
+                        ...this.mountCat0Json('ajax'),
+                        ...this.mountCat1Json('ajax'),
+                        ...this.mountCat2Json('ajax'),
+                        ...this.mountCat3Json('ajax')
+                    },
+                    client: this.props.location.state.client,
+                    total: total
                 })
-                : this.setState({
-                    showAfterOrder: true,
-                    cdt: 'err'
-                })
-            )
-            .catch((error) => console.log(error) );
+                .then((response) => response.data === 'success'
+                    ? this.setState({
+                        showAfterOrder: true,
+                        cdt: 'ok'
+                    })
+                    : this.setState({
+                        showAfterOrder: true,
+                        cdt: 'err'
+                    })
+                )
+                .catch((error) => console.log(error) );
+            }
         }
     }
 
@@ -293,9 +556,64 @@ export default class CartComponent extends React.Component {
     getTotalPriceCat0(item, price) {
         return this.getTotalQtyCat0(item) * parseFloat(price);
     }
+    getTotalQty() {
+        const list = document.getElementsByClassName('products')
+        const listLength = list.length
+        let qty = 0
+        if (listLength === 1) {
+            qty = list[0]
+                        .children[(list[0].children.length) - 1]
+                        .children[1]
+                        .innerHTML
+        } else {
+            qty = Array.from(Array(listLength),(x,i)=>i)
+                            .reduce((old, item) =>
+                                parseInt(
+                                    list[item]
+                                        .children[(list[item].children.length) - 1]
+                                        .children[1]
+                                        .innerHTML
+                                ) + old, 0
+                            )
+        }
+        return qty
+    }
+    getTotalPrice() {
+        const list = document.getElementsByClassName('products')
+        const listLength = list.length
+        let price = 0
+        if (listLength === 1) {
+            price = parseFloat(list[0]
+                        .children[(list[0].children.length) - 1]
+                        .children[3]
+                        .innerHTML
+                        .replace(/\./g,'')
+                        .replace(',','.'))
+        } else {
+            price = Array.from(Array(listLength),(x,i)=>i)
+                            .reduce((old, item) =>
+                                parseFloat(
+                                    list[item]
+                                        .children[(list[item].children.length) - 1]
+                                        .children[3]
+                                        .innerHTML
+                                        .replace(/\./g,'')
+                                        .replace(',','.')
+                                ) + old, 0
+                            )
+        }
+        return price.toLocaleString(
+            'pt-br',
+            {
+                minimumFractionDigits: 2,
+                currency: 'BRL',
+                style: 'currency'
+            }
+        )
+    }
     mountCat0List(item) {
-        if (this.props.location.state.prods[item].tipo_categoria === 0) {
-            return Object.keys(this.props.location.state.prods[item].dados).map(i => (
+        if (this.state.prods[item].tipo_categoria === 0) {
+            return Object.keys(this.state.prods[item].dados).map(i => (
                 <div
                     id={`${item}-${i}`}
                     className="products"
@@ -340,15 +658,15 @@ export default class CartComponent extends React.Component {
                             }}
                             onChange={(e) => this.handlePriceChange(e, `${item}-${i}`)}
                             defaultValue={
-                                this.props.location.state.prods[item].dados[i].valor_unitario
+                                this.state.prods[item].dados[i].valor_unitario
                             }
                         />{" "}
                     </div>{" "}
-                    {Object.keys(this.props.location.state.prods[item].dados[i])
+                    {Object.keys(this.state.prods[item].dados[i])
                         .filter(i => i !== "valor_unitario")
                         .map(el =>
                             Object.keys(
-                                this.props.location.state.prods[item].dados[i][el]
+                                this.state.prods[item].dados[i][el]
                             ).map((e, idx) => (
                                 <div
                                     style={{
@@ -404,7 +722,7 @@ export default class CartComponent extends React.Component {
                                             key="cat0-div2-i1"
                                             onChange={(e)=>this.handleQtyChange(e, `${item}-${i}`)}
                                             defaultValue={
-                                                this.props.location.state.prods[item].dados[i][el][e]
+                                                this.state.prods[item].dados[i][el][e]
                                             }
                                         />{" "}
                                         <span
@@ -450,7 +768,7 @@ export default class CartComponent extends React.Component {
                         <span key="cat0-div3-s2">
                             {" "}
                             {this.getTotalQtyCat0(
-                                this.props.location.state.prods[item].dados[i]
+                                this.state.prods[item].dados[i]
                             )}{" "}
                         </span>{" "}
                         <span
@@ -473,8 +791,8 @@ export default class CartComponent extends React.Component {
                         >
                             {" "}
                             {this.getTotalPricePerProduct(
-                                this.props.location.state.prods[item].dados[i],
-                                this.props.location.state.prods[item].dados[i].valor_unitario
+                                this.state.prods[item].dados[i],
+                                this.state.prods[item].dados[i].valor_unitario
                             )}{" "}
                         </span>{" "}
                     </div>{" "}
@@ -485,7 +803,7 @@ export default class CartComponent extends React.Component {
         }
     }
     mountCat1List(item) {
-        if (this.props.location.state.prods[item].tipo_categoria === 1) {
+        if (this.state.prods[item].tipo_categoria === 1) {
             return (
                 <div
                     className="products"
@@ -528,14 +846,14 @@ export default class CartComponent extends React.Component {
                                 textAlign: "center",
                                 fontSize: '14px'
                             }}
-                            defaultValue={this.props.location.state.prods[item].valor_unitario}
+                            defaultValue={this.state.prods[item].valor_unitario}
                             onChange={(e) => this.handlePriceChange(e, `${item}`)}
                         />{" "}
                     </div>{" "}
-                    {Object.keys(this.props.location.state.prods[item].dados).map(
+                    {Object.keys(this.state.prods[item].dados).map(
                         (el) => (
                             Object.keys(
-                                this.props.location.state.prods[item].dados[el]
+                                this.state.prods[item].dados[el]
                             ).map((e, idx) => (
                                 <div
                                     style={{
@@ -591,7 +909,7 @@ export default class CartComponent extends React.Component {
                                             key="cat1-div2-i"
                                             onChange={(e)=>this.handleQtyChange(e, `${item}`)}
                                             defaultValue={
-                                                this.props.location.state.prods[item].dados[el][e]
+                                                this.state.prods[item].dados[el][e]
                                             }
                                         />{" "}
                                         <span
@@ -638,7 +956,7 @@ export default class CartComponent extends React.Component {
                         <span key="cat1-div3-s2">
                             {" "}
                             {this.getTotalQtyCat1(
-                                this.props.location.state.prods[item].dados
+                                this.state.prods[item].dados
                             )}{" "}
                         </span>{" "}
                         <span
@@ -661,8 +979,8 @@ export default class CartComponent extends React.Component {
                         >
                             {" "}
                             {this.getTotalPricePerProduct(
-                                this.props.location.state.prods[item].dados,
-                                this.props.location.state.prods[item].valor_unitario
+                                this.state.prods[item].dados,
+                                this.state.prods[item].valor_unitario
                             )}{" "}
                         </span>{" "}
                     </div>{" "}
@@ -673,7 +991,7 @@ export default class CartComponent extends React.Component {
         }
     }
     mountCat2List(item) {
-        if (this.props.location.state.prods[item].tipo_categoria === 2) {
+        if (this.state.prods[item].tipo_categoria === 2) {
             return (
                 <div
                     id={item}
@@ -705,7 +1023,7 @@ export default class CartComponent extends React.Component {
                             {item}{" "}
                         </span>{" "}
                     </div>{" "}
-                    {Object.keys(this.props.location.state.prods[item].dados).map((i, idx) => (
+                    {Object.keys(this.state.prods[item].dados).map((i, idx) => (
                         <div
                             style={{
                                 padding: "0 1em 1em 0",
@@ -764,7 +1082,7 @@ export default class CartComponent extends React.Component {
                                     }}
                                     onChange={(e)=>this.handleQtyChange(e, `${item}`, true)}
                                     defaultValue={
-                                        this.props.location.state.prods[item].dados[i]
+                                        this.state.prods[item].dados[i]
                                             .quantidade
                                     }
                                     key="cat2-div2-i1"
@@ -822,7 +1140,7 @@ export default class CartComponent extends React.Component {
                                     }}
                                     onChange={(e) => this.handlePriceChange(e, `${item}`, true)}
                                     defaultValue={
-                                        this.props.location.state.prods[item].dados[i]
+                                        this.state.prods[item].dados[i]
                                             .valor_unitario
                                     }
                                 />{" "}
@@ -852,7 +1170,7 @@ export default class CartComponent extends React.Component {
                         <span>
                             {" "}
                             {this.getTotalQtyCat2(
-                                this.props.location.state.prods[item].dados
+                                this.state.prods[item].dados
                             )}{" "}
                         </span>{" "}
                         <span
@@ -875,7 +1193,7 @@ export default class CartComponent extends React.Component {
                         >
                             {" "}
                             {this.getTotalPriceCat2(
-                                this.props.location.state.prods[item].dados
+                                this.state.prods[item].dados
                             )}{" "}
                         </span>{" "}
                     </div>{" "}
@@ -929,10 +1247,10 @@ export default class CartComponent extends React.Component {
                             textAlign: "center"
                         }}
                         onChange={(e) => this.handlePriceChange(e, `${item}`)}
-                        defaultValue={this.props.location.state.prods[item].valor_unitario}
+                        defaultValue={this.state.prods[item].valor_unitario}
                     />{" "}
                 </div>{" "}
-                {Object.keys(this.props.location.state.prods[item].dados).map((el, idx) => (
+                {Object.keys(this.state.prods[item].dados).map((el, idx) => (
                     <div
                         style={{
                             padding: "0.2em 0.1em",
@@ -982,7 +1300,7 @@ export default class CartComponent extends React.Component {
                                     backgroundColor: "inherit",
                                     textAlign: "center"
                                 }}
-                                defaultValue={this.props.location.state.prods[item].dados[el]}
+                                defaultValue={this.state.prods[item].dados[el]}
                                 onChange={(e)=>this.handleQtyChange(e, `${item}`)}
                                 key="cat3-i1"
                             />
@@ -1027,7 +1345,7 @@ export default class CartComponent extends React.Component {
                     <span>
                         {" "}
                         {this.getTotalQtyPerProduct(
-                            this.props.location.state.prods[item].dados
+                            this.state.prods[item].dados
                         )}{" "}
                     </span>{" "}
                     <span
@@ -1048,8 +1366,8 @@ export default class CartComponent extends React.Component {
                     >
                         {" "}
                         {this.getTotalPricePerProduct(
-                            this.props.location.state.prods[item].dados,
-                            this.props.location.state.prods[item].valor_unitario
+                            this.state.prods[item].dados,
+                            this.state.prods[item].valor_unitario
                         ).toLocaleString("pt-br", {
                             minimumFractionDigits: 2
                         })}{" "}
@@ -1059,11 +1377,10 @@ export default class CartComponent extends React.Component {
         );
     }
     mountProdList() {
-        return Object.keys(this.props.location.state.prods).map(item =>
+        return Object.keys(this.state.prods).map(item =>
             this.mountCat0List(item)
-        );
+        )
     }
-
     setTotalQtyPerBlockOnChange(div, type2 = false) {
         let el = document.getElementById(div).children
         const length = el.length
@@ -1141,7 +1458,7 @@ export default class CartComponent extends React.Component {
                                 ) + old, 0
                             )
         }
-        document.getElementById('totalQty').innerHTML = qty
+        this.setState({totalQty: qty})
     }
     setTotalPriceOnChange() {
         const list = document.getElementsByClassName('products')
@@ -1175,7 +1492,7 @@ export default class CartComponent extends React.Component {
                 style: 'currency'
             }
         )
-        document.getElementById('totalPrice').innerHTML = priceBr
+        this.setState({totalPrice: priceBr})
         localStorage.setItem('prods' , JSON.stringify({
             ...this.mountCat0Json('localStorage'),
             ...this.mountCat1Json('localStorage'),
@@ -1189,11 +1506,26 @@ export default class CartComponent extends React.Component {
                 pathname: "/clientes"
             }} />;
         }
+        const totalPrice = (
+            this.getTotalCat0Total(this.state.prods) +
+            this.getTotalCat1Total(this.state.prods) +
+            this.getTotalCat2Total(this.state.prods) +
+            this.getTotalCat3Total(this.state.prods)
+        ).toLocaleString("pt-br", { minimumFractionDigits: 2 })
+        const totalQty = (
+            this.getTotalQtyCat0Total(this.state.prods) +
+            this.getTotalQtyCat1Total(this.state.prods) +
+            this.getTotalQtyCat2Total(this.state.prods) +
+            this.getTotalQtyCat3Total(this.state.prods)
+        )
         return (
             <Row>
                 <Col bsPrefix="col p-0">
                     <div style={{display: this.state.showAfterOrder ? 'none' : 'block'}}>
-                        <NewProductComponent arrow={true} history={this.props.history}/>
+                        <NewProductComponent arrow={true}
+                                                history={this.props.history}
+                                                totalPrice={this.state.totalPrice}
+                                                totalQty={this.state.totalQty}/>
                     </div>
                     <div
                         key="cart-div2"
@@ -1252,7 +1584,7 @@ export default class CartComponent extends React.Component {
                                 }}
                             >
                                 {" "}
-                                {this.props.location.state.totalQty}{" "}
+                                {totalQty}{" "}
                             </span>{" "}
                         </div>{" "}
                         <div
@@ -1274,7 +1606,7 @@ export default class CartComponent extends React.Component {
                                 }}
                             >
                                 {" "}
-                                R$ {this.props.location.state.totalPrice}{" "}
+                                R$ {totalPrice}{" "}
                             </span>{" "}
                         </div>{" "}
                     </div>{" "}
