@@ -46,5 +46,8 @@
     .init-div {
         margin-top: 0;
     }
+    .item-label {
+        max-width: 25em;
+    }
 }
 
