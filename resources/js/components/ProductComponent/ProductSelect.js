@@ -35,7 +35,7 @@ export default class ProductSelect extends React.Component {
           bsPrefix: 'row mt-4' + (this.props.display ? ' d-none' : '')
         },
         e(Col, null, 
-          e('h5', {className: "text-left mt-3", key: 1}, 
+          e('h5', {className: "text-left mt-3", key: 1, style : {color: "#32338D"}}, 
             e('img', {
               src: "/images/tasks-list.svg",
               alt: "task",

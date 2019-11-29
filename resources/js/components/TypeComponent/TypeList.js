@@ -221,7 +221,7 @@ export default class TypeList extends React.Component {
                                 fontSize: '30px',
                                 display: 'inline-block',
                                 verticalAlign: 'sub',
-                                color: '#32338D',
+                                color: 'rgb(116, 116, 116)',
                                 cursor: 'pointer'
                             }
                         }, '-'),
@@ -237,7 +237,8 @@ export default class TypeList extends React.Component {
                                 display: 'inline-block',
                                 backgroundColor: 'inherit',
                                 textAlign: 'center',
-                                width: '73%'                                
+                                width: '73%'   ,
+                                color: "rgb(116, 116, 116)"                             
                             }
                         }),
                         e('span', {

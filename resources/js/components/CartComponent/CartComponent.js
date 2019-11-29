@@ -81,7 +81,7 @@ export default class CartComponent extends React.Component {
     getTotalCat1Total(prods) {
         return this.getCat1ProdsTotal(prods).reduce(
             (o, item) =>
-                this.getCat1UnitPrice(item) * this.getCat1Qties(item) + o,
+                this.getCat1UnitPriceTotal(item) * this.getCat1QtiesTotal(item) + o,
             0
         );
     }
@@ -183,9 +183,10 @@ export default class CartComponent extends React.Component {
     }
 
     getCat0PerSubtypesTotal(item, type, subtype) {
-        let price = this.state.prods[item].dados[type].valor_unitario === 'R$ ' ? 'R$ 0' : this.state.prods[item].dados[type].valor_unitario;
-        let normString = typeof price === 'string' ? price.replace("R$", "") : 0;
-        let normString2 = typeof price === 'string' ? normString.replace(",", ".").replace(/\./g,'').trim() : 0;
+        let price = (this.state.prods[item].dados[type].valor_unitario === 'R$ '
+                        ||  this.state.prods[item].dados[type].valor_unitario === '') ? 'R$ 0' : this.state.prods[item].dados[type].valor_unitario
+        let normString = typeof price === 'string' ? price.replace("R$", "") : '0';
+        let normString2 = typeof price === 'string' ? normString.replace(",", ".").replace(/\./g,'').trim() : '0';
         if (this.state.prods[item].dados[type][subtype] !== null) {
             return (
                 Object.keys(this.state.prods[item].dados[type][subtype])
@@ -237,7 +238,10 @@ export default class CartComponent extends React.Component {
     getTotalQtyCat0LastLevel(prods, key, ke, k) {
         if (k !== "valor_unitario" && prods[key].dados[ke][k] !== null) {
             return Object.keys(prods[key].dados[ke][k]).reduce(
-                (l, i) => (parseInt(prods[key].dados[ke][k][i]) || 0) + l,
+                (l, i) => prods[key].dados[ke][k][i] === '' 
+                            ? 0
+                            : (parseInt(prods[key].dados[ke][k][i]) || 0)
+                     + l,
                 0
             );
         } else {
@@ -514,7 +518,7 @@ export default class CartComponent extends React.Component {
     getTotalQtyCat1(item) {
         if (item !== undefined) {
             return Object.keys(item).reduce((o, k) =>
-                Object.keys(item[k]).reduce((old, i) => parseInt(item[k][i]) + old, 0)
+                Object.keys(item[k]).reduce((old, i) => item[k][i] === '' ? 0 : parseInt(item[k][i]) + old, 0)
                 + o, 0
             );
         }
@@ -531,7 +535,7 @@ export default class CartComponent extends React.Component {
     getTotalQtyCat2(item) {
         if (item !== undefined) {
             return Object.keys(item).reduce(
-                (o, k) => parseInt(item[k].quantidade) + o,
+                (o, k) => item[k].quantidade === '' ? 0 : parseInt(item[k].quantidade) + o,
                 0
             );
         }
@@ -559,7 +563,7 @@ export default class CartComponent extends React.Component {
                 .reduce(
                     (o, k) =>
                         Object.keys(item[k]).reduce(
-                            (old, key) => parseInt(item[k][key]) + old,
+                            (old, key) => item[k][key] === '' ? 0 : parseInt(item[k][key]) + old,
                             0
                         ) + o,
                     0
@@ -650,12 +654,13 @@ export default class CartComponent extends React.Component {
                                 fontWeight: "bold",
                                 padding: "0.4em",
                                 display: "inline-block",
-                                maxWidth: '60%'
+                                maxWidth: '60%',
+                                color: "#32338D"
                             }}
                             key="cat0-div1-s1"
                         >
                             {" "}
-                            {item + " " + i}{" "}
+                            {item.toUpperCase() + " " + i.toUpperCase()}{" "}
                         </span>{" "}
                         <input
                             style={{
@@ -697,7 +702,7 @@ export default class CartComponent extends React.Component {
                                 >
                                     <span
                                         style={{
-                                            fontWeight: 600,
+                                            fontWeight: 'normal',
                                             padding: "0.4em",
                                             marginLeft: "1em",
                                             display: "inline-block"
@@ -714,7 +719,7 @@ export default class CartComponent extends React.Component {
                                                 fontSize: "30px",
                                                 display: "inline-block",
                                                 verticalAlign: "sub",
-                                                color: "#32338D",
+                                                color: 'rgb(116, 116, 116)',
                                                 cursor: "pointer",
                                             }}
                                             key="cat0-div2-s2"
@@ -735,7 +740,7 @@ export default class CartComponent extends React.Component {
                                             key="cat0-div2-i1"
                                             onChange={(e)=>this.handleQtyChange(e, `${item}-${i}`)}
                                             defaultValue={
-                                                this.state.prods[item].dados[i][el][e]
+                                                this.state.prods[item].dados[i][el][e] === '' ? '0' : this.state.prods[item].dados[i][el][e]
                                             }
                                         />{" "}
                                         <span
@@ -770,7 +775,7 @@ export default class CartComponent extends React.Component {
                     >
                         <span
                             style={{
-                                fontWeight: "bold",
+                                fontWeight: "normal",
                                 padding: "0.4em"
                             }}
                             key="cat0-div3-s1"
@@ -778,7 +783,7 @@ export default class CartComponent extends React.Component {
                             {" "}
                             Quantidade:{" "}
                         </span>{" "}
-                        <span key="cat0-div3-s2">
+                        <span key="cat0-div3-s2" style={{color: 'rgb(116, 116, 116)'}}>
                             {" "}
                             {this.getTotalQtyCat0(
                                 this.state.prods[item].dados[i]
@@ -786,7 +791,7 @@ export default class CartComponent extends React.Component {
                         </span>{" "}
                         <span
                             style={{
-                                fontWeight: "bold",
+                                fontWeight: "normal",
                                 padding: "0.4em",
                                 marginLeft: '5%'
                             }}
@@ -841,11 +846,12 @@ export default class CartComponent extends React.Component {
                                 fontWeight: "bold",
                                 padding: "0.4em",
                                 display: "inline-block",
-                                maxWidth: '60%'
+                                maxWidth: '60%',
+                                color: "#32338D"
                             }}
                         >
                             {" "}
-                            {item}{" "}
+                            {item.toUpperCase()}{" "}
                         </span>{" "}
                         <input
                             style={{
@@ -901,7 +907,7 @@ export default class CartComponent extends React.Component {
                                                 fontSize: "30px",
                                                 display: "inline-block",
                                                 verticalAlign: "sub",
-                                                color: "#32338D",
+                                                color: 'rgb(116, 116, 116)',
                                                 cursor: "pointer"
                                             }}
                                             key="cat1-div2-s2"
@@ -922,8 +928,8 @@ export default class CartComponent extends React.Component {
                                             key="cat1-div2-i"
                                             onChange={(e)=>this.handleQtyChange(e, `${item}`)}
                                             defaultValue={
-                                                this.state.prods[item].dados[el][e]
-                                            }
+                                                this.state.prods[item].dados[el][e] === '' ? '0' : this.state.prods[item].dados[el][e]
+                                             }
                                         />{" "}
                                         <span
                                             style={{
@@ -958,7 +964,7 @@ export default class CartComponent extends React.Component {
                     >
                         <span
                             style={{
-                                fontWeight: "bold",
+                                fontWeight: "normal",
                                 padding: "0.4em"
                             }}
                             key="cat1-div3-s1"
@@ -966,7 +972,7 @@ export default class CartComponent extends React.Component {
                             {" "}
                             Quantidade:{" "}
                         </span>{" "}
-                        <span key="cat1-div3-s2">
+                        <span key="cat1-div3-s2" style={{color: 'rgb(116, 116, 116)'}}>
                             {" "}
                             {this.getTotalQtyCat1(
                                 this.state.prods[item].dados
@@ -974,7 +980,7 @@ export default class CartComponent extends React.Component {
                         </span>{" "}
                         <span
                             style={{
-                                fontWeight: "bold",
+                                fontWeight: "normal",
                                 padding: "0.4em",
                                 marginLeft: '5%'
                             }}
@@ -1029,11 +1035,12 @@ export default class CartComponent extends React.Component {
                             style={{
                                 fontSize: "16px",
                                 fontWeight: "bold",
-                                padding: "0.4em"
+                                padding: "0.4em",
+                                color: "#32338D"
                             }}
                         >
                             {" "}
-                            {item}{" "}
+                            {item.toUpperCase()}{" "}
                         </span>{" "}
                     </div>{" "}
                     {Object.keys(this.state.prods[item].dados).map((i, idx) => (
@@ -1073,7 +1080,7 @@ export default class CartComponent extends React.Component {
                                         fontSize: "30px",
                                         display: "inline-block",
                                         verticalAlign: "sub",
-                                        color: "#32338D",
+                                        color: 'rgb(116, 116, 116)',
                                         cursor: "pointer"
                                     }}
                                     className="types-list-2-minus"
@@ -1096,7 +1103,8 @@ export default class CartComponent extends React.Component {
                                     onChange={(e)=>this.handleQtyChange(e, `${item}`, true)}
                                     defaultValue={
                                         this.state.prods[item].dados[i]
-                                            .quantidade
+                                            .quantidade === '' ? '0' : this.state.prods[item].dados[i]
+                                                                        .quantidade
                                     }
                                     key="cat2-div2-i1"
                                 />
@@ -1172,15 +1180,16 @@ export default class CartComponent extends React.Component {
                     >
                         <span
                             style={{
-                                fontWeight: "bold",
-                                padding: "0.4em"
+                                fontWeight: "normal",
+                                padding: "0.4em",
+                                color: 'rgb(116, 116, 116)'
                             }}
                             key="cat2-div3-s1"
                         >
                             {" "}
                             Quantidade:{" "}
                         </span>{" "}
-                        <span>
+                        <span   style={{color: 'rgb(116, 116, 116)'}}>
                             {" "}
                             {this.getTotalQtyCat2(
                                 this.state.prods[item].dados
@@ -1188,7 +1197,7 @@ export default class CartComponent extends React.Component {
                         </span>{" "}
                         <span
                             style={{
-                                fontWeight: "bold",
+                                fontWeight: "normal",
                                 padding: "0.4em",
                                 marginLeft: '5%'
                             }}
@@ -1241,11 +1250,12 @@ export default class CartComponent extends React.Component {
                             fontWeight: "bold",
                             padding: "0.4em",
                             display: "inline-block",
-                            maxWidth: '60%'
+                            maxWidth: '60%',
+                            color: "#32338D"
                         }}
                     >
                         {" "}
-                        {item}{" "}
+                        {item.toUpperCase()}{" "}
                     </span>{" "}
                     <input
                         style={{
@@ -1295,7 +1305,7 @@ export default class CartComponent extends React.Component {
                                     fontSize: "30px",
                                     display: "inline-block",
                                     verticalAlign: "sub",
-                                    color: "#32338D",
+                                    color: 'rgb(116, 116, 116)',
                                     cursor: "pointer",
                                 }}
                                 key="cat3-s2"
@@ -1313,7 +1323,7 @@ export default class CartComponent extends React.Component {
                                     backgroundColor: "inherit",
                                     textAlign: "center"
                                 }}
-                                defaultValue={this.state.prods[item].dados[el]}
+                                defaultValue={this.state.prods[item].dados[el] === '' ? '0' : this.state.prods[item].dados[el]}
                                 onChange={(e)=>this.handleQtyChange(e, `${item}`)}
                                 key="cat3-i1"
                             />
@@ -1348,14 +1358,14 @@ export default class CartComponent extends React.Component {
                 >
                     <span
                         style={{
-                            fontWeight: "bold",
+                            fontWeight: "normal",
                             padding: "0.4em"
                         }}
                     >
                         {" "}
                         Quantidade:{" "}
                     </span>{" "}
-                    <span>
+                    <span  style={{color: 'rgb(116, 116, 116)'}}>
                         {" "}
                         {this.getTotalQtyPerProduct(
                             this.state.prods[item].dados
@@ -1363,7 +1373,7 @@ export default class CartComponent extends React.Component {
                     </span>{" "}
                     <span
                         style={{
-                            fontWeight: "bold",
+                            fontWeight: "normal",
                             padding: "0.4em",
                             marginLeft: '5%'
                         }}
@@ -1540,7 +1550,8 @@ export default class CartComponent extends React.Component {
                             className="text-left mt-3"
                             key="cart-h5-1"
                             style={{
-                                padding: "0 0.5em"
+                                padding: "0 0.5em",
+                                color: "#32338D"
                             }}
                         >
                             <img
@@ -1552,7 +1563,7 @@ export default class CartComponent extends React.Component {
                                 }}
                             >
                             </img>
-                            Seus itens{" "}
+                            Seu Pedido{" "}
                         </h5>{" "}
                         <h6
                             className="text-left ml-3 px-1"

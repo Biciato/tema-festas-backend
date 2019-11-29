@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Aigen\TemaFesta\GerenciadorPlanilha;
 use App\Pedido;
+use App\Mail\PedidoCriado;
 
 class SpreadsheetController extends Controller
 {
@@ -47,7 +49,13 @@ class SpreadsheetController extends Controller
         } catch(Exception $e) {
             return $e;
         } finally {
-            
+            Mail::to(['address' => 'rafael@aigen.com.br'])
+                    ->send(new PedidoCriado(storage_path(
+                        'app/pedidos-excel/'
+                        .$client
+                        . '/'
+                        . $filename
+                        .'.xls')));
             return 'success';
         }
     }

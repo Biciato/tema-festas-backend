@@ -400,7 +400,7 @@ export default class ProductComponent extends React.Component {
                         if (Object.keys(prods[i].dados[el]).length === 1 ) {
                             delete prods[i].dados[el]
                         } else {
-                            for (let ob of Object.keys(prods[i].dados[el])) {
+                            for (let ob of Object.keys(prods[i].dados[el]).filter((it) => it !== 'valor_unitario')) {
                                 if (prods[i].dados[el][ob] === null) {
                                     delete prods[i].dados[el][ob]
                                     if (Object.keys(prods[i].dados[el]).length === 1 ) {
@@ -408,7 +408,7 @@ export default class ProductComponent extends React.Component {
                                     }
                                 } else {
                                     for (let obj of Object.keys(prods[i].dados[el][ob])) {
-                                        if (prods[i].dados[el][ob][obj] === '') {
+                                        if (prods[i].dados[el][ob][obj] === '' || prods[i].dados[el][ob][obj] === '0') {
                                             delete prods[i].dados[el][ob][obj]
                                             if (Object.keys(prods[i].dados[el][ob]).length === 0 ) {
                                                 delete prods[i].dados[el][ob]
@@ -431,7 +431,7 @@ export default class ProductComponent extends React.Component {
 
                      } else {
                         for (let el of Object.keys(prods[i].dados)) {
-                            if (prods[i].dados[el].quantidade === '0' || prods[i].dados[el].valor_unitario === 'R$ ') {
+                            if (prods[i].dados[el].quantidade === '0' || prods[i].dados[el].quantidade === 'R$ ' || prods[i].dados[el].quantidade === '') {
                                 delete prods[i].dados[el]
                                 if (Object.keys(prods[i].dados).length === 0) {
                                    delete prods[i]
@@ -439,11 +439,41 @@ export default class ProductComponent extends React.Component {
                             }
                         }
                      }
-                } else  {
+                } else if (prods[i].tipo_categoria === 1) {
                     if (Object.keys(prods[i].dados).length === 0 ) {
                         delete prods[i]
+                    } else {
+                        for (let el of Object.keys(prods[i].dados)) {
+                            for (let e of Object.keys(prods[i].dados[el])) {
+                                if (prods[i].dados[el][e] === '' || prods[i].dados[el][e] === '0') {
+                                    delete prods[i].dados[el][e]
+                                    if (Object.keys(prods[i].dados[el]).length === 0) {
+                                        delete prods[i].dados[el]
+                                        if (Object.keys(prods[i].dados).length === 0 ) {
+                                            delete prods[i]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }                   
+                } else {
+                    if (Object.keys(prods[i].dados).length === 0) {
+                        delete prods[i]
+                    } else {
+                        for (let el of Object.keys(prods[i].dados).filter((it) => it !== 'valor_unitario')) {
+                            if (prods[i].dados[el] === '' || prods[i].dados[el] === '0') {
+                                delete prods[i].dados[el]
+                                if (Object.keys(prods[i].dados).length === 0) {
+                                    delete prods[i]
+                                }
+                            }
+                        }
                     }
                 }
+            }
+            if (Object.keys(this.state.prods).length > 0) {
+                localStorage.setItem('prods', JSON.stringify(prods))
             }
             return <Redirect push to={{
                 pathname: `/${this.state.redirect}`,
