@@ -124,7 +124,7 @@ export default class TypeComponent extends React.Component {
                   marginBottom: 0,
                   padding: '1em 0.5em 0.2em',
                   fontSize: '14px',
-                  fontWeight: '600'
+                  fontWeight: 'normal'
                 }
               }, 'Valor Geral'),
               e(FormControl, { 

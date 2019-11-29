@@ -27,7 +27,7 @@ export default class ClientComponent extends React.Component {
         } else {
             axios.post('/create-order', {client: this.state.client})
                 .then((response) => this.setState({
-                    order: response.data.id
+                    order: response.data.data.id
                 }, () => this.setState({redirect: true})))
                 .catch((error) => console.log(error) );
         }

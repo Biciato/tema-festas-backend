@@ -49,7 +49,7 @@ class SpreadsheetController extends Controller
         } catch(Exception $e) {
             return $e;
         } finally {
-            Mail::to(['address' => 'rafael@aigen.com.br'])
+            Mail::to('leandrobiciato58@gmail.com')
                     ->send(new PedidoCriado(storage_path(
                         'app/pedidos-excel/'
                         .$client

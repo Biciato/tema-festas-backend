@@ -204,7 +204,7 @@ export default class TypeList extends React.Component {
                         key: 'c-0',
                         style: {
                             fontSize: '14px',
-                            fontWeight: '600',
+                            fontWeight: 'normal',
                             marginRight: '1em',
                             marginBottom: 0,
                             padding: this.getProdCategory() !== 2 ? '6% 3%' : '6% 3% 1%',
