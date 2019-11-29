@@ -34,10 +34,7 @@ export default class TotalComponent extends React.Component {
         }
     }
     componentDidUpdate(prevProps) {
-        console.log(prevProps, this.props.prods)
         if (prevProps.prods !== this.props.prods) {
-            console.log('teste')
-
             this.setState({
                 totalPrice: (
                     this.getTotalCat0(this.props.prods) +
@@ -46,7 +43,7 @@ export default class TotalComponent extends React.Component {
                     this.getTotalCat3(this.props.prods)
                 ).toLocaleString("pt-br", { minimumFractionDigits: 2 }),
                 totalQty: this.getTotalQty()
-            });
+            })
         }
     }
     getTotalCat3(prods) {

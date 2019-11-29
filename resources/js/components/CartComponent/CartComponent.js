@@ -48,7 +48,7 @@ export default class CartComponent extends React.Component {
         e.target.value = 'R$ ' + this.moeda(price)
         this.setTotalQtyPerBlockOnChange(div, type2)
     }
-    mountCat0Json() {
+    mountCat0Json(toFn) {
         let json = {}
         for (let i of Array.from(Array(document.querySelectorAll('[data="0"]').length),(x,item)=>item)) {
             const el = document.querySelectorAll('[data="0"]')[i]
@@ -69,10 +69,12 @@ export default class CartComponent extends React.Component {
                     tipo_categoria: 0,
                     dados: Object.assign({}, json[product] ? json[product].dados : {}, {
                         [size]: {
-                            valor_unitario: document.querySelectorAll('[data="0"]')[i].children[0].children[1].value
-                                            .replace('R$','')
-                                            .replace(',','.')
-                                            .trim(),
+                            valor_unitario: toFn === 'ajax'
+                                                ? document.querySelectorAll('[data="0"]')[i].children[0].children[1].value
+                                                    .replace('R$','')
+                                                    .replace(',','.')
+                                                    .trim()
+                                                : document.querySelectorAll('[data="0"]')[i].children[0].children[1].value,
                             ...type
                         }
                     })
@@ -81,7 +83,7 @@ export default class CartComponent extends React.Component {
         }
         return json
     }
-    mountCat1Json() {
+    mountCat1Json(toFn) {
         let json = {}
         for (let i of Array.from(Array(document.querySelectorAll('[data="1"]').length),(x,item)=>item)) {
             const el = document.querySelectorAll('[data="1"]')[i]
@@ -98,10 +100,12 @@ export default class CartComponent extends React.Component {
             }
             json  = Object.assign({}, json, {
                 [product]: {
-                    valor_unitario: document.querySelectorAll('[data="1"]')[i].children[0].children[1].value
-                                    .replace('R$','')
-                                    .replace(',','.')
-                                    .trim(),
+                    valor_unitario: toFn === 'ajax'
+                                        ? document.querySelectorAll('[data="1"]')[i].children[0].children[1].value
+                                            .replace('R$','')
+                                            .replace(',','.')
+                                            .trim()
+                                        : document.querySelectorAll('[data="1"]')[i].children[0].children[1].value,
                     tipo_categoria: 1,
                     dados: Object.assign({}, json[product] ? json[product].dados : {}, {
                         ...type
@@ -111,7 +115,7 @@ export default class CartComponent extends React.Component {
         }
         return json
     }
-    mountCat2Json() {
+    mountCat2Json(toFn) {
         let json = {}
         for (let i of Array.from(Array(document.querySelectorAll('[data="2"]').length),(x,item)=>item)) {
             const el = document.querySelectorAll('[data="2"]')[i]
@@ -122,10 +126,12 @@ export default class CartComponent extends React.Component {
                     types = Object.assign({}, types, {
                         [el.children[e].children[0].children[0].innerHTML] : {
                             quantidade: el.children[e].children[0].children[2].value,
-                            valor_unitario: el.children[e].children[1].children[1].value
-                                .replace('R$','')
-                                .replace(',','.')
-                                .trim()
+                            valor_unitario: toFn === 'ajax'
+                                                ? el.children[e].children[1].children[1].value
+                                                    .replace('R$','')
+                                                    .replace(',','.')
+                                                    .trim()
+                                                : el.children[e].children[1].children[1].value
                         }
                     })
                 )
@@ -140,7 +146,7 @@ export default class CartComponent extends React.Component {
         }
         return json
     }
-    mountCat3Json() {
+    mountCat3Json(toFn) {
         const el = document.querySelectorAll('[data="3"]')[0]
         if (el) {
             let types = {}
@@ -154,10 +160,12 @@ export default class CartComponent extends React.Component {
             return {
                 [el.id] : {
                     tipo_categoria: 3,
-                    valor_unitario: el.children[0].children[1].value
-                                    .replace('R$','')
-                                    .replace(',','.')
-                                    .trim(),
+                    valor_unitario: toFn === 'ajax'
+                                        ? el.children[0].children[1].value
+                                            .replace('R$','')
+                                            .replace(',','.')
+                                            .trim()
+                                        : el.children[0].children[1].value,
                     dados: {...types}
                 }
             }
@@ -175,10 +183,10 @@ export default class CartComponent extends React.Component {
             this.setState({loader: true})
             axios.post('/get-order/' + this.state.order, {
                 order: {
-                    ...this.mountCat0Json(),
-                    ...this.mountCat1Json(),
-                    ...this.mountCat2Json(),
-                    ...this.mountCat3Json()
+                    ...this.mountCat0Json('ajax'),
+                    ...this.mountCat1Json('ajax'),
+                    ...this.mountCat2Json('ajax'),
+                    ...this.mountCat3Json('ajax')
                 },
                 client: this.props.location.state.client,
                 total: total
@@ -1169,10 +1177,10 @@ export default class CartComponent extends React.Component {
         )
         document.getElementById('totalPrice').innerHTML = priceBr
         localStorage.setItem('prods' , JSON.stringify({
-            ...this.mountCat0Json(),
-            ...this.mountCat1Json(),
-            ...this.mountCat2Json(),
-            ...this.mountCat3Json()
+            ...this.mountCat0Json('localStorage'),
+            ...this.mountCat1Json('localStorage'),
+            ...this.mountCat2Json('localStorage'),
+            ...this.mountCat3Json('localStorage')
         }))
     }
     render() {
