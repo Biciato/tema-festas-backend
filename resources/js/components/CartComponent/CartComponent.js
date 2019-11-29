@@ -649,6 +649,7 @@ export default class CartComponent extends React.Component {
                         key="cat0-div1"
                     >
                         <span
+                            className="item-label"
                             style={{
                                 fontSize: "16px",
                                 fontWeight: "bold",
