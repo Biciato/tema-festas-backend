@@ -173,6 +173,9 @@ export default class CartComponent extends React.Component {
         this.setState({prods}, () => this.saveOnLocalStorage())
     }
     handleQtyCat0Change(e, prodName, size, type, subtype) {
+        if (e.target.value === '0') {
+            return false
+        }
         let prods = Object.assign({}, this.state.prods)
         prods[prodName].dados[size][type][subtype] = e.target.value === '' ? '0' : e.target.value
         this.setState({prods}, () => this.saveOnLocalStorage())
@@ -1550,7 +1553,7 @@ export default class CartComponent extends React.Component {
                                         timeout={3000} //3 secs
 
                                     />
-                                : 'Finalizar Compra'
+                                : 'Finalizar Pedido'
                         }
                     </div>{" "}
                 </Col>
