@@ -18,8 +18,8 @@
 
 @media (min-width: 500px) {
     .footer-total {
-        left: 37%;
-        width: 25em;
+        left: auto;
+        width: 23.5em;
     }
 }
 
