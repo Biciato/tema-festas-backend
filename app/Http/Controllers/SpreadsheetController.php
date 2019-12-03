@@ -11,7 +11,7 @@ use App\Mail\PedidoCriado;
 class SpreadsheetController extends Controller
 {
     public function getOrder(Request $request) {
-        try {
+       /*  try {
             $client = str_replace(' ', '_', $request->client);
             $username = str_replace(' ', '_', auth()->user()->name);
             $date = str_replace(' ', '_', now());
@@ -48,15 +48,15 @@ class SpreadsheetController extends Controller
             $planilha->inserirPedido($request->order);
         } catch(Exception $e) {
             return $e;
-        } finally {
+        } finally { */
             Mail::to('rafael@aigen.com.br')
 		            ->cc('leandro@aigen.com.br')
-                    ->send(new PedidoCriado(storage_path(
+                    ->send(new PedidoCriado(/* storage_path(
                         'app/pedidos-excel/'
                         .$client
                         . '/'
                         . $filename
-                        .'.xls')));
+                    .'.xls' )*/));
             return 'success';
         }
     }
