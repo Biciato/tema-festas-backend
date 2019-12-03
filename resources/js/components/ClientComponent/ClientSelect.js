@@ -19,6 +19,7 @@ export default class ClientSelect extends React.Component {
         return(
             <Select 
                 options={clientList}
+                className="align-left"
                 styles={{
                     control: styles => ({
                       ...styles,

@@ -23,6 +23,9 @@
     margin-top: 3em;
 }
 
+.align-left {
+    text-align: left;
+}
 
 .types-list {
     width: 56%;
