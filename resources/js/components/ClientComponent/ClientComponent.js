@@ -29,7 +29,7 @@ export default class ClientComponent extends React.Component {
         if (this.state.client === null) {
             this.setState({warning: true})
         } else {
-            
+            this.setState({redirect: true})
         }
     }
     render() {

@@ -562,7 +562,7 @@ export default class CartComponent extends React.Component {
                     >
                         <span
                             style={{
-                                fontSize: "16px",
+                                fontSize: "14px",
                                 fontWeight: "bold",
                                 padding: "0.4em",
                                 display: "inline-block",
@@ -605,7 +605,6 @@ export default class CartComponent extends React.Component {
                                         fontSize: "14px",
                                         backgroundColor:
                                             idx % 2 === 0 ? "white" : "#F8F8F8",
-                                        color: 'rgb(116, 116, 116)',
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         width: '100%'
@@ -755,7 +754,7 @@ export default class CartComponent extends React.Component {
                     >
                         <span
                             style={{
-                                fontSize: "16px",
+                                fontSize: "14px",
                                 fontWeight: "bold",
                                 padding: "0.4em",
                                 display: "inline-block",
@@ -794,7 +793,6 @@ export default class CartComponent extends React.Component {
                                         fontSize: "14px",
                                         backgroundColor:
                                             idx % 2 === 0 ? "white" : "#F8F8F8",
-                                        color: '#2B2B2B',
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         width: '100%'
@@ -803,7 +801,7 @@ export default class CartComponent extends React.Component {
                                 >
                                     <span
                                         style={{
-                                            fontWeight: 600,
+                                            fontWeight: 'normal',
                                             padding: "0.4em",
                                             marginLeft: "1em",
                                             display: "inline-block"
@@ -941,7 +939,7 @@ export default class CartComponent extends React.Component {
                     >
                         <span
                             style={{
-                                fontSize: "16px",
+                                fontSize: "14px",
                                 fontWeight: "bold",
                                 padding: "0.4em",
                                 color: "#32338D"
@@ -971,11 +969,13 @@ export default class CartComponent extends React.Component {
                             >
                                 <span
                                     style={{
-                                        fontWeight: 600,
+                                        fontWeight: 'normal',
                                         padding: "0.4em",
                                         marginLeft: "1em",
                                         display: "inline-block",
-                                        borderBottom: "1px solid #D7D7D7"
+                                        borderBottom: "1px solid #D7D7D7",
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap'
                                     }}
                                     className="types-list-2"
                                     key={'cat2-div2-s1-' + item}
@@ -1089,8 +1089,7 @@ export default class CartComponent extends React.Component {
                         <span
                             style={{
                                 fontWeight: "normal",
-                                padding: "0.4em",
-                                color: 'rgb(116, 116, 116)'
+                                padding: "0.4em"
                             }}
                             key="cat2-div3-s1"
                         >
@@ -1150,7 +1149,7 @@ export default class CartComponent extends React.Component {
                 >
                     <span
                         style={{
-                            fontSize: "16px",
+                            fontSize: "14px",
                             fontWeight: "bold",
                             padding: "0.4em",
                             display: "inline-block",
@@ -1184,7 +1183,6 @@ export default class CartComponent extends React.Component {
                             height: "4em",
                             fontSize: "14px",
                             backgroundColor: idx % 2 === 0 ? "white" : "#F8F8F8",
-                            color: '#2B2B2B',
                             display: 'flex',
                             justifyContent: 'space-between'
                         }}
@@ -1192,7 +1190,7 @@ export default class CartComponent extends React.Component {
                     >
                         <span
                             style={{
-                                fontWeight: 600,
+                                fontWeight: 'normal',
                                 padding: "0.4em",
                                 marginLeft: "1em",
                                 display: "inline-block",
@@ -1474,16 +1472,6 @@ export default class CartComponent extends React.Component {
                             </img>
                             Seu Pedido{" "}
                         </h5>{" "}
-                        <h6
-                            className="text-left ml-3 px-1"
-                            key="cart-h6-1"
-                            style={{
-                                padding: "0 0.5em",
-                                fontSize: "14px"
-                            }}
-                        >
-                            Nº do pedido <span>{this.state.order}</span>{" "}
-                        </h6>{" "}
                         {this.mountProdList()}{" "}
                         <div
                             style={{
