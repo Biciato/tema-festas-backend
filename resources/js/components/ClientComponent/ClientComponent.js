@@ -17,6 +17,10 @@ export default class ClientComponent extends React.Component {
         if (localStorage.getItem('prods') !== null) {
             localStorage.removeItem('prods')
         }
+        axios.get('/api/clients')
+                .then((response) => this.setState({ 
+                    clients: response.data.map((item) => item.dsc_nome) 
+                }));
     }
     handleClientSelect(client) {
         this.setState({ client });
@@ -25,11 +29,7 @@ export default class ClientComponent extends React.Component {
         if (this.state.client === null) {
             this.setState({warning: true})
         } else {
-            axios.post('/create-order', {client: this.state.client})
-                .then((response) => this.setState({
-                    order: response.data.data.id
-                }, () => this.setState({redirect: true})))
-                .catch((error) => console.log(error) );
+            
         }
     }
     render() {
@@ -57,6 +57,7 @@ export default class ClientComponent extends React.Component {
                         Clientes
                     </h5>
                     <ClientSelect
+                        clients={this.state.clients}
                         warning={this.state.warning}
                         key={2}
                         onClientSelect={this.handleClientSelect}

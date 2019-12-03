@@ -11,7 +11,8 @@ export default class ClientSelect extends React.Component {
         this.props.onClientSelect(client.value)
     }
     render() {
-        const clientList = Clients.map((client) => ({
+        const clients = this.props.clients ? this.props.clients : Clients
+        const clientList = clients.map((client) => ({
             value: client.toUpperCase(),
             label: client.toUpperCase()
         }));

@@ -30,3 +30,4 @@ Route::get('/{path?}', [
 Route::post('/get-order/{pedido}', 'SpreadsheetController@getOrder');
 
 Route::post('/create-order', 'PedidoController@createOrder');
+

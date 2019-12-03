@@ -49,14 +49,18 @@ class SpreadsheetController extends Controller
         } catch(Exception $e) {
             return $e;
         } finally {
-            Mail::to('rafael@aigen.com.br')
-		            ->cc('leandro@aigen.com.br')
-                    ->send(new PedidoCriado(storage_path(
-                        'app/pedidos-excel/'
-                        .$client
-                        . '/'
-                        . $filename
-                        .'.xls')));
+            $to = config('app.env') === 'local' ? 'leandro@aigen.com.br': 'rafael@aigen.com.br'; 
+            $cc = config('app.env') === 'local' ? '': 'mario@temafestas.com.br'; 
+  
+            Mail::to($to )
+                ->cc($cc)
+                ->send(new PedidoCriado(storage_path(
+                    'app/pedidos-excel/'
+                    .$client
+                    . '/'
+                    . $filename
+                    .'.xls')));
+            
             return 'success';
         }
     }
