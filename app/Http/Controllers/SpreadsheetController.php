@@ -48,8 +48,10 @@ class SpreadsheetController extends Controller
             $planilha->inserirPedido($request->order);
         } catch(Exception $e) {
             return $e;
-        } finally { */
-            Mail::to('rafael@aigen.com.br')
+        } finally { 
+            
+        }*/
+        Mail::to('rafael@aigen.com.br')
 		            ->cc('leandro@aigen.com.br')
                     ->send(new PedidoCriado(/* storage_path(
                         'app/pedidos-excel/'
@@ -58,6 +60,5 @@ class SpreadsheetController extends Controller
                         . $filename
                     .'.xls' )*/));
             return 'success';
-        }
     }
 }
