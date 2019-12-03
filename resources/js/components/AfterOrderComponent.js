@@ -17,6 +17,9 @@ export default class AfterOrderComponent extends React.Component {
     constructor(props) {
         super(props)
         this.handleBackClick = this.handleBackClick.bind(this)
+        this.state = {
+            orderNumber: props.orderNumber
+        }
     }
     handleBackClick() {
         this.props.onBackClick()
@@ -47,15 +50,24 @@ export default class AfterOrderComponent extends React.Component {
                 <p
                     style={{
                         width: "65%",
-                        margin: "auto"
+                        margin: "auto",
+                        display: this.props.cdt === 'ok' ? '' : 'none'
                     }}
                     key="cart-div1-p"
                 >
-                    {this.props.cdt === 'ok' 
-                        ? 'Pedido Realizado com sucesso!'
-                        : `Ops, algo deu errado. Por favor, tente mais tarde
-                            ou contate o suporte!`
-                    }
+                    Pedido Realizado com Sucesso!<br></br>
+                    Número do Pedido: <span style={{fontStyle: 'normal'}}>{this.props.orderNumber}</span>
+                </p>{" "}
+                <p
+                    style={{
+                        width: "65%",
+                        margin: "auto",
+                        display: this.props.cdt === 'ok' ? 'none' : ''
+                    }}
+                    key="cart-div1-p-err"
+                >
+                    Ops, algo deu errado. Por favor, tente mais tarde
+                            ou contate o suporte!
                 </p>{" "}
                 <p style={{display: this.props.cdt === 'ok' ? 'none' : ''}}>
                     Deseja Voltar ? <br></br><br></br><br></br>

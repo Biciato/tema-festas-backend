@@ -18,7 +18,7 @@ class CreatePedidosAigenTable extends Migration
             $table->string('numero_pedido');
             $table->string('cliente');
             $table->string('fornecedor');
-            $table->string('arquivo');
+            $table->string('pedido');
             $table->timestamps();
         });
     }

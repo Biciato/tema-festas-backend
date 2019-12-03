@@ -27,7 +27,6 @@ Route::get('/{path?}', [
     'where' => ['path' => '.*']
 ]);
 
-Route::post('/get-order/{pedido}', 'SpreadsheetController@getOrder');
+Route::post('/create-order', 'SpreadsheetController@createOrder');
 
-Route::post('/create-order', 'PedidoController@createOrder');
 

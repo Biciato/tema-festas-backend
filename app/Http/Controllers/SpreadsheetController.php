@@ -10,58 +10,91 @@ use App\Mail\PedidoCriado;
 
 class SpreadsheetController extends Controller
 {
-    public function getOrder(Request $request) {
-        try {
-            $client = str_replace(' ', '_', $request->client);
-            $username = str_replace(' ', '_', auth()->user()->name);
-            $date = str_replace(' ', '_', now());
-            $date = str_replace(':', '_', $date);
-            $filename = $username . '-' . $date;
+    public function createOrder(Request $request) {
+        // Client name with white space replaced by underscore
+        $client = str_replace(' ', '_', $request->client);
+        // date with white space replaced by underscore
+        $date = str_replace(' ', '_', now());
+        // date with double dots replaced by underscore
+        $date = str_replace(':', '_', $date);
 
-            if (!is_dir(storage_path(
-                            'app/pedidos-json/'. $client))) {
+        // Try to make dir if it doesnt exists
+        try {
+            if (!is_dir(storage_path('app/pedidos-json/'. $client))) {
                 mkdir(storage_path(
                         'app/pedidos-json/' . $client));
             }
+        } catch (Exception $e) {
+            return $e;
+        }
+        // Try to make dir if it doesnt exists
+        try {
+            if (!is_dir(storage_path('app/pedidos-excel/'. $client))) {
+                mkdir(storage_path(
+                        'app/pedidos-excel/' . $client));
+            }
+        } catch (Exception $e) {
+            return $e;
+        }
+        // Try to save file on the server
+        try {
             file_put_contents(
                 storage_path(
                     'app/pedidos-json/'
                     .$client
                     . '/'
-                    . $filename
+                    . $date
                     .'.json'),
                 json_encode($request->order)
             );
-            if (!is_dir(storage_path(
-                        'app/pedidos-excel/'. $client))) {
-                mkdir(storage_path(
-                        'app/pedidos-excel/' . $client), 0777, true);
-            }
-            $planilha = new GerenciadorPlanilha(
-                storage_path(
-                    'app/pedidos-excel/'
-                    .$client
-                    . '/'
-                    . $filename
-                    .'.xls')
-            );
+        } catch (Exception $e) {
+            return $e;
+        }
+
+        // instancing Class with path to save file    
+        $planilha = new GerenciadorPlanilha(
+            storage_path(
+                'app/pedidos-excel/'
+                .$client
+                . '/'
+                . $date
+                .'.xls')
+        );
+
+        // Try to save file on the server
+        try {
             $planilha->inserirPedido($request->order);
         } catch(Exception $e) {
             return $e;
-        } finally {
-            $to = config('app.env') === 'local' ? 'leandro@aigen.com.br': 'rafael@aigen.com.br'; 
-            $cc = config('app.env') === 'local' ? '': 'mario@temafestas.com.br'; 
-  
-            Mail::to($to )
-                ->cc($cc)
-                ->send(new PedidoCriado(storage_path(
-                    'app/pedidos-excel/'
-                    .$client
-                    . '/'
-                    . $filename
-                    .'.xls')));
-            
-            return 'success';
+        } 
+        $pedido = new Pedido();
+        $newPedido = $pedido->create([
+            'cliente' => $request->client,
+            'fornecedor' => auth()->user()->name,
+            'numero_pedido' => $pedido->generateUniqOrderNumber(),
+            'pedido' => $date . '.json'
+        ]);
+        
+        // Try to send E-mail
+        try {
+            if (true) {
+                Mail::to('leandro@aigen.com.br')
+                        // ->cc('mario@temafestas.com.br')
+                        ->send(new PedidoCriado(storage_path(
+                            'app/pedidos-excel/'
+                            .$client
+                            . '/'
+                            . $date
+                            .'.xls'),
+                            $request->client,
+                            $newPedido->fornecedor,
+                            $newPedido->numero_pedido
+                        ));
+            }
+        } catch (Exception $e) {
+            return $e;
         }
+
+        return $newPedido->numero_pedido;
     }
 }

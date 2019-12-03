@@ -17,10 +17,16 @@ class PedidoCriado extends Mailable
      * @return void
      */
     protected $path;
+    public $client;
+    public $user;
+    public $order;
 
-    public function __construct($path)
+    public function __construct($path, $client, $user, $order)
     {
         $this->path = $path;
+        $this->client = $client;
+        $this->user = $user;
+        $this->order = $order;
     }
 
     /**

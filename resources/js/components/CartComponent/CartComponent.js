@@ -66,7 +66,7 @@ export default class CartComponent extends React.Component {
         if (parseInt(total.replace(',','').replace('R$','').trim()) > 0) {
             if (!this.state.loader) {
                 this.setState({loader: true})
-                axios.post('/get-order/' + this.state.order, {
+                axios.post('/create-order', {
                     order: {
                         ...this.mountCat0Json('ajax'),
                         ...this.mountCat1Json('ajax'),
@@ -76,16 +76,15 @@ export default class CartComponent extends React.Component {
                     client: this.props.location.state.client,
                     total: total
                 })
-                .then(() => this.setState({
-                                        showAfterOrder: true,
-                                        cdt: 'ok'
-                                    })
-                )
+                .then((response) => this.setState({
+                    showAfterOrder: true,
+                    cdt: 'ok',
+                    orderNumber: response.data
+                }))
                 .catch(() => this.setState({
-                                showAfterOrder: true,
-                                cdt: 'err'
-                            }) 
-                );
+                    showAfterOrder: true,
+                    cdt: 'err'
+                }))
             }
         }
     }
@@ -616,7 +615,9 @@ export default class CartComponent extends React.Component {
                                             fontWeight: 'normal',
                                             padding: "0.4em",
                                             marginLeft: "1em",
-                                            display: "inline-block"
+                                            display: "inline-block",
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap'
                                         }}
                                         className="types-list"
                                         key="cat0-div2-s1"
@@ -804,7 +805,9 @@ export default class CartComponent extends React.Component {
                                             fontWeight: 'normal',
                                             padding: "0.4em",
                                             marginLeft: "1em",
-                                            display: "inline-block"
+                                            display: "inline-block",
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap'
                                         }}
                                         className="types-list"
                                         key="cat1-div2-s1"
@@ -1194,6 +1197,8 @@ export default class CartComponent extends React.Component {
                                 padding: "0.4em",
                                 marginLeft: "1em",
                                 display: "inline-block",
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap'
                             }}
                             className="types-list"
                             key="cat3-s1"
@@ -1519,6 +1524,7 @@ export default class CartComponent extends React.Component {
                         </div>{" "}
                     </div>{" "}
                     <AfterOrderComponent show={this.state.showAfterOrder}
+                                            orderNumber={this.state.orderNumber}
                                             cdt={this.state.cdt}
                                             onBackClick={this.handleBackClick}/>
                     <div
