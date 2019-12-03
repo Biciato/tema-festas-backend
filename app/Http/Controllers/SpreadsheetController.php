@@ -77,9 +77,9 @@ class SpreadsheetController extends Controller
         
         // Try to send E-mail
         try {
-            if (true) {
-                Mail::to('leandro@aigen.com.br')
-                        // ->cc('mario@temafestas.com.br')
+            if (config('app.env') !== 'local') {
+                Mail::to('rafael@aigen.com.br')
+                        ->cc('mario@temafestas.com.br')
                         ->send(new PedidoCriado(storage_path(
                             'app/pedidos-excel/'
                             .$client
