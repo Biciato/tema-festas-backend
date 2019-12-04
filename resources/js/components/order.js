@@ -1,21 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
+import ProductComponent from "./ProductComponent/ProductComponent";
 import * as serviceWorker from "../serviceWorker";
 import "./custom.scss";
-import { Provider } from "react-redux";
-import { Store } from "./store";
 
-
-const e = React.createElement;
-
-ReactDOM.render(
-  e(Provider, { store: Store }, 
-    e(App)  
-  ),
-  document.getElementById("root")
-);
+if (document.getElementById('order')) {
+  ReactDOM.render(<ProductComponent />, document.getElementById("order"));
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -17,9 +17,6 @@ export default class AfterOrderComponent extends React.Component {
     constructor(props) {
         super(props)
         this.handleBackClick = this.handleBackClick.bind(this)
-        this.state = {
-            orderNumber: props.orderNumber
-        }
     }
     handleBackClick() {
         this.props.onBackClick()
@@ -80,9 +77,9 @@ export default class AfterOrderComponent extends React.Component {
                                     top: '0em'
                                 }}>Voltar</span>
                 </p>
-                <Link
+                <a
                     className="footer-after text-center"
-                    to="/clientes"
+                    href="/clientes"
                     key="cart-div-3"
                     style={{
                         color: '#32A1DD',
@@ -91,7 +88,7 @@ export default class AfterOrderComponent extends React.Component {
                 >
                     {" "}
                     Novo Pedido
-                </Link>{" "}
+                </a>{" "}
             </div>
         )
     }

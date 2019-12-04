@@ -1,27 +1,16 @@
 import React from 'react'
+import axios from 'axios'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
-import { Redirect, Prompt } from 'react-router-dom'
 import './NewComponent.css'
 
 export default class NewProductComponent extends React.Component {
     constructor(props) {
         super(props)
         this.closeModal = this.closeModal.bind(this)
-        this.goBack = this.goBack.bind(this)
-        this.redirect = this.redirect.bind(this)
-        this.renderRedirect = this.renderRedirect.bind(this)
         this.showModal = this.showModal.bind(this)
         this.state = {
-            order: props.history && props.history.location && props.history.location.state && props.history.location.state.order
-                    ? props.history.location.state.order
-                    : {},
-            redirect: false,
             showModal: false,
-            local: null,
-            prods: props.history && props.history.location && props.history.location.state && props.history.location.state.prods
-                    ? props.history.location.state.prods
-                    : {}
         }
     }
 
@@ -29,20 +18,12 @@ export default class NewProductComponent extends React.Component {
         this.setState({ showModal: false })
     }
     goBack() {
-        this.setState({ local: 'pedido' }, () => this.setState( { redirect: true }))
+        window.history.back()
     }
-    redirect() {
-        this.setState({ local: 'clientes' }, () => this.setState( { redirect: true }))
-    }
-    renderRedirect() {
-        if (this.state.redirect) {
-            return <Redirect  push to={{
-                pathname: '/' + this.state.local,
-                state: {
-                    order: this.state.order
-                }
-            }}  />
-        }
+    newOrder() {
+        axios.get('/clean-session-client-prods').then(() =>
+            window.location.assign('/clientes')
+        )
     }
     showModal() {
         this.setState({ showModal: true })
@@ -58,15 +39,6 @@ export default class NewProductComponent extends React.Component {
                         cursor: "pointer",
                         fontSize: "12px",
                     }}>
-                <Prompt message={(location) => {
-                    location.state = {
-                        client: this.props.history.location.state.client,
-                        prods: this.state.prods,
-                        order: this.state.order,
-                        totalPriceFromReload: this.props.totalPrice,
-                        totalQtyFromReload: this.props.totalQty
-                }}} />
-                {this.renderRedirect()}
                 <img src="/images/arrow.svg"
                         key="img1"
                         alt="star"
@@ -130,7 +102,7 @@ export default class NewProductComponent extends React.Component {
                         </Modal.Body>
 
                         <Modal.Footer key="mf" style={{ border: "none" }}>
-                            <Button onClick={this.redirect}
+                            <Button onClick={this.newOrder}
                                     key="mfb1"
                                     style={{
                                         borderRadius: "5px",

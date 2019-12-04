@@ -1,6 +1,5 @@
 import React from "react"
 import axios from 'axios'
-import { Redirect } from 'react-router-dom'
 import AfterOrderComponent from "../AfterOrderComponent";
 import NewProductComponent from "../NewProductComponent";
 import Loader from 'react-loader-spinner'
@@ -37,22 +36,20 @@ export default class CartComponent extends React.Component {
         this.mountProdList = this.mountProdList.bind(this);
         this.saveOnLocalStorage = this.saveOnLocalStorage.bind(this)
         this.state = {
-            order: props.location.state.order,
             showAfterOrder: false,
-            loader: false,
-            redirect: props.location.state === undefined ? true : false,
-            prods: this.getProds(props)
+            loader: false
         };
     }
-
-    getProds(props) {
-        if (localStorage.getItem("prods") !== null && Object.keys(localStorage.getItem('prods')).length !== 15) {
-            return JSON.parse(localStorage.getItem("prods"))
-        } else if (props.location && props.location.state && props.location.state.prods) {
-            return props.location.state.prods
-        } else {
-            return {}
-        }
+    
+    componentDidMount() {
+        axios.get('/get-prods').then((response) => response.data.length === 0 
+            ? window.location.assign('/clientes')
+            : this.setState({prods: response.data}))
+    }
+    componentDidUpdate() {
+        axios.post('/set-prods', { 
+            prods: this.state.prods
+        })
     }
     
     handleBackClick() {
@@ -72,9 +69,7 @@ export default class CartComponent extends React.Component {
                         ...this.mountCat1Json('ajax'),
                         ...this.mountCat2Json('ajax'),
                         ...this.mountCat3Json('ajax')
-                    },
-                    client: this.props.location.state.client,
-                    total: total
+                    }
                 })
                 .then((response) => this.setState({
                     showAfterOrder: true,
@@ -1430,22 +1425,18 @@ export default class CartComponent extends React.Component {
         }
     }
     saveOnLocalStorage() {
-        localStorage.setItem('prods', JSON.stringify(this.state.prods))
+        localStorage.setItem('tema_festas_products', JSON.stringify(this.state.prods))
     }
     
-    render() {
-        if (this.state.redirect) {
-            return <Redirect push to={{
-                pathname: "/clientes"
-            }} />;
+    render() {       
+        if (!this.state.prods) {
+            return null
         }
-        
         return (
             <Row>
                 <Col bsPrefix="col p-0">
                     <div style={{display: this.state.showAfterOrder ? 'none' : 'block'}}>
                         <NewProductComponent arrow={true}
-                                                history={this.props.history}
                                                 totalPrice={this.state.totalPrice}
                                                 totalQty={this.state.totalQty}/>
                     </div>

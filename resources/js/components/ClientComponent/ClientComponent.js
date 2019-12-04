@@ -3,7 +3,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ClientSelect from "./ClientSelect";
 import "./ClientComponent.css";
-import { Redirect } from "react-router-dom";
 import axios from 'axios'
 
 export default class ClientComponent extends React.Component {
@@ -14,34 +13,31 @@ export default class ClientComponent extends React.Component {
         this.state = { client: null };
     }
     componentDidMount() {
-        if (localStorage.getItem('prods') !== null) {
-            localStorage.removeItem('prods')
-        }
         axios.get('/api/clients')
                 .then((response) => this.setState({ 
                     clients: response.data.map((item) => item.dsc_nome) 
                 }));
     }
     handleClientSelect(client) {
-        this.setState({ client });
+        this.setState({ client }, () => this.setState({ warning: false }));
     }
     handleClick() {
         if (this.state.client === null) {
             this.setState({warning: true})
         } else {
-            this.setState({redirect: true})
+            axios.post('/set-client', { 
+                client: this.state.client 
+            }).then((response) => 
+                window.location.assign(`/pedido/${response.data}`
+            ))
         }
     }
     render() {
-        if (this.state.redirect) {
-            return <Redirect push to={{
-                        pathname: '/pedido',
-                        state: {
-                            client: this.state.client,
-                            order: this.state.order
-                        }
-                    }}/>
-        }
+        const warning = this.state.warning ? (
+            <div style={{color: 'red'}}>
+                Selecione um Cliente
+            </div>
+        ) : ''
         return (
             <Row bsPrefix="row m-1">
                 <Col bsPrefix="col text-center">
@@ -62,9 +58,7 @@ export default class ClientComponent extends React.Component {
                         key={2}
                         onClientSelect={this.handleClientSelect}
                     />
-                    <div style={{color: 'red', display: this.state.warning ? 'block' : 'none'}}>
-                        Selecione um Cliente
-                    </div>
+                    {warning}
                     <div onClick={this.handleClick}
                             className="footer mt-4"
                             key={3}>

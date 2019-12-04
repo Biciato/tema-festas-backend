@@ -7,7 +7,7 @@ import { Products } from "../resources/products";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import NewProductComponent from "../NewProductComponent";
-import { Redirect, Prompt } from 'react-router';
+import Axios from "axios";
 
 const e = React.createElement;
 
@@ -23,14 +23,6 @@ export default class ProductComponent extends React.Component {
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleCartClick = this.handleCartClick.bind(this);
         this.state = {
-            order: (props.location && props.location.state && props.location.state.order)
-                        ? props.location.state.order
-                        : 'Sem número',
-            redirect: (props.location.state === undefined
-                        || !props.location.state.client)
-                            ? 'clientes'
-                            : false,
-            prods: this.getProds(props),
             cpts: [
                 {
                     name: NewProductComponent,
@@ -50,14 +42,19 @@ export default class ProductComponent extends React.Component {
         }
     }
 
-    getProds(props) {
-        if (localStorage.getItem("prods") !== null && Object.keys(localStorage.getItem('prods')).length !== 15) {
-            return JSON.parse(localStorage.getItem("prods"))
-        } else if (props.location && props.location.state && props.location.state.prods) {
-            return props.location.state.prods
-        } else {
-            return {}
-        }
+    componentDidMount() {
+        axios.get('/get-client').then((response) => 
+            response.data === 'error'
+                ? window.location.assign('/clientes')
+                : axios.get('/get-prods').then((response) => 
+                    this.setState({prods: response.data})
+                )
+        )        
+    }
+    componentDidUpdate() {
+        axios.post('/set-prods', { 
+            prods: this.state.prods
+        })
     }
     getCategorySet(categoryName) {
         return Object.keys(this.state.categorias).find(
@@ -389,8 +386,8 @@ export default class ProductComponent extends React.Component {
     }
 
     render() {
-        if (Object.keys(this.state.prods).length > 0) {
-            localStorage.setItem('prods', JSON.stringify(this.state.prods))
+        if (this.state.prods && Object.keys(this.state.prods).length > 0) {
+            localStorage.setItem('tema_festas_products', JSON.stringify(this.state.prods))
         }
         if (this.state.redirect) {
             let prods = this.state.prods
@@ -473,18 +470,9 @@ export default class ProductComponent extends React.Component {
                 }
             }
             if (Object.keys(this.state.prods).length > 0) {
-                localStorage.setItem('prods', JSON.stringify(prods))
+                axios.post('/set-prods', { prods })
+                        .then(() => window.location.assign(`/${this.state.redirect}`))
             }
-            return <Redirect push to={{
-                pathname: `/${this.state.redirect}`,
-                state: {
-                    prods,
-                    client: this.props.location.state.client,
-                    order: this.state.order,
-                    totalQty: this.state.totalQty,
-                    totalPrice: this.state.totalPrice
-                }
-            }} />;
         }
         return e(
             Row,
