@@ -87,7 +87,7 @@ class SpreadsheetController extends Controller
                                 . '/'
                                 . $date
                                 .'.xls'),
-                                session('client'),
+                                str_replace('-', ' ', session('client')),
                                 $newPedido->fornecedor,
                                 $newPedido->numero_pedido
                             ));
