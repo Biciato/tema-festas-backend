@@ -1,66 +1,36 @@
 import React from 'react';
-import {
-  Products
-} from '../resources/products';
+import { Products } from '../resources/products';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Select from 'react-select';
+import HeaderComponent from "../HeaderComponent";
 
-const e = React.createElement
+const prodList = Object.assign(
+  {}, 
+  Products.categories[0],
+  Products.categories[1],
+  Products.categories[2],
+  Products.categories[3]
+) 
 
-export default class ProductSelect extends React.Component {
-  constructor() {
-    super()
-    this.handleChange = this.handleChange.bind(this)
-    this.state = { prodSelected: 'Produto' }
-  }
-  
-  handleChange(product) {
-    this.setState({
-      prodSelected: product
-    })
-    this.props.onProductChange(product.value)
-  }
-  render() {
-    const prodList = Object.assign(
-      {}, 
-      Products.categories[0],
-      Products.categories[1],
-      Products.categories[2],
-      Products.categories[3]
-    )
-    
-    return (
-      e(Row, {
-          bsPrefix: 'row mt-4' + (this.props.display ? ' d-none' : '')
-        },
-        e(Col, null, 
-          e('h5', {className: "text-left mt-3", key: 1, style : {color: "#32338D"}}, 
-            e('img', {
-              src: "/images/tasks-list.svg",
-              alt: "task",
-              style: {
-                  width: '7%',
-                  margin: '0.2em 0.4em 0.4em 0'
-              }
-            }), 
-            'Novo Pedido'
-          ),
-          e(Select, {
-            options: Object.keys(prodList).map((item) => ({value: item, label: item})),
-            onChange: this.handleChange,
-            defaultValue: { value: this.state.prodSelected, label: this.state.prodSelected},
-            styles: {
-              control: styles => ({
-                ...styles,
-                fontSize: '14px',
-                fontWeight: '600'
-              })              
-            },
-            key: 2
-          })
-        )
-      )
-    )
-  }
+export default function ProductSelect(props) {  
+  const handleChange = (product) => props.onProductChange(product.value)
+  return (
+    <Row bsPrefix="row mt-4">
+      <Col>
+        <HeaderComponent src="tasks-list.svg" title="Novo Pedido" key="header"/>
+        <Select options={Object.keys(prodList).map((item) => ({value: item, label: item}))} 
+                onChange={handleChange}
+                defaultValue={{value: 'Produto', label: 'Produto'}}
+                styles={{
+                  control: styles => ({
+                    ...styles,
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  })              
+                }}
+                key="select"/>
+      </Col>
+    </Row>
+  )
 }

@@ -10,6 +10,7 @@ import {
     Products
 } from '../resources/products'
 import './TypeList.css';
+import toCurrency from '../resources/currency'
 
 const e = React.createElement
 
@@ -27,7 +28,7 @@ export default class TypeList extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.prods !== this.props.prods) {
             this.setState({
-                subtypeObj: {}
+                subtype: {}
             }, () => this.forceUpdate());
         }
     }
@@ -66,15 +67,15 @@ export default class TypeList extends React.Component {
         if (qty.indexOf(0) === 0) {
             qty = qty.replace('0','')
         }
-        let subtypeObj = {};
+        let subtype = {}
         if (this.getProdCategory() === 2) {
             const price = document.querySelectorAll(
                 `[data="${e.target.attributes.data.value.replace('-qty', '')}"]`
             )[0].value;
-            subtypeObj = {
+            subtype = {
                 [e.target.attributes.data.value.replace('-qty', '')]: {
-                    qty,
-                    price: price.toLocaleString('pt-br', {
+                    quantidade: qty,
+                    valor_unitario: price.toLocaleString('pt-br', {
                         minimumFractionDigits: 2,
                         currency: 'BRL',
                         style: 'currency'
@@ -82,18 +83,12 @@ export default class TypeList extends React.Component {
                 }
             }
         } else {
-            subtypeObj = {
-                [e.target.attributes.data.value.replace('-qty', '')]: {
-                    qty
-                }
+            subtype = {
+                [e.target.attributes.data.value.replace('-qty', '')]: qty
             }
         }
-        this.setState({
-                subtypeObj
-            }, () =>
-            this.props.onSubtypeChange({
-                subtype: this.state
-            })
+        this.setState({ subtype }, () =>
+            this.props.onSubtypeChange({ ...this.state.subtype })
         );
     }
     handlePriceChange(e) {
@@ -104,7 +99,7 @@ export default class TypeList extends React.Component {
         const subtypeObj = {
             [e.target.attributes.data.value]: {
                 qty,
-                price: 'R$ ' + this.moeda(price)
+                price: 'R$ ' + toCurrency(price)
             }
         }
         this.setState({
@@ -117,14 +112,7 @@ export default class TypeList extends React.Component {
             })
         );
     }
-    moeda(i) {
-        let v = i.replace('R$', '').trim().replace(/\D/g,'');
-        v = (v/100).toFixed(2) + '';
-        v = v.replace(".", ",");
-        v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
-        v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
-        return v;
-    }
+  
     getProdCategory() {
         return [0, 1, 2, 3].find((item) => Products.categories[item][this.props.prodName]);
     }

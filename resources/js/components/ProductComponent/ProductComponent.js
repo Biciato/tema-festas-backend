@@ -1,19 +1,22 @@
 import React from "react";
 import ProductSelect from "./ProductSelect";
 import SizeSelect from "./SizeSelect";
-import TypeComponent from "../TypeComponent/TypeComponent";
+import TypeSelect from "../TypeComponent/TypeSelect";
 import TotalComponent from "./TotalComponent";
 import { Products } from "../resources/products";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import NewProductComponent from "../NewProductComponent";
-import Axios from "axios";
+import PriceComponent from "./PriceComponent";
+import TypeList from '../TypeComponent/TypeList'
+import axios from "axios";
 
 const e = React.createElement;
 
 export default class ProductComponent extends React.Component {
     constructor(props) {
         super(props);
+        this.cleanEmptyProds = this.cleanEmptyProds.bind(this);
         this.getCategorySet = this.getCategorySet.bind(this);
         this.getProdPrice = this.getProdPrice.bind(this);
         this.handlePriceChange = this.handlePriceChange.bind(this);
@@ -21,27 +24,14 @@ export default class ProductComponent extends React.Component {
         this.handleSizeChange = this.handleSizeChange.bind(this);
         this.handleSubtypeSet = this.handleSubtypeSet.bind(this);
         this.handleTypeChange = this.handleTypeChange.bind(this);
-        this.handleCartClick = this.handleCartClick.bind(this);
-        this.state = {
-            cpts: [
-                {
-                    name: NewProductComponent,
-                    props: {
-                        key: "new-product",
-                        history: this.props.history
-                    }
-                },
-                {
-                    name: ProductSelect,
-                    props: {
-                        key: "product",
-                        onProductChange: this.handleProductChange
-                    }
-                }
-            ]
+        this.state = { 
+            prods: {},
+            showTypeCpt: false
         }
     }
+    cleanEmptyProds() {
 
+    }
     componentDidMount() {
         axios.get('/get-client').then((response) => 
             response.data === 'error'
@@ -77,91 +67,54 @@ export default class ProductComponent extends React.Component {
     }
 
     handleProductChange(prodName) {
-        const prevProds = this.state.prods[prodName]
-            ? this.state.prods[prodName]
-            : {};
-        const prevDados =
-            this.state.prods[prodName] && this.state.prods[prodName].dados
-                ? this.state.prods[prodName].dados
-                : {};
-        let prods = Object.assign({}, this.state.prods, {
-            [prodName]: Object.assign({}, prevProds, {
-                tipo_categoria: this.getProdCategory(prodName),
-                dados: Object.assign({}, prevDados)
-            })
-        });
-        if (
-            [1, 3].includes(prods[prodName].tipo_categoria) &&
-            !this.state.prods[prodName]
-        ) {
-            prods[prodName].valor_unitario = this.getProdPrice(prodName);
-        }
-        const cpts = [
-            this.state.cpts[0],
-            this.state.cpts[1]
-        ];
-        let cpt = {};
-        if (prods[prodName].tipo_categoria !== 0 || prodName.includes("ela")) {
-            cpt = {
-                name: TypeComponent,
-                props: {
-                    onPriceChange: this.handlePriceChange,
-                    onSubtypeSet: this.handleSubtypeSet,
-                    onTypeChange: this.handleTypeChange,
-                    prods: this.state.prods,
-                    prodName,
-                    key: "type"
+        if (!this.state.prods[prodName]) {
+            let prodData = {}
+            if ([0,2].includes(this.getProdCategory(prodName))) {
+                prodData = {
+                    dados: {},
+                    tipo_categoria: this.getProdCategory(prodName)
                 }
-            };
-        } else {
-            cpt = {
-                name: SizeSelect,
-                props: {
-                    onSizeChange: this.handleSizeChange,
-                    prodName,
-                    key: "size"
+            } else {
+                prodData = {
+                    dados: {},
+                    tipo_categoria: this.getProdCategory(prodName),
+                    valor_unitario: 'R$ ' + this.getProdPrice(prodName)
+                                                .toLocaleString('pt-br', {
+                                                    minimumFractionDigits: 2
+                                                })
                 }
-            };
-        }
-        cpts.push({ ...cpt });
-        this.setState({ prods, cpts });
-    }
-    handleSizeChange(size, prodName) {
-        const cpts = [
-            this.state.cpts[0],
-            this.state.cpts[1],
-            this.state.cpts[2]
-        ];
-        cpts.push({
-            name: TypeComponent,
-            props: {
-                key: "type",
-                size,
-                prodName,
-                onPriceChange: this.handlePriceChange,
-                onSubtypeSet: this.handleSubtypeSet,
-                onTypeChange: this.handleTypeChange,
-                prods: this.state.prods
             }
-        });
-        const prods = Object.assign({}, this.state.prods, {
-            [prodName]: Object.assign({}, this.state.prods[prodName], {
-                dados: Object.assign({}, this.state.prods[prodName].dados, {
-                    [size]: this.state.prods[prodName].dados[size]
-                        ? Object.assign(
-                              {},
-                              this.state.prods[prodName].dados[size]
-                          )
-                        : {
-                              valor_unitario: this.getProdPrice(prodName, size)
-                          }
+            this.setState({
+                prods: Object.assign({}, this.state.prods, {
+                    [prodName]: prodData
                 })
             })
-        });
-        this.setState({
-            prods,
-            cpts
-        });
+        } 
+        this.setState({prodName}, () =>
+            this.setState({
+                size: false,
+                showTypeSelect: this.getProdCategory(prodName) !== 0
+                    ? true
+                    : false
+            })
+        )
+    }
+    handleSizeChange(size) {
+        if (!this.state.prods[this.state.prodName][size]) {
+            let prods = this.state.prods
+            prods[this.state.prodName].dados = Object.assign(
+                {}, 
+                this.state.prods[this.state.prodName].dados, {
+                [size]: {
+                    valor_unitario: 'R$ ' + this.getProdPrice(this.state.prodName, size)
+                                                .toLocaleString('pt-br', {
+                                                    minimumFractionDigits: 2
+                                                })
+                }
+            })
+            this.setState({ prods })
+        }
+        this.setState({ showTypeSelect: true, size })
     }
     handlePriceChange(price, prodName, size = null) {
         let prods = Object.assign({}, this.state.prods)
@@ -170,325 +123,88 @@ export default class ProductComponent extends React.Component {
         } else if (prods[prodName]) {
             prods[prodName].valor_unitario = price
         }
-        const cpts = [...this.state.cpts]
-        cpts.pop()
-        cpts.push({
-            name: TypeComponent,
-            props: {
-                key: "type",
-                size,
-                prodName,
-                onPriceChange: this.handlePriceChange,
-                onSubtypeSet: this.handleSubtypeSet,
-                onTypeChange: this.handleTypeChange,
-                prods: this.state.prods
-            }
-        });
-        this.setState({prods, cpts})
+        this.setState({prods})
     }
     handleTypeChange(type, prodName, size = null, price = null) {
-        const cpts = [...this.state.cpts]
-        cpts.pop()
-        cpts.push({
-            name: TypeComponent,
-            props: {
-                key: "type",
-                size,
-                prodName,
-                onPriceChange: this.handlePriceChange,
-                onSubtypeSet: this.handleSubtypeSet,
-                onTypeChange: this.handleTypeChange,
-                prods: this.state.prods
-            }
-        });
-        let prods = Object.assign({}, this.state.prods);
-        if (this.getProdCategory(prodName) === 0) {
-            if (type !== undefined) {
-                prods[prodName].dados[size] = Object.assign(
-                    {},
-                    this.state.prods[prodName].dados[size],
-                    {
-                        [type]: this.state.prods[prodName].dados[size][type]
-                                    ? Object.assign(
-                                        {},
-                                        this.state.prods[prodName].dados[size][type]
-                                    )
-                                    : null
-                    }
-                );
-            }
-            if (price) {
-                prods[prodName].dados[size].valor_unitario = price
-            }
-            this.setState({prods});
-        } else if (this.getProdCategory(prodName) === 1 || this.getProdCategory(prodName) === 3) {
-            const prevDados = this.state.prods[prodName].dados
-                ? this.state.prods[prodName].dados
-                : {};
-            prods[prodName].dados = prevDados;
-            if (price) {
-                prods[prodName].valor_unitario = price
-            }
-            this.setState({prods, cpts});
+        let prods = this.state.prods
+        if (size && !prods[prodName].dados[size][type]) {
+            prods[prodName].dados[size] = Object.assign({}, prods[prodName].dados[size], {
+                [type] : {}
+            })
+        } else {
+            prods[prodName].dados = Object.assign({}, prods[prodName].dados, {
+                [type] : {}
+            })
         }
+        this.setState({ prods })
     }
-    handleSubtypeSet(typeObj, prodName, size = null) {
-        let prods = {};
+    handleSubtypeSet(prodName, size = null, type = null, subtype) {
+        let prods = this.state.prods;
         switch (this.getProdCategory(prodName)) {
             case 0:
-                prods = Object.assign({}, this.state.prods, {
-                    [prodName]: {
-                        tipo_categoria: 0,
-                        dados: Object.assign(
-                            {},
-                            this.state.prods[prodName].dados,
-                            {
-                                [size]: Object.assign(
-                                    {},
-                                    this.state.prods[prodName].dados[size],
-                                    {
-                                        valor_unitario: typeObj.price
-                                            ? typeObj.price
-                                            : this.state.prods[prodName].dados[
-                                                  size
-                                              ].valor_unitario,
-                                        [typeObj.type]: Object.assign(
-                                            {},
-                                            this.state.prods[prodName].dados[
-                                                size
-                                            ][typeObj.type],
-                                            {
-                                                [Object.keys(
-                                                    typeObj.subtype.subtypeObj
-                                                )[0]]:
-                                                    typeObj.subtype.subtypeObj[
-                                                        Object.keys(
-                                                            typeObj.subtype
-                                                                .subtypeObj
-                                                        )[0]
-                                                    ].qty
-                                            }
-                                        )
-                                    }
-                                )
-                            }
-                        )
-                    }
-                });
+                prods[prodName].dados[size][type] = Object.assign(
+                    {},
+                    (prods[prodName].dados[size][type] 
+                        ? prods[prodName].dados[size][type] : {}),
+                    { ...subtype }
+                )
                 break;
             case 1:
-                prods = Object.assign({}, this.state.prods, {
-                    [prodName]: {
-                        valor_unitario: typeObj.price
-                            ? typeObj.price
-                            : this.state.prods[prodName].dados.valor_unitario,
-                        tipo_categoria: 1,
-                        dados: Object.assign(
-                            {},
-                            this.state.prods[prodName].dados,
-                            {
-                                [typeObj.type]: Object.assign(
-                                    {},
-                                    this.state.prods[prodName].dados[
-                                        typeObj.type
-                                    ],
-                                    {
-                                        [Object.keys(
-                                            typeObj.subtype.subtypeObj
-                                        )[0]]:
-                                            typeObj.subtype.subtypeObj[
-                                                Object.keys(
-                                                    typeObj.subtype.subtypeObj
-                                                )[0]
-                                            ].qty
-                                    }
-                                )
-                            }
-                        )
-                    }
-                });
+                prods[prodName].dados[type] = Object.assign(
+                    {},
+                    (prods[prodName].dados[type] ? prods[prodName].dados[type] : {}),
+                    { ...subtype }
+                )
                 break;
             case 2:
-                prods = Object.assign({}, this.state.prods, {
-                    [prodName]: {
-                        tipo_categoria: 2,
-                        dados: Object.assign(
-                            {},
-                            this.state.prods[prodName].dados,
-                            {
-                                [Object.keys(typeObj.subtype.subtypeObj)[0]]: {
-                                    quantidade:
-                                        typeObj.subtype.subtypeObj[
-                                            Object.keys(
-                                                typeObj.subtype.subtypeObj
-                                            )[0]
-                                        ].qty,
-                                    valor_unitario:
-                                        typeObj.subtype.subtypeObj[
-                                            Object.keys(
-                                                typeObj.subtype.subtypeObj
-                                            )[0]
-                                        ].price
-                                }
-                            }
-                        )
-                    }
-                });
-                break;
+                prods[prodName].dados = Object.assign(
+                    {}, 
+                    prods[prodName].dados,
+                    { [Object.keys(subtype)[0]]: { 
+                        quantidade: subtype[Object.keys(subtype)[0]].quantidade,
+                        valor_unitario: subtype[Object.keys(subtype)[0]].valor_unitario
+                    }}
+                )
+                break; 
             default:
-                prods = Object.assign({}, this.state.prods, {
-                    [prodName]: {
-                        tipo_categoria: 3,
-                        valor_unitario: typeObj.price
-                            ? typeObj.price
-                            : this.state.prods[prodName].valor_unitario,
-                        dados: Object.assign(
-                            {},
-                            this.state.prods[prodName].dados,
-                            {
-                                [Object.keys(typeObj.subtype.subtypeObj)[0]]:
-                                    typeObj.subtype.subtypeObj[
-                                        Object.keys(
-                                            typeObj.subtype.subtypeObj
-                                        )[0]
-                                    ].qty
-                            }
-                        )
-                    }
-                });
+                prods[prodName].dados = Object.assign(
+                    {},
+                    (prods[prodName].dados ? prods[prodName].dados : {}),
+                    { ...subtype }
+                )
                 break;
         }
-        this.setState({ prods }, () => {
-            const cpts = [...this.state.cpts]
-            cpts.pop()
-                cpts.push({
-                name: TypeComponent,
-                props: {
-                    key: "type",
-                    size,
-                    prodName,
-                    onPriceChange: this.handlePriceChange,
-                    onSubtypeSet: this.handleSubtypeSet,
-                    onTypeChange: this.handleTypeChange,
-                    prods: this.state.prods
-                }
-            });
-            this.setState({cpts})
-        });
-    }
-    handleCartClick(totalQty, totalPrice) {
-        if (parseFloat(totalPrice) > 0) {
-            this.setState({
-                totalQty: totalQty,
-                totalPrice: totalPrice
-            }, () => this.setState({redirect: 'resumo'}));
-        }
+        this.setState({ prods });
     }
 
     render() {
-        if (this.state.prods && Object.keys(this.state.prods).length > 0) {
-            localStorage.setItem('tema_festas_products', JSON.stringify(this.state.prods))
+        if (Object.keys(this.state.prods).length > 0) {
+            axios.post('/set-prods', { prods: this.state.prods })
         }
-        if (this.state.redirect) {
-            let prods = this.state.prods
-            for (let i of Object.keys(this.state.prods)) {
-                if (prods[i].tipo_categoria === 0) {
-                    for (let el of Object.keys(prods[i].dados)) {
-                        if (Object.keys(prods[i].dados[el]).length === 1 ) {
-                            delete prods[i].dados[el]
-                        } else {
-                            for (let ob of Object.keys(prods[i].dados[el]).filter((it) => it !== 'valor_unitario')) {
-                                if (prods[i].dados[el][ob] === null) {
-                                    delete prods[i].dados[el][ob]
-                                    if (Object.keys(prods[i].dados[el]).length === 1 ) {
-                                        delete prods[i].dados[el]
-                                    }
-                                } else {
-                                    for (let obj of Object.keys(prods[i].dados[el][ob])) {
-                                        if (prods[i].dados[el][ob][obj] === '' || prods[i].dados[el][ob][obj] === '0') {
-                                            delete prods[i].dados[el][ob][obj]
-                                            if (Object.keys(prods[i].dados[el][ob]).length === 0 ) {
-                                                delete prods[i].dados[el][ob]
-                                            }
-                                            if (Object.keys(prods[i].dados[el]).length === 1 ) {
-                                                delete prods[i].dados[el]
-                                            }
-                                            if (Object.keys(prods[i].dados).length === 0 ) {
-                                                delete prods[i]
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else if (prods[i].tipo_categoria === 2) {
-                     if (Object.keys(prods[i].dados).length === 0) {
-                         delete prods[i]
-
-                     } else {
-                        for (let el of Object.keys(prods[i].dados)) {
-                            if (prods[i].dados[el].quantidade === '0' || prods[i].dados[el].quantidade === 'R$ ' || prods[i].dados[el].quantidade === '') {
-                                delete prods[i].dados[el]
-                                if (Object.keys(prods[i].dados).length === 0) {
-                                   delete prods[i]
-                                }
-                            }
-                        }
-                     }
-                } else if (prods[i].tipo_categoria === 1) {
-                    if (Object.keys(prods[i].dados).length === 0 ) {
-                        delete prods[i]
-                    } else {
-                        for (let el of Object.keys(prods[i].dados)) {
-                            for (let e of Object.keys(prods[i].dados[el])) {
-                                if (prods[i].dados[el][e] === '' || prods[i].dados[el][e] === '0') {
-                                    delete prods[i].dados[el][e]
-                                    if (Object.keys(prods[i].dados[el]).length === 0) {
-                                        delete prods[i].dados[el]
-                                        if (Object.keys(prods[i].dados).length === 0 ) {
-                                            delete prods[i]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }                   
-                } else {
-                    if (Object.keys(prods[i].dados).length === 0) {
-                        delete prods[i]
-                    } else {
-                        for (let el of Object.keys(prods[i].dados).filter((it) => it !== 'valor_unitario')) {
-                            if (prods[i].dados[el] === '' || prods[i].dados[el] === '0') {
-                                delete prods[i].dados[el]
-                                if (Object.keys(prods[i].dados).length === 0) {
-                                    delete prods[i]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (Object.keys(this.state.prods).length > 0) {
-                axios.post('/set-prods', { prods })
-                        .then(() => window.location.assign(`/${this.state.redirect}`))
-            }
-        }
-        return e(
-            Row,
-            {bsPrefix: 'row'},
-            e(
-                Col,
-                { key: 1 },
-                this.state.cpts.map(item =>
-                    e(item.name, item.props, item.children)
-                ),
-                e(TotalComponent, {
-                    prods: this.state.prods,
-                    key: 'total',
-                    onCartClick: this.handleCartClick
-                })
-            ),
-        );
+        return (
+            <Row>
+                <Col>
+                    <NewProductComponent key="new-product"/>
+                    <ProductSelect key="product-select" onProductChange={this.handleProductChange}/>
+                    <SizeSelect key="size-select" 
+                                prodName={this.state.prodName} 
+                                onSizeChange={this.handleSizeChange}/>
+                    <TypeSelect onTypeChange={this.handleTypeChange}
+                                show={this.state.showTypeSelect}
+                                key="type-select"/>
+                    <PriceComponent onPriceChange={this.handlePriceChange}
+                                    show={this.state.showPriceCpt}
+                                    prodName={this.state.prodName}
+                                    key="price-cpt"/>
+                    <TypeList type={this.state.type}
+                                key="typelist"
+                                size={this.props.size ? this.props.size : 'has not'}
+                                prodName={this.props.prodName}
+                                prods={this.props.prods}
+                                onSubtypeChange={this.handleSubtypeChange}/>
+                    <TotalComponent key="total-cpt" prods={this.state.prods}/>
+                </Col>
+            </Row>
+        )
     }
 }

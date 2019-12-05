@@ -284,7 +284,9 @@ export default class TotalComponent extends React.Component {
         }
     }
     handleClick() {
-        this.props.onCartClick(this.state.totalQty, this.state.totalPrice);
+        if (parseFloat(this.state.totalPrice) > 0) {
+            window.location.assign('/resumo')
+        }
     }
     render() {
         return (

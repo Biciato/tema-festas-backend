@@ -39,7 +39,7 @@ export default class ClientComponent extends React.Component {
         return (
             <Row bsPrefix="row m-1">
                 <Col bsPrefix="col text-center">
-                    <HeaderComponent src="groupe-users.svg" />
+                    <HeaderComponent src="groupe-users.svg"  title="Clientes"/>
                     <ClientSelect
                         clients={this.state.clients}
                         warning={this.state.warning}

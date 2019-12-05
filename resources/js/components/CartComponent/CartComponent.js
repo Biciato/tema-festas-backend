@@ -8,6 +8,7 @@ import './CartComponent.css'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Products } from '../resources/products'
+import toCurrency from '../resources/currency'
 
 export default class CartComponent extends React.Component {
     constructor(props) {
@@ -85,30 +86,30 @@ export default class CartComponent extends React.Component {
     }
     handlePriceChangeCat0(e, prodName, size) {
         const price = e.target.value.replace('R$', '').trim()
-        e.target.value = 'R$ ' + this.moeda(price)
+        e.target.value = 'R$ ' + toCurrency(price)
         let prods = Object.assign({}, this.state.prods)
-        prods[prodName].dados[size].valor_unitario = 'R$ ' + this.moeda(price)
+        prods[prodName].dados[size].valor_unitario = 'R$ ' + toCurrency(price)
         this.setState({prods}, () => this.saveOnLocalStorage())
     }
     handlePriceChangeCat1(e, prodName) {
         const price = e.target.value.replace('R$', '').trim()
-        e.target.value = 'R$ ' + this.moeda(price)
+        e.target.value = 'R$ ' + toCurrency(price)
         let prods = Object.assign({}, this.state.prods)
-        prods[prodName].valor_unitario = 'R$ ' + this.moeda(price)
+        prods[prodName].valor_unitario = 'R$ ' + toCurrency(price)
         this.setState({prods}, () => this.saveOnLocalStorage())
     }
     handlePriceChangeCat2(e, prodName, type) {
         const price = e.target.value.replace('R$', '').trim()
-        e.target.value = 'R$ ' + this.moeda(price)
+        e.target.value = 'R$ ' + toCurrency(price)
         let prods = Object.assign({}, this.state.prods)
-        prods[prodName].dados[type].valor_unitario = 'R$ ' + this.moeda(price)
+        prods[prodName].dados[type].valor_unitario = 'R$ ' + toCurrency(price)
         this.setState({prods}, () => this.saveOnLocalStorage())
     }
     handlePriceChangeCat3(e, prodName) {
         const price = e.target.value.replace('R$', '').trim()
-        e.target.value = 'R$ ' + this.moeda(price)
+        e.target.value = 'R$ ' + toCurrency(price)
         let prods = Object.assign({}, this.state.prods)
-        prods[prodName].valor_unitario = 'R$ ' + this.moeda(price)
+        prods[prodName].valor_unitario = 'R$ ' + toCurrency(price)
         this.setState({prods}, () => this.saveOnLocalStorage())
     }
     handlePlusQtyCat0(prodName, size, type, subtype) {
@@ -526,14 +527,7 @@ export default class CartComponent extends React.Component {
                 this.getTotalCat2(this.state.prods) +
                 this.getTotalCat3(this.state.prods))
     }
-    moeda(i) {
-        let v = i.replace('R$', '').trim().replace(/\D/g,'');
-        v = (v/100).toFixed(2) + '';
-        v = v.replace(".", ",");
-        v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
-        v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
-        return v;
-    }
+
     mountCat0List(item) {
         if (this.state.prods[item].tipo_categoria === 0) {
             return Object.keys(this.state.prods[item].dados).map(i => (
