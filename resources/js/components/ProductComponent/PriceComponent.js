@@ -2,47 +2,33 @@ import React from "react";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import toCurrency from "../resources/currency";
+import { Products } from "../resources/products";
 
-export default class PriceComponent extends React.Component {
-    constructor(props) {
-        super(props)
-        this.getProdCategory = this.getProdCategory.bind(this)
-        this.getProdPrice = this.getProdPrice.bind(this)
-        this.handlePriceChange = this.handlePriceChange.bind(this)
-    }
-    getProdCategory() {
-        return [0, 1, 2, 3].find((item) => 
-            Products.categories[item][this.props.prodName]
-        );
-    }
-    getProdPrice() {
-        if (props.prods[props.prodName]) {
-            if (this.getProdCategory() === 0) {
-                if (props.prods[props.prodName].dados[props.size]) {
-                    return props.prods[props.prodName].dados[props.size]
-                        .valor_unitario;
-                } else if (props.size) {
-                    return Products.categories[0][props.prodName].size
-                        .filter(item => item.name === props.size)
-                        .map(item => item.price)
-                        .shift();
-                } else {
-                    return 0;
-                }
-            } else if (this.getProdCategory() === 2) {
-                return 0;
-            } else {
-                return props.prods[props.prodName].valor_unitario;
-            }
+export default function PriceComponent(props) {
+    const handlePriceChange = e =>
+        props.onPriceChange(`R$ ${toCurrency(e.target.value)}`);
+    const getProdPrice = () => {
+        if (props.prods[props.prodName].tipo_categoria === 0) {
+            return props.prods[props.prodName].dados[props.size].valor_unitario;
+        } else if (
+            [1, 3].includes(props.prods[props.prodName].tipo_categoria)
+        ) {
+            return props.prods[props.prodName].valor_unitario;
+        } else {
+            return (
+                "R$ " +
+                (props.prods[props.prodName].dados[props.item]
+                    ? props.prods[props.prodName].dados[props.item]
+                          .valor_unitario
+                    : Products.categories[2][props.prodName]
+                          .find(item => item.name === props.item)
+                          .price.toLocaleString("pt-br", {
+                              minimumFractionDigits: 2
+                          }))
+            );
         }
-    }
-    handlePriceChange(e) {
-        this.setState({
-            price: `R$ ${toCurrency(e.target.value)}`
-        });
-        this.props.onPriceChange(`R$ ${toCurrency(e.target.value)}`);
-    }
-    render() {
+    };
+    if (props.show) {
         return (
             <InputGroup key="input-group" className="mt-3">
                 <label
@@ -61,8 +47,8 @@ export default class PriceComponent extends React.Component {
                 </label>
                 <FormControl
                     key="form-control"
-                    value={this.state.price}
-                    onChange={this.handlePriceChange}
+                    value={getProdPrice()}
+                    onChange={handlePriceChange}
                     style={{
                         borderRadius: "5px",
                         textAlign: "center",
@@ -71,5 +57,7 @@ export default class PriceComponent extends React.Component {
                 />
             </InputGroup>
         );
+    } else {
+        return null;
     }
 }

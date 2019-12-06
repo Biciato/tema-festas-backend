@@ -6,8 +6,7 @@ import { Products } from '../resources/products'
 
 export default function SizeSelect(props) {
   const handleChange = (size) => props.onSizeChange(size.value)  
-  if (props.prodName && Object.keys(Products.categories[0]).find((item) => 
-          item === props.prodName))  {
+  if (props.show)  {
       return (
         <Row bsPrefix="row mt-3">
           <Col>
