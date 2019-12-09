@@ -2,7 +2,7 @@ import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Select from 'react-select';
-import { Products } from '../resources/products'
+import { Products } from './resources/products'
 
 export default function SizeSelect(props) {
   const handleChange = (size) => props.onSizeChange(size.value)  

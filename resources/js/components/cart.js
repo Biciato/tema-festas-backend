@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import CartComponent from "./CartComponent/CartComponent";
+import CartComponent from "./CartComponent";
 import * as serviceWorker from "../serviceWorker";
 import "./custom.scss";
 

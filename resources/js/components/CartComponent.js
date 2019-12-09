@@ -1,14 +1,14 @@
 import React from "react"
 import axios from 'axios'
-import AfterOrderComponent from "../AfterOrderComponent";
-import NewProductComponent from "../NewProductComponent";
+import AfterOrderComponent from "./AfterOrderComponent";
+import NewProductComponent from "./NewProductComponent";
 import Loader from 'react-loader-spinner'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import './CartComponent.css'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { Products } from '../resources/products'
-import toCurrency from '../resources/currency'
+import { Products } from './resources/products'
+import toCurrency from './resources/currency'
 
 export default class CartComponent extends React.Component {
     constructor(props) {

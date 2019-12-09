@@ -1,6 +1,6 @@
 import React from 'react'
 import Select from 'react-select'
-import { Clients } from '../resources/clients'
+import { Clients } from './resources/clients'
 
 export default class ClientSelect extends React.Component {
     constructor(props) {

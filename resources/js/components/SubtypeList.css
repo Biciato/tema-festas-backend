@@ -1,17 +1,3 @@
-
-.types-qty-input {
-  height: 100%;
-  margin: 4% 0;
-  padding-bottom: 5%;
-  width: 13em;
-  max-width: 170px;
-}
-
-.list-label {
-  width: 13em;
-  max-width: 170px;
-}
-
 @media (min-width: 500px) {
   .list-label {
       width: 20em;

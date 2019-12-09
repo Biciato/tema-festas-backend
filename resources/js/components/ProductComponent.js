@@ -1,14 +1,14 @@
 import React from "react";
 import ProductSelect from "./ProductSelect";
 import SizeSelect from "./SizeSelect";
-import TypeSelect from "../TypeComponent/TypeSelect";
+import TypeSelect from "./TypeSelect";
 import TotalComponent from "./TotalComponent";
-import { Products } from "../resources/products";
+import { Products } from "./resources/products";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import NewProductComponent from "../NewProductComponent";
+import NewProductComponent from "./NewProductComponent";
 import PriceComponent from "./PriceComponent";
-import SubtypeList from '../TypeComponent/SubtypeList'
+import SubtypeList from './SubtypeList'
 import axios from "axios";
 
 export default class ProductComponent extends React.Component {

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import ClientComponent from "./ClientComponent/ClientComponent";
+import ClientComponent from "./ClientComponent";
 import * as serviceWorker from "../serviceWorker";
 import "./custom.scss";
 

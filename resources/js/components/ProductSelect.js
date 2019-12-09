@@ -1,9 +1,9 @@
 import React from 'react';
-import { Products } from '../resources/products';
+import { Products } from './resources/products';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Select from 'react-select';
-import HeaderComponent from "../HeaderComponent";
+import HeaderComponent from "./HeaderComponent";
 
 const prodList = Object.assign(
   {}, 

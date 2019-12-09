@@ -2,11 +2,11 @@ import React from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ClientSelect from "./ClientSelect";
-import HeaderComponent from '../HeaderComponent'
+import HeaderComponent from './HeaderComponent'
 import "./ClientComponent.css";
 import axios from 'axios'
 import Warning from "./Warning";
-import Footer from "../Footer";
+import Footer from "./Footer";
 
 export default class ClientComponent extends React.Component {
     constructor(props) {

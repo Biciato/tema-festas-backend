@@ -1,8 +1,8 @@
 import React from "react";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
-import toCurrency from "../resources/currency";
-import { Products } from "../resources/products";
+import toCurrency from "./resources/currency";
+import { Products } from "./resources/products";
 
 export default function PriceComponent(props) {
     const handlePriceChange = e => props.onPriceChange(`R$ ${toCurrency(e.target.value)}`)
