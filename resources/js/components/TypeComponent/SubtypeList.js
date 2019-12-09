@@ -6,7 +6,6 @@ import { Types } from '../resources/types'
 import { Products } from '../resources/products'
 import './TypeList.css';
 import PriceComponent from '../ProductComponent/PriceComponent';
-import toCurrency from "../resources/currency";
 
 export default function SubtypeList(props) {
     const getProdCategory = () => [0, 1, 2, 3].find(item => Products.categories[item][props.prodName])
@@ -53,7 +52,7 @@ export default function SubtypeList(props) {
             return []
         }
     }
-    const handlePriceChange = (e) => props.onPriceChange(`R$ ${toCurrency(e.target.value)}`)
+    const handlePriceChange = (price, item) => props.onPriceChange(price, item)
     const handlePlusQty = (item) => {
         handleQtyChange({
             target: {
@@ -71,21 +70,9 @@ export default function SubtypeList(props) {
     }
     const handleQtyChange = (e, item) => {
         let qty = e.target.value.replace(/\D/g,'')
-        if (qty.indexOf(0) === 0) {
-            qty = qty.replace('0','')
-        }
-        let subtype = {}
-        if (getProdCategory() === 2) {
-            subtype = {
-                [item]: {
-                    quantidade: qty,
-                    valor_unitario: price
-                }
-            }
-        } else {
-            subtype = { [item]: qty }
-        }
-        props.onSubtypeChange({ ...subtype })
+        if (qty.indexOf(0) === 0) { qty = qty.replace('0','') }
+        const subtype = { name: item, qty }
+        props.onSubtypeChange(subtype)
     }
     
     if (props.show) {
@@ -95,7 +82,12 @@ export default function SubtypeList(props) {
                         key={idx + 'type'}>
                     <Col style={{display:'flex', justifyContent: 'space-between', flexWrap: 'wrap'}} 
                             key={'col' + idx}>
-                        <div>
+                        <div style={{margin: getProdCategory() === 2 
+                                                ? '0.5em 0px 0 0.5em'
+                                                : '0.5em 0 0.5em 0.5em',
+                                    height: getProdCategory() === 2 
+                                                ? '2.5em'
+                                                : ''}}>
                             <label key="c-0"
                                     className="list-label"
                                     style={{
@@ -105,13 +97,14 @@ export default function SubtypeList(props) {
                                         marginBottom: 0,
                                         textOverflow: 'ellipsis',
                                         overflow: 'hidden',
-                                        maxHeight: '70px'
+                                        maxHeight: '70px',
+                                        paddingTop: '0.8em'
                                     }}>
                                         {item}
                             </label>
                             <div className="qty-div" 
                                     key={idx + '-div'} 
-                                    style={{display: 'flex', float: 'right', width: '33%'}}>
+                                    style={{display: 'flex', float: 'right', width: '33%', height: '100%'}}>
                                 <span onClick={() => handleMinusQty(item)}
                                         key={'c-1-' + idx}
                                         style={{
@@ -147,7 +140,7 @@ export default function SubtypeList(props) {
                                         }}>+</span>
                             </div>
                         </div>
-                        <PriceComponent onPriceChange={handlePriceChange}
+                        <PriceComponent onPriceChangeFromSubtypeList={handlePriceChange}
                                         prods={props.prods}
                                         item={item}
                                         price={props.price}

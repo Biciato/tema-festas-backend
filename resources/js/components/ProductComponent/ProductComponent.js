@@ -20,8 +20,6 @@ export default class ProductComponent extends React.Component {
         this.handleSizeChange = this.handleSizeChange.bind(this);
         this.handleSubtypeSet = this.handleSubtypeSet.bind(this);
         this.handleTypeChange = this.handleTypeChange.bind(this);
-        this.showPriceCpt = this.showPriceCpt.bind(this)
-        this.showSubtypeList = this.showSubtypeList.bind(this)
         this.state = { prods: {} }
     }
     componentDidMount() {
@@ -39,8 +37,7 @@ export default class ProductComponent extends React.Component {
         axios.post('/set-prods', { 
             prods: this.state.prods
         })
-    }
- 
+    } 
     getProdCategory(prodName) {
         return [0, 1, 2, 3].find(item => Products.categories[item][prodName]);
     }
@@ -55,7 +52,6 @@ export default class ProductComponent extends React.Component {
             ].price.toLocaleString("pt-br", { minimumFractionDigits: 2 });
         }
     }
-
     handleProductChange(prodName) {
         // reseting components 
         this.setState({
@@ -89,10 +85,12 @@ export default class ProductComponent extends React.Component {
             })
         )
     }
-    handlePriceChange(price) {
+    handlePriceChange(price, item = null) {
         let prods = this.state.prods
-        if (this.state.size) {
+        if ( this.getProdCategory(this.state.prodName) === 0 ) {
             prods[this.state.prodName].dados[this.state.size].valor_unitario = price
+        } else if (this.getProdCategory(this.state.prodName) === 2 ) {
+            prods[this.state.prodName].dados[item].valor_unitario = price.replace('R$ ', '')
         } else {
             prods[this.state.prodName].valor_unitario = price
         }
@@ -100,6 +98,7 @@ export default class ProductComponent extends React.Component {
     }
     handleTypeChange(type) {
         let prods = this.state.prods
+        // update only new type in prods obj
         if (this.getProdCategory(this.state.prodName) === 0
                 && !prods[this.state.prodName].dados[this.state.size][type]) {
             prods[this.state.prodName].dados[this.state.size][type] = {}
@@ -108,53 +107,59 @@ export default class ProductComponent extends React.Component {
             prods[this.state.prodName].dados[type] = {}
         }
         this.setState({ prods, type }, () => this.setState({ showSubtypeList: true }))
-    }
-    /***** 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * TRY SET QUANTITY DIRECTLY
-    */
+    }    
     handleSubtypeSet(subtype) {
         let prods = this.state.prods;
         if (this.getProdCategory(this.state.prodName) === 0) {
-            prods[this.state.prodName].dados[this.state.size][this.state.type] = this.setSubtypeCat0(prods, subtype)
+            prods[this.state.prodName].dados[this.state.size][this.state.type] = 
+                Object.assign(
+                    {}, 
+                    prods[this.state.prodName].dados[this.state.size][this.state.type], {
+                        [subtype.name] : subtype.qty
+                    }
+                ) 
         } else if (this.getProdCategory(this.state.prodName) === 1) {
-            prods[this.state.prodName].dados[this.state.type] = this.setSubtypeCat1(prods, subtype)
+            prods[this.state.prodName].dados[this.state.type] = 
+                Object.assign(
+                    {}, 
+                    prods[this.state.prodName].dados[this.state.type], {
+                        [subtype.name] : subtype.qty
+                    }
+                ) 
         } else if (this.getProdCategory(this.state.prodName) === 2) {
-            prods[this.state.prodName].dados = this.setSubtypeCat2(prods, subtype)
+            prods[this.state.prodName].dados[subtype.name] = {
+                quantidade: subtype.qty,
+                valor_unitario: prods[this.state.prodName].dados[subtype.name]
+                                    && prods[this.state.prodName].dados[subtype.name].valor_unitario
+                                    ? prods[this.state.prodName].dados[subtype.name].valor_unitario
+                                    : Products.categories[2][this.state.prodName].find((item) => 
+                                        item.name === subtype.name
+                                    ).price.toLocaleString('pt-br', {minimumFractionDigits: 2})
+            }
         } else {
-            prods[this.state.prodName].dados = this.setSubtypeCat3(prods, subtype)
+            prods[this.state.prodName].dados[subtype.name] = subtype.qty
         }
         this.setState({ prods });
     }
-
     setStateFromProduct(prodName) {
         this.setState({
             showSizeSelect: this.getProdCategory(prodName) === 0 ? true : false,
             // shows type select only if prod is of 1's category because if it's of 0's category
             // it has to show size select first and if it's of 2 or 3 , they hasn't type
-            showTypeSelect: this.getProdCategory(prodName) === 1
-                ? true
-                : false,
+            showTypeSelect: this.getProdCategory(prodName) === 1 ? true : false,
             // setting this key thougth out function because there's a lot of conditions to show the cpt
-            showPriceCpt: this.showPriceCpt(prodName),
+            showPriceCpt: [0,2].includes(this.getProdCategory(prodName)) ? false : true,
             // setting this key thougth out function because there's a lot of conditions to show the cpt
-            showSubtypeList: this.showSubtypeList(prodName),
+            showSubtypeList: ((prodName === 'Etiquetas') || (this.getProdCategory(prodName) === 2))
+                                ? (this.getProdCategory(prodName) === 2 ? 'cat2' : true)
+                                : false,
             // We just can set price if it's of 1's or 3's category since they doesn't depend
             // on size and 2's category has individual prices
-            price: [1 ,3].includes(this.getProdCategory(prodName))
-                    ? this.getProdPrice(prodName)
-                    : false
+            price: [1 ,3].includes(this.getProdCategory(prodName)) ? this.getProdPrice(prodName) : false
         })
     }    
-
     setProdName(prodName) {
-        this.setState({prodName}, () => 
-            this.setProds(prodName)
-        )
+        this.setState({prodName}, () => this.setProds(prodName))
     }
     setProds(prodName) {
         if (this.state.prods[prodName]) {
@@ -172,10 +177,10 @@ export default class ProductComponent extends React.Component {
             prodData = {
                 dados: {},
                 tipo_categoria: this.getProdCategory(prodName),
-                valor_unitario: 'R$ ' + this.getProdPrice(prodName)
-                                            .toLocaleString('pt-br', {
-                                                minimumFractionDigits: 2
-                                            })
+                valor_unitario: this.getProdPrice(prodName)
+                                        .toLocaleString('pt-br', {
+                                            minimumFractionDigits: 2
+                                        })
             }
         }
         this.setState({
@@ -184,69 +189,13 @@ export default class ProductComponent extends React.Component {
             })
         }, () => this.setStateFromProduct(prodName))
     }
-
-    setSubtypeCat0(prods, subtype) {
-        return Object.assign(
-            {},
-            (prods[this.state.prodName].dados[this.state.size][this.state.type] 
-                ? prods[this.state.prodName].dados[this.state.size][this.state.type] 
-                : {}),
-            { ...subtype }
-        )
-    }
-    setSubtypeCat1(prods, subtype) {
-        return Object.assign(
-            {},
-            (prods[this.state.prodName].dados[this.state.type] 
-                ? prods[this.state.prodName].dados[this.state.type] 
-                : {}),
-            { ...subtype }
-        )
-    }
-    setSubtypeCat2(prods, subtype) {
-        return Object.assign(
-            {}, 
-            prods[this.state.prodName].dados,
-            { [Object.keys(subtype)[0]]: { 
-                quantidade: subtype[Object.keys(subtype)[0]].quantidade,
-                valor_unitario: subtype[Object.keys(subtype)[0]].valor_unitario
-            }}
-        )
-    }
-    setSubtypeCat3(prods, subtype) {
-        return Object.assign(
-            {},
-            (prods[this.state.prodName].dados ? prods[this.state.prodName].dados : {}),
-            { ...subtype }
-        )
-    }
-    showPriceCpt(prodName) {
-        if ([0,2].includes(this.getProdCategory(prodName))) {
-            return false
-        } else {
-            return true
-        }
-    }
-    
-    showSubtypeList(prodName) {
-        if (prodName === 'Etiquetas') {
-            return true
-        } else if (this.getProdCategory(prodName) === 2) {
-            return 'cat2'
-        } else {
-            return false
-        }
-    }
-    showTypeSelect() {
-
-    }
     render() {
         if (Object.keys(this.state.prods).length > 0) {
             axios.post('/set-prods', { prods: this.state.prods })
         }
         return (
             <Row>
-                <Col>
+                <Col bsPrefix="col mb-5">
                     <NewProductComponent key="new-product"/>
                     <ProductSelect key="product-select" onProductChange={this.handleProductChange}/>
                     <SizeSelect key="size-select" 
@@ -255,11 +204,11 @@ export default class ProductComponent extends React.Component {
                                 onSizeChange={this.handleSizeChange}
                                 show={this.state.showSizeSelect}/>
                     <TypeSelect onTypeChange={this.handleTypeChange}
+                                prodName={this.state.prodName} 
                                 show={this.state.showTypeSelect}
                                 key="type-select"/>
                     <PriceComponent onPriceChange={this.handlePriceChange}
                                     prods={this.state.prods}
-                                    price={this.state.price}
                                     show={this.state.showPriceCpt}
                                     prodName={this.state.prodName}
                                     size={this.state.size}
@@ -271,6 +220,7 @@ export default class ProductComponent extends React.Component {
                                     size={this.state.size}
                                     prodName={this.state.prodName}
                                     prods={this.state.prods}
+                                    onPriceChange={this.handlePriceChange}
                                     onSubtypeChange={this.handleSubtypeSet}/> 
                     <TotalComponent key="total-cpt" prods={this.state.prods}/>
                 </Col>

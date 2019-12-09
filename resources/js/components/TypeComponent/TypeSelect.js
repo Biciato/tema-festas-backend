@@ -11,10 +11,12 @@ export default function TypeSelect(props) {
                 <Col>
                     <Select
                         defaultValue={{ value: "Subtipo", label: "Subtipo" }}
-                        options={["poa", "liso", "temas"].map(item => ({
-                            value: item,
-                            label: item
-                        }))}
+                        options={props.prodName.includes('ela') 
+                                    ? [{ value: 'Número', label: 'Número' }]  
+                                    : ["poa", "liso", "temas"].map(item => ({
+                                        value: item,
+                                        label: item
+                                    }))}
                         onChange={handleTypeChange}
                         styles={{
                             control: styles => ({

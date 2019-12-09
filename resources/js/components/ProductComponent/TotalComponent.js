@@ -33,18 +33,13 @@ export default class TotalComponent extends React.Component {
             });
         }
     }
-    componentDidUpdate(prevProps) {
-        if (prevProps.prods !== this.props.prods) {
-            this.setState({
-                totalPrice: (
-                    this.getTotalCat0(this.props.prods) +
-                    this.getTotalCat1(this.props.prods) +
-                    this.getTotalCat2(this.props.prods) +
-                    this.getTotalCat3(this.props.prods)
-                ).toLocaleString("pt-br", { minimumFractionDigits: 2 }),
-                totalQty: this.getTotalQty()
-            })
-        }
+    getTotalPrice(props) {
+        return (
+            this.getTotalCat0(props.prods) +
+            this.getTotalCat1(props.prods) +
+            this.getTotalCat2(props.prods) +
+            this.getTotalCat3(props.prods)
+        ).toLocaleString("pt-br", { minimumFractionDigits: 2 })
     }
     getTotalCat3(prods) {
         if (prods.Etiquetas && prods.Etiquetas.valor_unitario) {
@@ -284,11 +279,12 @@ export default class TotalComponent extends React.Component {
         }
     }
     handleClick() {
-        if (parseFloat(this.state.totalPrice) > 0) {
+        if (parseFloat(this.getTotalPrice(this.props)) > 0) {
             window.location.assign('/resumo')
         }
     }
     render() {
+        const total = this.getTotalPrice(this.props)
         return (
             <div
                 className={"footer-total" + (this.props.display ? " d-none" : "")}
@@ -307,7 +303,7 @@ export default class TotalComponent extends React.Component {
                 ></img>
                 <span key="s-1">Sacola:</span>
                 <span style={{ float: "right" }} key="s-2">
-                    R$ {this.state.totalPrice}
+                    R$ {total}
                 </span>
             </div>
         );
