@@ -31,27 +31,6 @@ export default function SubtypeList(props) {
                         key={idx + 'type'}>
                     <Col style={{display:'flex', justifyContent: 'space-between', flexWrap: 'wrap'}} 
                             key={'col' + idx}>
-                        <div style={{margin: getProdCategory() === 2 
-                                                ? '0.5em 0px 0 0.5em'
-                                                : '0.5em 0 0.5em 0.5em',
-                                    height: getProdCategory() === 2 
-                                                ? '2.5em'
-                                                : ''}}>
-                            <label key="c-0"
-                                    className="list-label"
-                                    style={{
-                                        fontSize: '14px',
-                                        fontWeight: 'normal',
-                                        marginRight: '1em',
-                                        marginBottom: 0,
-                                        textOverflow: 'ellipsis',
-                                        overflow: 'hidden',
-                                        maxHeight: '70px',
-                                        paddingTop: '0.8em'
-                                    }}>
-                                        {item}
-                            </label>
-                        </div>
                         <QuantityComponent onQtyChange={handleQtyChange}
                                             prods={props.prods}
                                             prodName={props.prodName}

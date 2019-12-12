@@ -1,8 +1,6 @@
-import React from "react";
-import "./TotalComponent.css";
-import { Products } from "./resources/products";
+import React from 'react'
 
-export default function TotalComponent(props) {
+export default function TotalPriceComponent(props) {
     const getNormPrice = (price) => 
         price ? parseFloat(price.replace("R$", "").replace(/\./g,'').replace(",", ".").trim()) : 0
     const getTotal = () => getTotalCat0() + getTotalCat1() + getTotalCat2() + getTotalCat3()
@@ -49,30 +47,21 @@ export default function TotalComponent(props) {
         (props.prods.Etiquetas && (Object.keys(props.prods.Etiquetas.dados).reduce((oldSubtype, subtype) => 
             parseInt(props.prods.Etiquetas.dados[subtype]) + oldSubtype, 0
         ) * getNormPrice(props.prods.Etiquetas.valor_unitario))) || 0
-    const handleClick = () => 
-        parseFloat(getTotal()) > 0 
-            ? window.location.assign('/resumo') 
-            : null
-    return (
-        <div
-            className={"footer-total" + (props.display ? " d-none" : "")}
-            style={{ textAlign: "left" }}
-            onClick={handleClick}
-        >
-            <img
-                src="/images/shopping-bag-white.svg"
-                key="img"
-                alt="user"
-                style={{
-                    width: "5%",
-                    margin: "0.2em",
-                    paddingBottom: "0.2em"
-                }}
-            ></img>
-            <span key="s-1">Sacola:</span>
-            <span style={{ float: "right" }} key="s-2">
-                {'R$ ' + getTotal().toLocaleString('pt-br', {minimumFractionDigits: 2})}
-            </span>
-        </div>
-    )
+    if (props.prods) {
+        return (
+            <div key="cart-div2-div2"
+                    style={{
+                        padding: "0.1em",
+                        height: "2em",
+                        color: "#32338D",
+                        fontWeight: "bold",
+                        margin: "0px 2em 4em 1em"
+                    }}>
+                <span key="cart-div2-div2-s1"> Valor: </span>{" "}
+                <span id="totalPrice" key="cart-div2-div2-s2" style={{ float: "right" }}>
+                    {'R$ ' + getTotal().toLocaleString('pt-br', {minimumFractionDigits: 2})}
+                </span>
+            </div>
+        )
+    } else { return null }    
 }
