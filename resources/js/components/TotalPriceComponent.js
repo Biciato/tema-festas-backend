@@ -55,7 +55,7 @@ export default function TotalPriceComponent(props) {
                         height: "2em",
                         color: "#32338D",
                         fontWeight: "bold",
-                        margin: "0px 2em 4em 1em"
+                        margin: "0 1em 3em"
                     }}>
                 <span key="cart-div2-div2-s1"> Valor: </span>{" "}
                 <span id="totalPrice" key="cart-div2-div2-s2" style={{ float: "right" }}>

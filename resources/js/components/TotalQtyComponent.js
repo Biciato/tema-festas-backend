@@ -49,7 +49,7 @@ export default function TotalQtyComponent(props) {
                         height: "2em",
                         color: "#32338D",
                         fontWeight: "bold",
-                        margin: "2em 2em 0 1em"
+                        margin: "1em 1em 0"
                     }}>
                 <span key="cart-div2-div1-s1"> Quantidade: </span>
                 <span key="cart-div2-div1-s2" id="totalQty" style={{ float: "right" }}>

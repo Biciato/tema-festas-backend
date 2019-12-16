@@ -13,7 +13,6 @@ export default class NewProductComponent extends React.Component {
             showModal: false,
         }
     }
-
     closeModal() {
         this.setState({ showModal: false })
     }

@@ -32,7 +32,7 @@ export default function TotalQtyPerBlockComponent(props) {
         )) || 0
     return (
         <>
-            <span style={{ fontWeight: "normal", padding: "0.4em" }}>
+            <span style={{ fontWeight: "normal", padding: "0.4em 0.4em 0.4em 0" }}>
                 Quantidade:
             </span>
             <span style={{color: 'rgb(116, 116, 116)'}}>

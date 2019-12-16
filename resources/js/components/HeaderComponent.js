@@ -2,15 +2,10 @@ import React from 'react'
 
 export default function HeaderComponent(props) {
     return (
-        <h5 className="text-left mt-3" key={1} style={{color: 'rgb(50, 51, 141)'}}>
-            <img
-                src={`/images/${props.src}`}
-                alt="user"
-                style={{
-                    width: "8%",
-                    margin: "0.2em 0.5em 0.4em 0"
-                }}
-            ></img>
+        <h5 key={1} style={{color: 'rgb(50, 51, 141)', textAlign: 'left', margin: '0 1em'}}>
+            <img src={`/images/${props.src}`} 
+                    alt="user" 
+                    style={{ width: "8%", margin: "0.2em 0.5em 0.4em 0"}} />
             {props.title}
         </h5>
     )

@@ -1,6 +1,4 @@
 import React from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { Types } from './resources/types'
 import { Products } from './resources/products'
 import './SubtypeList.css';
@@ -8,49 +6,44 @@ import PriceComponent from './PriceComponent';
 import QuantityComponent from './QuantityComponent';
 
 export default function SubtypeList(props) {
-    const getProdCategory = () => [0, 1, 2, 3].find(item => Products.categories[item][props.prodName])
-    const getTypes = () => {
-        if ([0,1].includes(getProdCategory())) {
-            return props.prodName.includes('ela') 
-                        ? [...Array(10).keys()].map(x => ++x) 
-                        : Types[props.type]
-        } else if (props.prodName && props.prodName === 'Etiquetas') {
-            return Products.categories[3].Etiquetas.names
-        } else if (getProdCategory() === 2) {
-            return Products.categories[2][props.prodName].map((item) => item.name)
-        } else {
-            return []
-        }
-    }
-    const handlePriceChange = (price, item) => props.onPriceChange(price, item)
-    const handleQtyChange = (subtype) => props.onSubtypeChange(subtype)
+    const getProdCategory = () => [...Array(4).keys()].find(item => Products.categories[item][props.prodName]) 
+    const getSubtypeQty = (subtype) => 
+        (_.get(props.prods[props.prodName], [
+            ['dados', props.size, props.type, subtype],
+            ['dados', props.type, subtype],
+            ['dados', subtype, 'quantidade'],
+            ['dados', subtype]
+        ][getProdCategory()])) || 0
+    const getTypes = () => (props.type && Types[props.type])
+                            || (props.prodName.includes('ela') && [...Array(10).keys()].map(x => ++x))  
+                            || (props.prodName === 'Etiquetas' && Products.categories[3].Etiquetas.names) 
+                            || Products.categories[2][props.prodName].map((item) => item.name)
     if (props.show) {
-        return getTypes().map((item, idx) => {
-            return (
-                <Row style={{ backgroundColor: ((idx % 2) === 0 ? 'white' : '#F8F8F8') }}
-                        key={idx + 'type'}>
-                    <Col style={{display:'flex', justifyContent: 'space-between', flexWrap: 'wrap'}} 
-                            key={'col' + idx}>
-                        <QuantityComponent onQtyChange={handleQtyChange}
-                                            prods={props.prods}
-                                            prodName={props.prodName}
-                                            item={item}
-                                            key={idx + '-div'} 
-                                            size={props.size}
-                                            type={props.type}/>
-                        <PriceComponent onPriceChangeFromSubtypeList={handlePriceChange}
-                                        prods={props.prods}
-                                        item={item}
-                                        price={props.price}
-                                        show={props.show === 'cat2' ? true : false}
-                                        prodName={props.prodName}
-                                        size={props.size}
-                                        key="price-cpt"/>                       
-                    </Col>
-                </Row>
+        return getTypes().map((subtype, idx) => 
+            (
+                <div key={subtype + idx}    
+                        style={{ 
+                            backgroundColor: ((idx % 2) === 0 ? 'white' : '#F8F8F8'),
+                            marginBottom: idx === (getTypes().length - 1) ? '5em' : ''
+                        }}>
+                    <QuantityComponent onQtyChange={(subtype) => props.onSubtypeChange(subtype)}
+                                        subtype={subtype}
+                                        key={idx + '-div'} 
+                                        height={props.show === 'cat2' ? '3em' : ''}
+                                        borderBottom={props.show === 'cat2' ? true : false}
+                                        qty={getSubtypeQty(subtype) }/>
+                    <PriceComponent onPriceChangeFromSubtypeList={(price, subtype) => props.onPriceChange(price, subtype)}
+                                    prods={props.prods}
+                                    subtype={subtype}
+                                    price={props.price}
+                                    show={props.show === 'cat2' ? true : false}
+                                    prodName={props.prodName}
+                                    size={props.size}
+                                    priceInput={true}
+                                    label="Valor Unitário"
+                                    key="price-cpt"/>                       
+                </div>
             )
-        })
-    } else {
-        return null
-    }
+        )
+    } else { return null }
 }

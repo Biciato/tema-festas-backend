@@ -1,11 +1,8 @@
 import React from "react";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import ClientSelect from "./ClientSelect";
 import HeaderComponent from './HeaderComponent'
 import "./ClientComponent.css";
 import axios from 'axios'
-import Warning from "./Warning";
 import Footer from "./Footer";
 
 export default class ClientComponent extends React.Component {
@@ -37,19 +34,16 @@ export default class ClientComponent extends React.Component {
     }    
     render() {
         return (
-            <Row bsPrefix="row m-1">
-                <Col bsPrefix="col text-center">
-                    <HeaderComponent src="groupe-users.svg"  title="Clientes"/>
-                    <ClientSelect
-                        clients={this.state.clients}
-                        warning={this.state.warning}
-                        key={2}
-                        onClientSelect={this.handleClientSelect}
-                    />
-                    <Warning warning={this.state.warning} />
-                    <Footer onMakeOrderClick={this.handleMakeOrderClick}/>
-                </Col>
-            </Row>
+            <div style={{margin: '3em 1em'}}>
+                <HeaderComponent src="groupe-users.svg"  title="Clientes"/>
+                <ClientSelect clients={this.state.clients}
+                                warning={this.state.warning}
+                                onClientSelect={this.handleClientSelect}/>
+                {this.state.warning && <div style={{color: 'red', padding: '1em 0.5em'}}>
+                                            Selecione um Cliente
+                                        </div>}
+                <Footer onMakeOrderClick={this.handleMakeOrderClick}/>
+            </div>
         );
     }
 }

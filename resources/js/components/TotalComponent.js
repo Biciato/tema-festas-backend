@@ -1,6 +1,5 @@
 import React from "react";
 import "./TotalComponent.css";
-import { Products } from "./resources/products";
 
 export default function TotalComponent(props) {
     const getNormPrice = (price) => 
@@ -54,21 +53,17 @@ export default function TotalComponent(props) {
             ? window.location.assign('/resumo') 
             : null
     return (
-        <div
-            className={"footer-total" + (props.display ? " d-none" : "")}
-            style={{ textAlign: "left" }}
-            onClick={handleClick}
-        >
-            <img
-                src="/images/shopping-bag-white.svg"
-                key="img"
-                alt="user"
-                style={{
-                    width: "5%",
-                    margin: "0.2em",
-                    paddingBottom: "0.2em"
-                }}
-            ></img>
+        <div className={"footer-total" + (props.display ? " d-none" : "")}
+                style={{ textAlign: "left" }}
+                onClick={handleClick}>
+            <img src="/images/shopping-bag-white.svg"
+                    key="img"
+                    alt="user"
+                    style={{
+                        width: "5%",
+                        margin: "0.2em",
+                        paddingBottom: "0.2em"
+                    }} />
             <span key="s-1">Sacola:</span>
             <span style={{ float: "right" }} key="s-2">
                 {'R$ ' + getTotal().toLocaleString('pt-br', {minimumFractionDigits: 2})}
