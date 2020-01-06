@@ -6,7 +6,7 @@ export default function Footer(props) {
     }
     return (
         <div onClick={handleClick}
-                className="footer mt-4"
+                className="footer"
                 key={3}>
                 Fazer Pedido
         </div>

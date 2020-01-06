@@ -62,7 +62,8 @@ export default function QuantityComponent(props) {
                                     textAlign: 'center',
                                     width: '73%',
                                     height: '100%',
-                                    color: "rgb(116, 116, 116)"                             
+                                    color: "rgb(116, 116, 116)",
+                                    padding: props.padding ? '0.5em 0 0' : ''                             
                                 }}/>
                 <span onClick={handlePlusQty}
                         key={'span-plus'}

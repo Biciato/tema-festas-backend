@@ -12,83 +12,75 @@ const successDivStyle = {
     lineHeight: "27px"
 };
 
-export default class AfterOrderComponent extends React.Component {
-    constructor(props) {
-        super(props)
-        this.handleBackClick = this.handleBackClick.bind(this)
+export const AfterOrderComponent = (props) => {
+    const handleBackClick = () => props.onBackClick() 
+    if (!props.show) {
+        return null
     }
-    handleBackClick() {
-        this.props.onBackClick()
-    }
-    render() {
-        if (!this.props.show) {
-            return null
-        }
-        return(
-            <div style={{
-                    ...successDivStyle, 
-                    backgroundColor: this.props.cdt === 'ok' 
-                        ? "#32A1DD"
-                        : "#E33333"
-                }}>
-                <img
-                    src={ this.props.cdt === 'ok' 
-                            ? '/images/checked.svg'
-                            : '/images/error.svg'
-                        }
-                    alt="user"
-                    style={{
-                        width: "15%",
-                        margin: "5em auto 1em 0"
-                    }}
-                    key="cart-div1-img"
-                ></img>{" "}
-                <p
-                    style={{
-                        width: "65%",
-                        margin: "auto",
-                        display: this.props.cdt === 'ok' ? '' : 'none'
-                    }}
-                    key="cart-div1-p"
-                >
-                    Pedido Realizado com Sucesso!<br></br>
-                    Número do Pedido: <span style={{fontStyle: 'normal'}}>{this.props.orderNumber}</span>
-                </p>{" "}
-                <p
-                    style={{
-                        width: "65%",
-                        margin: "auto",
-                        display: this.props.cdt === 'ok' ? 'none' : ''
-                    }}
-                    key="cart-div1-p-err"
-                >
-                    Ops, algo deu errado. Por favor, tente mais tarde
-                            ou contate o suporte!
-                </p>{" "}
-                <p style={{display: this.props.cdt === 'ok' ? 'none' : ''}}>
-                    Deseja Voltar ? <br></br><br></br><br></br>
-                        <span onClick={this.handleBackClick} 
-                                style={{
-                                    cursor: 'pointer',
-                                    color: 'red',                            
-                                    backgroundColor: 'white',
-                                    padding: '0.5em 1em',
-                                    top: '0em'
-                                }}>Voltar</span>
-                </p>
-                <a
-                    className="footer-after text-center"
-                    href="/clientes"
-                    key="cart-div-3"
-                    style={{
-                        color: '#32A1DD',
-                        backgroundColor: 'white'
-                    }}
-                >
-                    {" "}
-                    Novo Pedido
-                </a>{" "}
-            </div>
-        )
-    }
+    return(
+        <div style={{
+                ...successDivStyle, 
+                backgroundColor: props.cdt === 'ok' 
+                    ? "#32A1DD"
+                    : "#E33333"
+            }}>
+            <img
+                src={ props.cdt === 'ok' 
+                        ? '/images/checked.svg'
+                        : '/images/error.svg'
+                    }
+                alt="user"
+                style={{
+                    width: "15%",
+                    margin: "5em auto 1em 0"
+                }}
+                key="cart-div1-img"
+            ></img>{" "}
+            <p
+                style={{
+                    width: "65%",
+                    margin: "auto",
+                    display: props.cdt === 'ok' ? '' : 'none'
+                }}
+                key="cart-div1-p"
+            >
+                Pedido Realizado com Sucesso!<br></br>
+                Número do Pedido: <span style={{fontStyle: 'normal'}}>{props.orderNumber}</span>
+            </p>{" "}
+            <p
+                style={{
+                    width: "65%",
+                    margin: "auto",
+                    display: props.cdt === 'ok' ? 'none' : ''
+                }}
+                key="cart-div1-p-err"
+            >
+                Ops, algo deu errado. Por favor, tente mais tarde
+                        ou contate o suporte!
+            </p>{" "}
+            <p style={{display: props.cdt === 'ok' ? 'none' : ''}}>
+                Deseja Voltar ? <br></br><br></br><br></br>
+                    <span onClick={handleBackClick} 
+                            style={{
+                                cursor: 'pointer',
+                                color: 'red',                            
+                                backgroundColor: 'white',
+                                padding: '0.5em 1em',
+                                top: '0em'
+                            }}>Voltar</span>
+            </p>
+            <a
+                className="footer-after text-center"
+                href="/clientes"
+                key="cart-div-3"
+                style={{
+                    color: '#32A1DD',
+                    backgroundColor: 'white'
+                }}
+            >
+                {" "}
+                Novo Pedido
+            </a>{" "}
+        </div>
+    )
 }

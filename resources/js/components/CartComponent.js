@@ -1,6 +1,6 @@
 import React from "react"
 import axios from 'axios'
-import AfterOrderComponent from "./AfterOrderComponent";
+import { AfterOrderComponent } from "./AfterOrderComponent";
 import NewProductComponent from "./NewProductComponent";
 import Loader from 'react-loader-spinner'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"

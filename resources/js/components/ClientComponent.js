@@ -34,7 +34,7 @@ export default class ClientComponent extends React.Component {
     }    
     render() {
         return (
-            <div style={{margin: '3em 1em'}}>
+            <div style={{marginTop: '3em'}}>
                 <HeaderComponent src="groupe-users.svg"  title="Clientes"/>
                 <ClientSelect clients={this.state.clients}
                                 warning={this.state.warning}

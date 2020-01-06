@@ -5,7 +5,7 @@ import { Products } from "./resources/products";
 export default function SizeSelect(props) {
     if (props.show) {
         return (
-            <div style={{marginTop: '1em'}}>
+            <div style={{ display: 'inline-block' ,width: '-webkit-fill-available' ,margin: '0 1em 1em'}}>
                 <Select defaultValue={{ value: "Tamanho", label: "Tamanho" }}
                         options={Products.categories[0][props.prodName].size.map(
                             item => ({
@@ -18,8 +18,7 @@ export default function SizeSelect(props) {
                             control: styles => ({
                                 ...styles,
                                 fontSize: "14px",
-                                fontWeight: "600",
-                                margin: '1em'
+                                fontWeight: "600"
                             })
                         }}/>
             </div>

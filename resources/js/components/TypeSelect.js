@@ -4,7 +4,7 @@ import Select from "react-select"
 export default function TypeSelect(props) {
     if (props.show) {
         return (
-            <div style={{marginTop: '1em'}}>
+            <div style={{ display: 'inline-block' ,width: '-webkit-fill-available' ,margin: '0 1em 1em'}}>
                 <Select defaultValue={{ value: "Subtipo", label: "Subtipo" }}
                         options={props.prodName.includes('ela') 
                                     ? [{ value: 'Número', label: 'Número' }]  
@@ -17,8 +17,7 @@ export default function TypeSelect(props) {
                             control: styles => ({
                                 ...styles,
                                 fontSize: "14px",
-                                fontWeight: "600",
-                                margin: '1em'
+                                fontWeight: "600"
                             })
                         }}/>
             </div>

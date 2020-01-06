@@ -12,20 +12,21 @@ const prodList = Object.assign(
 
 export default function ProductSelect(props) {
     return (
-        <Select options={Object.keys(prodList).map(item => ({
-                    value: item,
-                    label: item
-                }))}
-                onChange={product => props.onProductChange(product.value)}
-                defaultValue={{ value: "Produto", label: "Produto" }}
-                styles={{
-                    control: styles => ({
-                        ...styles,
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        margin: '1em'
-                    })
-                }}
-                key="select"/>
+        <div style={{ display: 'inline-block' ,width: '-webkit-fill-available' ,margin: '1em'}}>
+            <Select options={Object.keys(prodList).map(item => ({
+                        value: item,
+                        label: item
+                    }))}
+                    onChange={product => props.onProductChange(product.value)}
+                    defaultValue={{ value: "Produto", label: "Produto" }}
+                    styles={{
+                        control: styles => ({
+                            ...styles,
+                            fontSize: "14px",
+                            fontWeight: "600",
+                        })
+                    }}
+                    key="select"/>
+        </div>
     )
 }

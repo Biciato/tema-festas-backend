@@ -14,7 +14,7 @@ export default function SubtypeList(props) {
             ['dados', subtype, 'quantidade'],
             ['dados', subtype]
         ][getProdCategory()])) || 0
-    const getTypes = () => (props.type && Types[props.type])
+    const getTypes = () => (props.type && (getProdCategory() !== 2) && Types[props.type])
                             || (props.prodName.includes('ela') && [...Array(10).keys()].map(x => ++x))  
                             || (props.prodName === 'Etiquetas' && Products.categories[3].Etiquetas.names) 
                             || Products.categories[2][props.prodName].map((item) => item.name)
@@ -31,7 +31,8 @@ export default function SubtypeList(props) {
                                         key={idx + '-div'} 
                                         height={props.show === 'cat2' ? '3em' : ''}
                                         borderBottom={props.show === 'cat2' ? true : false}
-                                        qty={getSubtypeQty(subtype) }/>
+                                        qty={getSubtypeQty(subtype) }
+                                        padding={props.show === 'cat2' ? true : false}/>
                     <PriceComponent onPriceChangeFromSubtypeList={(price, subtype) => props.onPriceChange(price, subtype)}
                                     prods={props.prods}
                                     subtype={subtype}
