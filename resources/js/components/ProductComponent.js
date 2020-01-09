@@ -9,10 +9,13 @@ import HeaderComponent from "./HeaderComponent";
 import PriceComponent from "./PriceComponent";
 import SubtypeList from './SubtypeList'
 import axios from "axios";
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
 
 export default class ProductComponent extends React.Component {
     constructor(props) {
         super(props);
+        this.closeModal = this.closeModal.bind(this);
         this.getProdPrice = this.getProdPrice.bind(this);
         this.handlePriceChange = this.handlePriceChange.bind(this);
         this.handleProductChange = this.handleProductChange.bind(this);
@@ -41,6 +44,9 @@ export default class ProductComponent extends React.Component {
             prods: this.state.prods
         })
     } 
+    closeModal() {
+        this.setState({ zeroPrice: false })
+    }
     getProdCategory() {
         return [0, 1, 2, 3].find(item => Products.categories[item][this.state.prodName]);
     }
@@ -54,29 +60,39 @@ export default class ProductComponent extends React.Component {
                         this.state.prodName
                     ].price.toLocaleString("pt-br", { minimumFractionDigits: 2 }))
     }
+    getProdCat2Price(subtype) {
+        return this.state.price 
+                || ('R$ ' + Products.categories[2][this.state.prodName]
+                            .find((item) => item.name === subtype).price
+                            .toLocaleString('pt-br', { minimumFractionDigits: 2 }))   
+    }
     handleProductChange(prodName) {
         // reseting components 
         this.setState({
             showPriceCpt: false,
             showSizeSelect: false,
             showTypeSelect: false,
-            showSubtypeList: false
+            showSubtypeList: false, 
+            price: false
         }, () => this.setProdName(prodName))        
     }
     handleSizeChange(size) {
         this.setState({ 
-            showTypeSelect: true, 
+            showTypeSelect: false, 
             showPriceCpt: true,
             size, 
-        })           
+            price: false
+        }, () => this.setSize(size))           
     }
-    handlePriceChange(price) {
-        this.setState({price}, () =>
-            this.state.prods[this.state.prodName] ? this.updateProdPrice() : null
-        )
+    handlePriceChange(price, subtype = null) {
+        price === 'R$ 0,00' 
+            ? this.setState({ zeroPrice: true })
+            : this.setState({price}, () =>
+                this.state.prods[this.state.prodName] ? this.updateProdPrice(price, subtype) : null
+            )        
     }
     handleTypeChange(type) { 
-        this.setState({ type }, () => this.setState({ showSubtypeList: true }))
+        this.setState({ type }, () => this.setType(type))
     }    
     handleSubtypeSet(subtype) {
         const mounters = {
@@ -87,108 +103,107 @@ export default class ProductComponent extends React.Component {
         }
         mounters[this.getProdCategory()]()
     }
+    initializeProd() {
+        if (!this.state.prods[this.state.prodName]) {
+            this.setState({
+                prods: Object.assign({}, this.state.prods, {
+                    [this.state.prodName]: Object.assign({}, {
+                        tipo_categoria: this.getProdCategory(), 
+                        dados: {}
+                    }, [1,3].includes(this.getProdCategory()) && {
+                        valor_unitario: this.getProdPrice()
+                    })
+                })
+            })
+        }    
+    }
     mountCat0Prod(subtype) {
         let prods = this.state.prods
-        const prevDados = prods[this.state.prodName] && prods[this.state.prodName].dados
-        const prevSizes = prevDados && prevDados[this.state.size]
-        const prevTypes = prevSizes && prevSizes[this.state.type]
-        prods = Object.assign({}, this.state.prods, {
-            [this.state.prodName]: {
-                tipo_categoria: 0,
-                dados: Object.assign({}, (prevDados || {}), {
-                    [this.state.size]: Object.assign({}, (prevSizes || {}), {
-                        [this.state.type]: Object.assign({}, (prevTypes || {}), {
-                            [subtype.name]: subtype.qty
-                        }),
-                        valor_unitario: this.getProdPrice() 
-                    }),
-                }) 
-            }
-        })
+        prods[this.state.prodName].dados[this.state.size][this.state.type][subtype.name] = subtype.qty
         this.setState({ prods }); 
     }
     mountCat1Prod(subtype) {
         let prods = this.state.prods
-        const prevDados = prods[this.state.prodName] && prods[this.state.prodName].dados
-        const prevTypes = prevSizes && prevSizes[this.state.type]
-        prods = Object.assign({}, this.state.prods, {
-            [this.state.prodName]: {
-                tipo_categoria: 0,
-                valor_unitario: this.getProdPrice(),
-                dados: Object.assign({}, (prevDados || {}), {
-                    [this.state.type]: Object.assign({}, (prevTypes || {}), {
-                        [subtype.name]: subtype.qty
-                    })                    
-                }) 
-            }
-        })
+        prods[this.state.prodName].dados[this.state.type][subtype.name] = subtype.qty
         this.setState({ prods }); 
     }
     mountCat2Prod(subtype) {
         let prods = this.state.prods
-        const prevDados = prods[this.state.prodName] && prods[this.state.prodName].dados
-        const prevSizes = prevDados && prevDados[this.state.size]
-        const prevTypes = prevSizes && prevSizes[this.state.type]
-        prods = Object.assign({}, this.state.prods, {
-            [this.state.prodName]: {
-                tipo_categoria: 0,
-                dados: Object.assign({}, (prevDados || {}), {
-                    [this.state.size]: Object.assign({}, (prevSizes || {}), {
-                        [this.state.type]: Object.assign({}, (prevTypes || {}), {
-                            [subtype.name]: subtype.qty
-                        })
-                    }),
-                }) 
+        prods[this.state.prodName].dados[subtype.name] 
+            ? prods[this.state.prodName].dados[subtype.name].quantidade = subtype.qty
+            : prods[this.state.prodName].dados[subtype.name] = { 
+                quantidade: subtype.qty,
+                valor_unitario: this.getProdCat2Price(subtype.name)
             }
-        })
         this.setState({ prods }); 
     }
     mountCat3Prod(subtype) {
         let prods = this.state.prods
-        prods = Object.assign({}, this.state.prods, {
-            [this.state.prodName]: {
-                tipo_categoria: 0,
-                valor_unitario: this.getProdPrice(),
-                dados: Object.assign({}, (prevDados || {}), {
-                    [subtype.name]: subtype.qty                     
-                }) 
-            }
-        })
+        prods[this.state.prodName].dados[subtype.name] = subtype.qty
         this.setState({ prods }); 
     }
     setStateFromProduct(prodName) {
         this.setState({
             showSizeSelect: this.getProdCategory(prodName) === 0 ? true : false,
-            // shows type select only if prod is of 1's category because if it's of 0's category
+            // shows type select only if prod is of 1's category because if it's of 0's category,
             // it has to show size select first and if it's of 2 or 3 , they hasn't type
             showTypeSelect: this.getProdCategory(prodName) === 1 ? true : false,
             // setting this key thougth out function because there's a lot of conditions to show the cpt
             showPriceCpt: [0,2].includes(this.getProdCategory(prodName)) ? false : true,
-            // setting this key thougth out function because there's a lot of conditions to show the cpt
             showSubtypeList: ((prodName === 'Etiquetas') || (this.getProdCategory(prodName) === 2))
                                 ? (this.getProdCategory(prodName) === 2 ? 'cat2' : true)
                                 : false,
-            // We just can set price if it's of 1's or 3's category since they doesn't depend
-            // on size and 2's category has individual prices
-            price: [1 ,3].includes(this.getProdCategory(prodName)) ? this.getProdPrice(prodName) : false
-        })
+        }, () => this.initializeProd())
     }    
     setProdName(prodName) {
         this.setState({prodName}, () => this.setStateFromProduct(prodName))
     }
-    updateProdPrice() {
-        return this.state.prods[this.state.prodName].tipo_categoria === 0
-                ? this.updateProdPriceCat0()
-                : this.updateProdPriceCat1or3() 
+    setSize(size) {
+        if (!this.state.prods[this.state.prodName].dados[size]) {
+            let prods = this.state.prods
+            prods[this.state.prodName].dados[size] = { valor_unitario: this.getProdPrice() }
+            this.setState({ prods })
+        }
+        this.setState({ showTypeSelect: true, showSubtypeList: false })
     }
-    updateProdPriceCat0() {
+    setType(type) {
+        if (this.getProdCategory() === 0 && !this.state.prods[this.state.prodName].dados[this.state.size][type]) {
+            let prods = this.state.prods
+            prods[this.state.prodName].dados[this.state.size][type] = {}
+            this.setState({ prods })
+        }
+        if (this.getProdCategory() === 1 && !this.state.prods[this.state.prodName].dados[type]) {
+            let prods = this.state.prods
+            prods[this.state.prodName].dados[type] = {}
+            this.setState({ prods })
+        }
+        this.setState({ showSubtypeList: true })
+    }
+    updateProdPrice(price, subtype) {
+        return [
+            () => this.updateProdPriceCat0(price), 
+            () => this.updateProdPriceCat1or3(price), 
+            (price, subtype) => this.updateProdPriceCat2(price, subtype), 
+            () => this.updateProdPriceCat1or3(price)
+        ][this.getProdCategory(this.state.prodName)](price, subtype)
+    }
+    updateProdPriceCat0(price) {
         let prods = this.state.prods
-        prods[this.state.prodName].dados[this.state.size].valor_unitario = this.state.price
+        prods[this.state.prodName].dados[this.state.size]  
+            ? prods[this.state.prodName].dados[this.state.size].valor_unitario = price
+            : null
         this.setState({ prods })
     }
-    updateProdPriceCat1or3() {
+    updateProdPriceCat2(price, subtype) {
         let prods = this.state.prods
-        prods[this.state.prodName].valor_unitario = this.state.price
+        prods[this.state.prodName].dados[subtype] 
+            ? prods[this.state.prodName].dados[subtype].valor_unitario = price
+            : null
+        this.setState({ prods })
+    }
+    updateProdPriceCat1or3(price) {
+        let prods = this.state.prods
+        prods[this.state.prodName].valor_unitario = price
         this.setState({ prods })
     }
     render() {
@@ -210,7 +225,6 @@ export default class ProductComponent extends React.Component {
                             show={this.state.showTypeSelect}
                             key="type-select"/>
                 <PriceComponent onPriceChange={this.handlePriceChange}
-                                price={this.state.price}
                                 prods={this.state.prods}
                                 show={this.state.showPriceCpt}
                                 prodName={this.state.prodName}
@@ -229,6 +243,17 @@ export default class ProductComponent extends React.Component {
                                 onPriceChange={this.handlePriceChange}
                                 onSubtypeChange={this.handleSubtypeSet}/> 
                 <TotalComponent key="total-cpt" prods={this.state.prods}/>
+                <Modal show={this.state.zeroPrice} onHide={this.closeModal} centered>
+                    <Modal.Header bsPrefix="modal-header justify-content-center">
+                        <Modal.Title>Aviso</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p className="text-center">Valor não pode ser "R$ 0,00".</p>
+                    </Modal.Body>
+                    <Modal.Footer bsPrefix="modal-footer justify-content-center">
+                        <Button variant="primary" onClick={this.closeModal}>Fechar</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         )
     }

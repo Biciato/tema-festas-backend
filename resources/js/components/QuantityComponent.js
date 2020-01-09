@@ -2,9 +2,7 @@ import React from "react"
 import FormControl from 'react-bootstrap/FormControl';
 
 export default function QuantityComponent(props) {
-    const handlePlusQty = () => {
-        handleQtyChange({ target: { value: `${parseInt(props.qty) + 1}`}})
-    }
+    const handlePlusQty = () => handleQtyChange({ target: { value: `${parseInt(props.qty) + 1}`}})
     const handleMinusQty = () => {
         const value = parseInt(props.qty) - 1
         handleQtyChange({ target: { value: value < 0 ? '0' : `${value}`}})

@@ -13,7 +13,7 @@ export default function ProdBlock(props) {
                 key={props.prod}>
             <PriceComponent key="price-cpt" 
                             show={true} 
-                            price={props.prod.valor_unitario}
+                            price={props.prod.valor_unitario || "1,00"}
                             label={props.prodName + ' ' + (props.size || '')}
                             labelStyle={{
                                 fontWeight: 'bold',
