@@ -4,12 +4,12 @@ import FormControl from 'react-bootstrap/FormControl';
 export default function QuantityComponent(props) {
     const handlePlusQty = () => handleQtyChange({ target: { value: `${parseInt(props.qty) + 1}`}})
     const handleMinusQty = () => {
-        const value = parseInt(props.qty) - 1
-        handleQtyChange({ target: { value: value < 0 ? '0' : `${value}`}})
+        const value = props.qty > 0 ? (parseInt(props.qty) - 1) : 0
+        handleQtyChange({ target: { value: `${value}`}})
     }
     const handleQtyChange = (e) => {
         let qty = e.target.value.replace(/\D/g,'')
-        if (qty.indexOf(0) === 0) { qty = qty.replace('0','') }
+        if (qty.indexOf(0) === 0 && qty.length > 1) { qty = qty.replace('0','') }
         const subtype = { name: props.subtype, qty }
         props.onQtyChange(subtype)
     }

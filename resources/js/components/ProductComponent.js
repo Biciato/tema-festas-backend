@@ -40,9 +40,7 @@ export default class ProductComponent extends React.Component {
     }
     componentDidUpdate() {
         // Always keep prods obj updated on Laravel's session
-        axios.post('/set-prods', { 
-            prods: this.state.prods
-        })
+        axios.post('/set-prods', { prods: this.state.prods })
     } 
     closeModal() {
         this.setState({ zeroPrice: false })
@@ -198,7 +196,7 @@ export default class ProductComponent extends React.Component {
         let prods = this.state.prods
         prods[this.state.prodName].dados[subtype] 
             ? prods[this.state.prodName].dados[subtype].valor_unitario = price
-            : null
+            : prods[this.state.prodName].dados[subtype] = { valor_unitario: price }
         this.setState({ prods })
     }
     updateProdPriceCat1or3(price) {

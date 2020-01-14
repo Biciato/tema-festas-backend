@@ -6,20 +6,14 @@ import TotalQtyPerBlockComponent from './TotalQtyPerBlockComponent'
 
 export default function ProdBlock(props) {
     return (
-        <div id={props.prod}
-                className="products"
-                style={{ marginTop: "2em" }}
-                data="3"
-                key={props.prod}>
+        <div id={props.prod} className="products" style={{ marginTop: "2em" }} key={props.prod}>
             <PriceComponent key="price-cpt" 
                             show={true} 
                             price={props.prod.valor_unitario || "1,00"}
                             label={props.prodName + ' ' + (props.size || '')}
-                            labelStyle={{
-                                fontWeight: 'bold',
-                                color: 'rgb(50, 51, 141)'
-                            }} 
+                            labelStyle={{ fontWeight: 'bold', color: 'rgb(50, 51, 141)' }} 
                             uppercase={true}
+                            onPriceChange={(price) => props.onPriceChange(props.prodName, props.size || null, price)}
                             priceInput={props.prod.tipo_categoria !== 2}/>
             {(props.prod.tipo_categoria 
                 && Object.keys(props.prod.dados).filter((type) => type !== 'valor_unitario').map((type, idx) => {
@@ -31,12 +25,14 @@ export default function ProdBlock(props) {
                                                     qty={props.prod.dados[type].quantidade}
                                                     height="3em"
                                                     borderBottom={true}
-                                                    subtype={type}/>
+                                                    subtype={type}
+                                                    onQtyChange={(subtype) => props.onSubtypeChange(props.prodName, subtype)}/>
                                 <PriceComponent price={props.prod.dados[type].valor_unitario}
                                                 key={type + idx + 'price'}
                                                 label="Valor Unitário"
                                                 priceInput={true}
                                                 color="rgb(116, 116, 116)"
+                                                onPriceChange={(price) => props.onPriceChange(props.prodName, type, price)}
                                                 show={true}/>
                             </div>
                         )
@@ -46,7 +42,8 @@ export default function ProdBlock(props) {
                                     key={idx + 'type'}>
                                 <QuantityComponent key={type + subtype + idx} 
                                                     qty={props.prod.dados[type][subtype]}
-                                                    subtype={subtype}/>
+                                                    subtype={subtype}
+                                                    onQtyChange={(subtype) => props.onSubtypeChange(props.prodName, type, subtype)}/>
                             </div>
                         )
                     } else {
@@ -55,7 +52,8 @@ export default function ProdBlock(props) {
                                     key={idx + 'type'}>
                                 <QuantityComponent key={type} 
                                                     qty={props.prod.dados[type]}
-                                                    subtype={type}/>
+                                                    subtype={type}
+                                                    onQtyChange={(subtype) => props.onSubtypeChange(props.prodName, subtype)}/>
                             </div>
                         )
                     }                        
@@ -66,7 +64,8 @@ export default function ProdBlock(props) {
                                 key={idx + 'type'}>
                             <QuantityComponent key={type + subtype + idx} 
                                                 qty={props.prod[type][subtype]}
-                                                subtype={`${type} ${subtype}`}/>
+                                                subtype={`${type} ${subtype}`}
+                                                onQtyChange={(subtype) => props.onSubtypeChange(props.prodName, props.size, type, subtype)}/>
                         </div>
                     )
                 )               

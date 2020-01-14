@@ -25,9 +25,10 @@ export default function TotalPricePerBlockComponent(props) {
             ) + oldType, 0
         ) * getNormPrice(props.prod.valor_unitario))) || 0
     const getTotalCat2 = () =>
-        (props.prod.dados && (Object.keys(props.prod.dados).reduce((oldSubtype, subtype) => 
-            parseInt(props.prod.dados[subtype].quantidade) + oldSubtype, 0
-        ) * getNormPrice(props.prod.valor_unitario))) || 0
+        (props.prod.dados && (Object.keys(props.prod.dados).reduce((oldSubtype, subtype) =>
+                (parseInt(props.prod.dados[subtype].quantidade) 
+                    * getNormPrice(props.prod.dados[subtype].valor_unitario)) 
+                    + oldSubtype, 0))) || 0
     const getTotalCat3 = () =>
         (props.prod.dados && (Object.keys(props.prod.dados).reduce((oldSubtype, subtype) => 
             parseInt(props.prod.dados[subtype]) + oldSubtype, 0

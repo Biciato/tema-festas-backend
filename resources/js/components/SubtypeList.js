@@ -36,7 +36,6 @@ export default function SubtypeList(props) {
                     <PriceComponent onPriceChangeFromSubtypeList={(price, subtype) => props.onPriceChange(price, subtype)}
                                     prods={props.prods}
                                     subtype={subtype}
-                                    price={props.price}
                                     show={props.show === 'cat2' ? true : false}
                                     prodName={props.prodName}
                                     size={props.size}

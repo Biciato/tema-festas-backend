@@ -30,8 +30,6 @@ export default function PriceComponent(props) {
     const handlePriceChangeFromSubtypeList = e => 
         props.onPriceChangeFromSubtypeList(`R$ ${toCurrency(e.target.value)}`, props.subtype)
     if (props.show) {
-        const handler = props.onPriceChange ? handlePriceChange : handlePriceChangeFromSubtypeList
-        const price = props.price || getProdPrice(props.prodName, getProdCategory(props.prodName))
         return (
             <div key="input-group" 
                         style={{
@@ -52,8 +50,8 @@ export default function PriceComponent(props) {
                     {(props.uppercase && props.label.toUpperCase()) || props.label}
                 </label>
                 <FormControl key="form-control"
-                                value={price}
-                                onChange={handler}
+                                value={props.price || getProdPrice(props.prodName, getProdCategory(props.prodName))}
+                                onChange={props.onPriceChange ? handlePriceChange : handlePriceChangeFromSubtypeList}
                                 style={{ 
                                     borderRadius: "5px", 
                                     textAlign: "center", 

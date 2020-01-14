@@ -34,16 +34,12 @@ export default function TotalComponent(props) {
                     )) + oldProd, 0
                 )) || 0      
     const getTotalCat2 = () =>
-        (Object.keys(props.prods).some((prod) => props.prods[prod].tipo_categoria === 2)
-            && Object.keys(props.prods)
-                .filter((prod) => props.prods[prod].tipo_categoria === 2)
-                .reduce((oldProd, prod) => 
-                    Object.keys(props.prods[prod].dados).reduce((oldSubtype, subtype) =>
-                        (parseInt(props.prods[prod].dados[subtype].quantidade) 
-                            * getNormPrice(props.prods[prod].dados[subtype].valor_unitario)) 
-                            + oldSubtype, 0
-                    ) + oldProd, 0
-                )) || 0
+        Object.keys(props.prods).filter((prod) => props.prods[prod].tipo_categoria === 2)
+                .reduce((oldProd, prod) => Object.keys(props.prods[prod].dados).reduce((oldSubtype, subtype) =>
+                    (parseInt(props.prods[prod].dados[subtype].quantidade)
+                        * getNormPrice(props.prods[prod].dados[subtype].valor_unitario)) 
+                        + oldSubtype, 0
+                ) + oldProd, 0) || 0
     const getTotalCat3 = () =>
         (props.prods.Etiquetas && (Object.keys(props.prods.Etiquetas.dados).reduce((oldSubtype, subtype) => 
             parseInt(props.prods.Etiquetas.dados[subtype]) + oldSubtype, 0
