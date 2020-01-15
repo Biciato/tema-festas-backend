@@ -27,12 +27,14 @@ class SessionController extends Controller
         } catch (Exception $e) {
             return $e;
         } finally {
-            return 'success';
+            return session('prods');
         }
     }
 
     public function getProds() {
-        return session('prods') ? session('prods') : [];
+        $prods = session('prods') ? session('prods') : [];
+        session()->forget('prods');
+        return $prods;
     }
 
     public function cleanSessionProdsAndClient(Request $request) {

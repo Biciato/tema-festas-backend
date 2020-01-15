@@ -18,30 +18,31 @@ export default class CartComponent extends React.Component {
         this.handlePriceChange = this.handlePriceChange.bind(this)
         this.handleSubtypeChange = this.handleSubtypeChange.bind(this)
         this.state = { showAfterOrder: false, loader: false }
-    }    
+    }
     componentDidMount() {
-        axios.get('/get-prods').then((response) => response.data.length === 0 
+        axios.get('/get-prods').then((response) => response.data.length === 0
             ? window.location.assign('/clientes')
             : this.removeZeroQtyItems(response.data))
     }
     componentDidUpdate() {
         axios.post('/set-prods', { prods: this.state.prods })
-    }   
+            .then(() => axios.get('/get-prods'))
+    }
     removeZeroQtyItems(prods) {
         Object.keys(prods).forEach((prod) => {
             const data = [
                 () => this.filterProdsCat0(prods, prod),
-                () => this.filterProdsCat1(prods, prod), 
-                () => this.filterProdsCat2(prods, prod), 
+                () => this.filterProdsCat1(prods, prod),
+                () => this.filterProdsCat2(prods, prod),
                 () => this.filterProdsCat3(prods ,prod)
-            ][prods[prod].tipo_categoria]() 
+            ][prods[prod].tipo_categoria]()
             _.isEmpty(data) ? delete prods[prod] : prods[prod].dados = data
         })
         this.setState({ prods })
-    } 
+    }
     filterProdsCat0(prods, item) {
         Object.keys(prods[item].dados).forEach((size) => {
-            Object.keys(prods[item].dados[size]).filter((type) => type !== 'valor_unitario').forEach((type) => 
+            Object.keys(prods[item].dados[size]).filter((type) => type !== 'valor_unitario').forEach((type) =>
                 prods[item].dados[size][type] = _.pickBy(prods[item].dados[size][type], (subtype) => !['',0,'0',null].includes(subtype))
             )
             prods[item].dados[size] = _.pickBy(prods[item].dados[size], (type) => !_.isEmpty(type))
@@ -49,13 +50,13 @@ export default class CartComponent extends React.Component {
         return _.pickBy(prods[item].dados, (size) => size !== undefined && Object.keys(size).length > 1)
     }
     filterProdsCat1(prods, item) {
-        Object.keys(prods[item].dados).forEach((type) => 
+        Object.keys(prods[item].dados).forEach((type) =>
             prods[item].dados[type] = _.pickBy(prods[item].dados[type], (subtype) => !['',0,'0',null].includes(subtype))
         )
         return _.pickBy(prods[item].dados, (type) => !_.isEmpty(type))
     }
     filterProdsCat2(prods, item) {
-        Object.keys(prods[item].dados).forEach((type) => 
+        Object.keys(prods[item].dados).forEach((type) =>
             prods[item].dados[type] = _.pickBy(prods[item].dados[type], (subtype) => !['',0,'0',null].includes(subtype))
         )
         return _.pickBy(prods[item].dados, (type) => Object.keys(type).length > 1)
@@ -88,7 +89,7 @@ export default class CartComponent extends React.Component {
         updaters[this.getProdCategory(data[0])]()
         this.setState({ prods })
     }
-    render() {       
+    render() {
         if (!this.state.prods) {
             return null
         }
@@ -98,18 +99,18 @@ export default class CartComponent extends React.Component {
                                         totalPrice={this.state.totalPrice}
                                         totalQty={this.state.totalQty}/>
                 <HeaderComponent src="shopping-bag.svg"  title="Seu Pedido"/>
-                {Object.keys(this.state.prods).map((item, idx) => 
-                    this.state.prods[item].tipo_categoria === 0 
-                        ? Object.keys(this.state.prods[item].dados).map((size, idx) => 
-                            <ProdBlock prod={this.state.prods[item].dados[size]} 
+                {Object.keys(this.state.prods).map((item, idx) =>
+                    this.state.prods[item].tipo_categoria === 0
+                        ? Object.keys(this.state.prods[item].dados).map((size, idx) =>
+                            <ProdBlock prod={this.state.prods[item].dados[size]}
                                         prodName={item}
-                                        size={size} 
+                                        size={size}
                                         idx={idx}
                                         key={'prod-block-' + idx}
                                         onPriceChange={this.handlePriceChange}
                                         onSubtypeChange={this.handleSubtypeChange}/>
                         )
-                        : <ProdBlock prod={this.state.prods[item]} 
+                        : <ProdBlock prod={this.state.prods[item]}
                                         key={'prod-block-' + idx}
                                         idx={idx}
                                         prodName={item}
@@ -132,6 +133,17 @@ export default class CartComponent extends React.Component {
                                     timeout={3000}/>
                         : 'Finalizar Pedido'}
                 </Footer>
+                <Modal show={this.state.zeroPrice} onHide={this.closeModal} centered>
+                    <Modal.Header bsPrefix="modal-header justify-content-center">
+                        <Modal.Title>Aviso</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p className="text-center">Valor não pode ser "R$ 0,00".</p>
+                    </Modal.Body>
+                    <Modal.Footer bsPrefix="modal-footer justify-content-center">
+                        <Button variant="primary" onClick={this.closeModal}>Fechar</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         );
     }
