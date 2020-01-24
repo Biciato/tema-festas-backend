@@ -33,7 +33,6 @@ class SessionController extends Controller
 
     public function getProds() {
         $prods = session('prods') ? session('prods') : [];
-        session()->forget('prods');
         return $prods;
     }
 

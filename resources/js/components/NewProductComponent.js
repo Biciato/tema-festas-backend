@@ -29,15 +29,7 @@ export default class NewProductComponent extends React.Component {
     }
     render() {
         return(
-            <div className="new-cp"
-                    style={{
-                        textAlign: "end",
-                        backgroundColor: "#F3F3F3",
-                        padding: "0.3em",
-                        color: "#32338D",
-                        cursor: "pointer",
-                        fontSize: "12px",
-                    }}>
+            <div className="new-cp">
                 <img src="/images/arrow.svg"
                         key="img1"
                         alt="star"

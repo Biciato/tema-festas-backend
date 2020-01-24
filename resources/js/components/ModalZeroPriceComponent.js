@@ -2,17 +2,18 @@ import React from "react"
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-export const ModalZeroPriceComponent = (props) => {
+export const ModalZeroComponent = (props) => {
+    const closeModal = () => props.onCloseModal()
     return (
-        <Modal show={this.state.zeroPrice} onHide={this.closeModal} centered>
+        <Modal show={props.show} centered>
             <Modal.Header bsPrefix="modal-header justify-content-center">
                 <Modal.Title>Aviso</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p className="text-center">Valor não pode ser "R$ 0,00".</p>
+                <p className="text-center">{props.type} não pode ser {props.value}.</p>
             </Modal.Body>
             <Modal.Footer bsPrefix="modal-footer justify-content-center">
-                <Button variant="primary" onClick={this.closeModal}>Fechar</Button>
+                <Button variant="primary" onClick={closeModal}>Fechar</Button>
             </Modal.Footer>
         </Modal>
     )

@@ -14,8 +14,8 @@ export default class ClientComponent extends React.Component {
     }
     componentDidMount() {
         axios.get('/api/clients')
-                .then((response) => this.setState({ 
-                    clients: response.data.map((item) => item.dsc_nome) 
+                .then((response) => this.setState({
+                    clients: response.data.map((item) => item.dsc_nome)
                 }));
     }
     handleClientSelect(client) {
@@ -25,16 +25,16 @@ export default class ClientComponent extends React.Component {
         if (this.state.client === null) {
             this.setState({warning: true})
         } else {
-            axios.post('/set-client', { 
-                client: this.state.client 
-            }).then((response) => 
+            axios.post('/set-client', {
+                client: this.state.client
+            }).then((response) =>
                 window.location.assign(`/pedido/${response.data}`
             ))
         }
-    }    
+    }
     render() {
         return (
-            <div style={{marginTop: '3em'}}>
+            <div style={{marginTop: '3em', display: 'flex', flexDirection: 'column'}}>
                 <HeaderComponent src="groupe-users.svg"  title="Clientes"/>
                 <ClientSelect clients={this.state.clients}
                                 warning={this.state.warning}

@@ -1,13 +1,10 @@
 .new-cp {
-    width: 100%;
-    z-index: 1000;
-    position: fixed;
-    left: 0;
-    top: 0;
+    text-align: end;
+    background-color: #F3F3F3;
+    padding: 0.3em;
+    color: #32338D;
+    cursor: pointer;
+    font-size: 12px;
+    width: '100%'
 }
 
-@media (min-width: 500px) {
-    .new-cp {
-        position: relative;
-    }
-}

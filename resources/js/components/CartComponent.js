@@ -11,13 +11,18 @@ import Footer from './Footer'
 import TotalQtyComponent from './TotalQtyComponent'
 import TotalPriceComponent from './TotalPriceComponent'
 import { Products } from "./resources/products";
+import { ModalZeroComponent } from "./ModalZeroPriceComponent";
 
 export default class CartComponent extends React.Component {
     constructor(props) {
         super(props)
+        this.closeModal = this.closeModal.bind(this)
         this.handlePriceChange = this.handlePriceChange.bind(this)
         this.handleSubtypeChange = this.handleSubtypeChange.bind(this)
         this.state = { showAfterOrder: false, loader: false }
+    }
+    closeModal() {
+        this.setState({ zeroConstraint: false })
     }
     componentDidMount() {
         axios.get('/get-prods').then((response) => response.data.length === 0
@@ -68,26 +73,34 @@ export default class CartComponent extends React.Component {
         return [0, 1, 2, 3].find(item => Products.categories[item][prodName]);
     }
     handlePriceChange(...data) {
-        let prods = this.state.prods
-        const updaters = [
-            () => _.set(prods, [data[0], 'dados', data[1], 'valor_unitario'], data[2]),
-            () => _.set(prods, [data[0], 'valor_unitario'], data[2]),
-            () => _.set(prods, [data[0], 'dados', data[1], 'valor_unitario'], data[2]),
-            () => _.set(prods, [data[0], 'valor_unitario'], data[2])
-        ]
-        updaters[this.getProdCategory(data[0])]()
-        this.setState({ prods })
+        if (data[2] === 'R$ 0,00') {
+            this.setState({ zeroConstraint: { type: 'Valor', value: data[2]} })
+        } else {
+            let prods = this.state.prods
+            const updaters = [
+                () => _.set(prods, [data[0], 'dados', data[1], 'valor_unitario'], data[2]),
+                () => _.set(prods, [data[0], 'valor_unitario'], data[2]),
+                () => _.set(prods, [data[0], 'dados', data[1], 'valor_unitario'], data[2]),
+                () => _.set(prods, [data[0], 'valor_unitario'], data[2])
+            ]
+            updaters[this.getProdCategory(data[0])]()
+            this.setState({ prods })
+        }
     }
     handleSubtypeChange(...data) {
-        let prods = this.state.prods
-        const updaters = [
-            () => _.set(prods, [data[0], 'dados', data[1], data[2], data[3].name.split(' ')[1]], data[3].qty),
-            () => _.set(prods, [data[0], 'dados', data[1], data[2].name], data[2].qty),
-            () => _.set(prods, [data[0], 'dados', data[1].name, 'quantidade'], data[1].qty),
-            () => _.set(prods, [data[0], 'dados', data[1].name], data[1].qty)
-        ]
-        updaters[this.getProdCategory(data[0])]()
-        this.setState({ prods })
+        if (data[(data.length - 1)].qty === '0') {
+            this.setState({ zeroConstraint: { type: 'Quantidade', value: 0} })
+        } else {
+            let prods = this.state.prods
+            const updaters = [
+                () => _.set(prods, [data[0], 'dados', data[1], data[2], data[3].name.split(' ')[1]], data[3].qty),
+                () => _.set(prods, [data[0], 'dados', data[1], data[2].name], data[2].qty),
+                () => _.set(prods, [data[0], 'dados', data[1].name, 'quantidade'], data[1].qty),
+                () => _.set(prods, [data[0], 'dados', data[1].name], data[1].qty)
+            ]
+            updaters[this.getProdCategory(data[0])]()
+            this.setState({ prods })
+        }
     }
     render() {
         if (!this.state.prods) {
@@ -133,17 +146,10 @@ export default class CartComponent extends React.Component {
                                     timeout={3000}/>
                         : 'Finalizar Pedido'}
                 </Footer>
-                <Modal show={this.state.zeroPrice} onHide={this.closeModal} centered>
-                    <Modal.Header bsPrefix="modal-header justify-content-center">
-                        <Modal.Title>Aviso</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p className="text-center">Valor não pode ser "R$ 0,00".</p>
-                    </Modal.Body>
-                    <Modal.Footer bsPrefix="modal-footer justify-content-center">
-                        <Button variant="primary" onClick={this.closeModal}>Fechar</Button>
-                    </Modal.Footer>
-                </Modal>
+                <ModalZeroComponent show={this.state.zeroConstraint && true}
+                                    type={this.state.zeroConstraint && this.state.zeroConstraint.type}
+                                    value={this.state.zeroConstraint && this.state.zeroConstraint.value}
+                                    onCloseModal={this.closeModal}/>
             </div>
         );
     }

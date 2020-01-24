@@ -9,7 +9,7 @@ import HeaderComponent from "./HeaderComponent";
 import PriceComponent from "./PriceComponent";
 import SubtypeList from './SubtypeList'
 import axios from "axios";
-import { ModalZeroPriceComponent } from "./ModalZeroPriceComponent";
+import { ModalZeroComponent } from "./ModalZeroPriceComponent";
 
 export default class ProductComponent extends React.Component {
     constructor(props) {
@@ -208,7 +208,7 @@ export default class ProductComponent extends React.Component {
             axios.post('/set-prods', { prods: this.state.prods })
         }
         return (
-            <div style={{marginTop: '3em'}}>
+            <div style={{display: 'flex', flexDirection: 'column', position: 'relative', height: '100vh'}}>
                 <NewProductComponent key="new-product"/>
                 <HeaderComponent src="tasks-list.svg" title="Novo Pedido" key="header"/>
                 <ProductSelect key="product-select" onProductChange={this.handleProductChange}/>
@@ -240,7 +240,10 @@ export default class ProductComponent extends React.Component {
                                 onPriceChange={this.handlePriceChange}
                                 onSubtypeChange={this.handleSubtypeSet}/>
                 <TotalComponent key="total-cpt" prods={this.state.prods}/>
-                <ModalZeroPriceComponent />
+                <ModalZeroComponent show={this.state.zeroPrice}
+                                            onCloseModal={this.closeModal}
+                                            type="Valor"
+                                            value="R$ 0,00"/>
             </div>
         )
     }
