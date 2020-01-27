@@ -1,14 +1,8 @@
 import React from 'react'
+import './Footer.css'
 
-export default function Footer(props) {
-    const handleClick = () => {
-        props.onMakeOrderClick()
-    }
-    return (
-        <div onClick={handleClick}
-                className="footer"
-                key={3}>
-                Fazer Pedido
-        </div>
-    )
-}
+export const Footer = props =>
+    <div onClick={() => props.onMakeOrderClick()} className={`footer footer-${props.class}`}>
+        Fazer Pedido
+    </div>
+

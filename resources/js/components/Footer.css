@@ -1,8 +1,8 @@
 .footer {
     position: fixed;
-    left: 0;
-    bottom: 0;
     width: 100%;
+    max-width: 500px;
+    bottom: 0;
     background-color:#32338D;
     color:    white;
     font-style: normal;
@@ -11,12 +11,11 @@
     line-height: 27px;
     text-align: center;
     padding: 0.3em 1em  !important;
-    margin: 0;
     cursor: pointer;
 }
 
 @media (min-width: 500px) {
-    .footer {
+    .footer-client {
         position: relative;
         display: inline-block;
         margin: 2em auto;

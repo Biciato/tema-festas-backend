@@ -2,9 +2,9 @@ import React from 'react'
 import './AfterOrderComponent.css'
 
 export const AfterOrderComponent = (props) => {
-    const handleBackClick = () => props.onBackClick() 
+    const handleBackClick = () => props.onBackClick()
     return props.show && (
-        <div style={{ 
+        <div style={{
                 height: "calc(100vh - 40px)",
                 width: "100%",
                 color: "white",
@@ -12,8 +12,8 @@ export const AfterOrderComponent = (props) => {
                 fontStyle: "normal",
                 fontWeight: "bold",
                 fontSize: "20px",
-                lineHeight: "27px", 
-                backgroundColor: props.cdt === 'ok' 
+                lineHeight: "27px",
+                backgroundColor: props.cdt === 'ok'
                     ? "#32A1DD"
                     : "#E33333"
             }}>
@@ -33,10 +33,10 @@ export const AfterOrderComponent = (props) => {
             </p>
             <p style={{display: props.cdt === 'ok' ? 'none' : ''}}>
                 Deseja Voltar ? <br></br><br></br><br></br>
-                    <span onClick={handleBackClick} 
+                    <span onClick={handleBackClick}
                             style={{
                                 cursor: 'pointer',
-                                color: 'red',                            
+                                color: 'red',
                                 backgroundColor: 'white',
                                 padding: '0.5em 1em',
                                 top: '0em'

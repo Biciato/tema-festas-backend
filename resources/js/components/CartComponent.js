@@ -5,9 +5,9 @@ import NewProductComponent from "./NewProductComponent";
 import Loader from 'react-loader-spinner'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import './CartComponent.css'
-import ProdBlock from "./ProdBlock"
+import { ProdBlock } from "./ProdBlock"
 import HeaderComponent from './HeaderComponent'
-import Footer from './Footer'
+import { Footer } from './Footer'
 import TotalQtyComponent from './TotalQtyComponent'
 import TotalPriceComponent from './TotalPriceComponent'
 import { Products } from "./resources/products";
@@ -17,6 +17,7 @@ export default class CartComponent extends React.Component {
     constructor(props) {
         super(props)
         this.closeModal = this.closeModal.bind(this)
+        this.handleMakeOrderClick = this.handleMakeOrderClick.bind(this)
         this.handlePriceChange = this.handlePriceChange.bind(this)
         this.handleSubtypeChange = this.handleSubtypeChange.bind(this)
         this.state = { showAfterOrder: false, loader: false }
@@ -32,18 +33,6 @@ export default class CartComponent extends React.Component {
     componentDidUpdate() {
         axios.post('/set-prods', { prods: this.state.prods })
             .then(() => axios.get('/get-prods'))
-    }
-    removeZeroQtyItems(prods) {
-        Object.keys(prods).forEach((prod) => {
-            const data = [
-                () => this.filterProdsCat0(prods, prod),
-                () => this.filterProdsCat1(prods, prod),
-                () => this.filterProdsCat2(prods, prod),
-                () => this.filterProdsCat3(prods ,prod)
-            ][prods[prod].tipo_categoria]()
-            _.isEmpty(data) ? delete prods[prod] : prods[prod].dados = data
-        })
-        this.setState({ prods })
     }
     filterProdsCat0(prods, item) {
         Object.keys(prods[item].dados).forEach((size) => {
@@ -71,6 +60,15 @@ export default class CartComponent extends React.Component {
     }
     getProdCategory(prodName) {
         return [0, 1, 2, 3].find(item => Products.categories[item][prodName]);
+    }
+    handleMakeOrderClick() {
+        if (!this.state.loader) {
+            this.setState({loader: true}, () =>
+                axios.post('/create-order', { order: this.state.prods })
+                        .then(response => this.setState({ showAfterOrder: true, cdt: 'ok', orderNumber: response.data }))
+                        .catch(() => this.setState({ showAfterOrder: true, cdt: 'err' }))
+            )
+        }
     }
     handlePriceChange(...data) {
         if (data[2] === 'R$ 0,00') {
@@ -102,36 +100,50 @@ export default class CartComponent extends React.Component {
             this.setState({ prods })
         }
     }
+    removeZeroQtyItems(prods) {
+        Object.keys(prods).forEach((prod) => {
+            const data = [
+                () => this.filterProdsCat0(prods, prod),
+                () => this.filterProdsCat1(prods, prod),
+                () => this.filterProdsCat2(prods, prod),
+                () => this.filterProdsCat3(prods ,prod)
+            ][prods[prod].tipo_categoria]()
+            _.isEmpty(data) ? delete prods[prod] : prods[prod].dados = data
+        })
+        this.setState({ prods })
+    }
     render() {
         if (!this.state.prods) {
             return null
         }
         return (
-            <div style={{marginTop: '3em'}}>
-                <NewProductComponent arrow={true}
-                                        totalPrice={this.state.totalPrice}
-                                        totalQty={this.state.totalQty}/>
-                <HeaderComponent src="shopping-bag.svg"  title="Seu Pedido"/>
-                {Object.keys(this.state.prods).map((item, idx) =>
-                    this.state.prods[item].tipo_categoria === 0
-                        ? Object.keys(this.state.prods[item].dados).map((size, idx) =>
-                            <ProdBlock prod={this.state.prods[item].dados[size]}
-                                        prodName={item}
-                                        size={size}
-                                        idx={idx}
-                                        key={'prod-block-' + idx}
-                                        onPriceChange={this.handlePriceChange}
-                                        onSubtypeChange={this.handleSubtypeChange}/>
-                        )
-                        : <ProdBlock prod={this.state.prods[item]}
-                                        key={'prod-block-' + idx}
-                                        idx={idx}
-                                        prodName={item}
-                                        onPriceChange={this.handlePriceChange}
-                                        onSubtypeChange={this.handleSubtypeChange}/>
-                )}
-                <TotalQtyComponent prods={this.state.prods} key="total-qty-cpt"/>
-                <TotalPriceComponent prods={this.state.prods} key="total-price-cpt"/>
+            <div>
+                <div style={{ display: this.state.showAfterOrder && 'none' }}>
+                    <NewProductComponent arrow={true}
+                                            totalPrice={this.state.totalPrice}
+                                            totalQty={this.state.totalQty}/>
+                    <HeaderComponent src="shopping-bag.svg"  title="Seu Pedido"/>
+                    {Object.keys(this.state.prods).map((item, idx) =>
+                        this.state.prods[item].tipo_categoria === 0
+                            ? Object.keys(this.state.prods[item].dados).map((size, idx) =>
+                                <ProdBlock prod={this.state.prods[item].dados[size]}
+                                            prodName={item}
+                                            size={size}
+                                            idx={idx}
+                                            key={'prod-block-' + idx}
+                                            onPriceChange={this.handlePriceChange}
+                                            onSubtypeChange={this.handleSubtypeChange}/>
+                            )
+                            : <ProdBlock prod={this.state.prods[item]}
+                                            key={'prod-block-' + idx}
+                                            idx={idx}
+                                            prodName={item}
+                                            onPriceChange={this.handlePriceChange}
+                                            onSubtypeChange={this.handleSubtypeChange}/>
+                    )}
+                    <TotalQtyComponent prods={this.state.prods} key="total-qty-cpt"/>
+                    <TotalPriceComponent prods={this.state.prods} key="total-price-cpt"/>
+                </div>
                 <AfterOrderComponent show={this.state.showAfterOrder}
                                         key="after-order-cpt"
                                         orderNumber={this.state.orderNumber}

@@ -1,0 +1,61 @@
+.types-qty-input {
+    border: none;
+    display: inline-block;
+    background-color: inherit;
+    text-align: center;
+    width: 73%;
+    height: 100%;
+    color: rgb(116, 116, 116);
+}
+
+.list-label {
+    font-size: 14px;
+    font-weight: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 4em;
+    width: 12em;
+}
+
+.qty-div {
+    display: flex;
+    width: 33%;
+}
+
+.qty-div > span {
+    font-size: 30px;
+    display: inline-block;
+    vertical-align: sub;
+    cursor: pointer;
+    line-height: 2em;
+}
+
+.qty-div > span:first-child {
+    color: rgb(116, 116, 116);
+}
+
+.qty-div > span:last-child {
+    color: #32338D;
+    margin: 0;
+    padding: 0;
+}
+
+.qty-cpt {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 1em;
+}
+
+@media (min-width: 500px) {
+    .list-label {
+        width: 20em;
+        max-width: 420px;
+    }
+    .types-qty-input {
+        padding: 0;
+        margin: auto;
+    }
+    .qty-div {
+        width: 8em !important;
+    }
+  }

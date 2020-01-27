@@ -52,7 +52,7 @@ class SpreadsheetController extends Controller
                 return $e;
             }
 
-            // instancing Class with path to save file    
+            // instancing Class with path to save file
             $planilha = new GerenciadorPlanilha(
                 storage_path(
                     'app/pedidos-excel/'
@@ -67,7 +67,7 @@ class SpreadsheetController extends Controller
                 $planilha->inserirPedido($request->order);
             } catch(Exception $e) {
                 return $e;
-            } 
+            }
             $pedido = new Pedido();
             $newPedido = $pedido->create([
                 'cliente' => str_replace('-', ' ', session('client')),
@@ -75,7 +75,7 @@ class SpreadsheetController extends Controller
                 'numero_pedido' => $pedido->generateUniqOrderNumber(),
                 'pedido' => $date . '.json'
             ]);
-            
+
             // Try to send E-mail
             try {
                 if (config('app.env') !== 'local') {
