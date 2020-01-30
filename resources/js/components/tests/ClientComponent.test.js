@@ -1,10 +1,10 @@
 import React from 'react';
-import App from '../App';
+import ClientComponent from "../ClientComponent"
 import renderer from 'react-test-renderer';
 
-test('App starts only with Product selection', () => {
+test('ClientComponent starts only with Client selection', () => {
   const component = renderer.create( <
-    App / > ,
+    ClientComponent / > ,
   );
   let tree = component.toJSON();
   expect(tree).toMatchSnapshot();

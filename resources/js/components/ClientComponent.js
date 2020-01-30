@@ -1,6 +1,6 @@
 import React from "react"
-import ClientSelect from "./ClientSelect"
-import HeaderComponent from './HeaderComponent'
+import { ClientSelect } from "./ClientSelect"
+import { HeaderComponent } from './HeaderComponent'
 import axios from 'axios'
 import { Footer } from "./Footer"
 

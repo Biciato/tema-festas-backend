@@ -1,7 +1,7 @@
 import React from "react";
 import "./TotalComponent.css";
 
-export default function TotalComponent(props) {
+export const TotalComponent = props => {
     const getNormPrice = (price) =>
         price ? parseFloat(price.replace("R$", "").replace(/\./g,'').replace(",", ".").trim()) : 0
     const getTotal = () => getTotalCat0() + getTotalCat1() + getTotalCat2() + getTotalCat3()

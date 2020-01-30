@@ -1,7 +1,7 @@
 import React from "react"
 
-export default function TotalPricePerBlockComponent(props) {
-    const getNormPrice = (price) => 
+export const TotalPricePerBlockComponent = props => {
+    const getNormPrice = (price) =>
         price ? parseFloat(price.replace("R$", "").replace(/\./g,'').replace(",", ".").trim()) : 0
     const getTotal = () => {
         const prodTypes = {
@@ -12,25 +12,25 @@ export default function TotalPricePerBlockComponent(props) {
         }
         return prodTypes[props.prod.tipo_categoria || 0]
     }
-    const getTotalCat0 = () => 
-        (props.prod && (Object.keys(props.prod).filter((key) => key !== 'valor_unitario').reduce((oldType, type) => 
+    const getTotalCat0 = () =>
+        (props.prod && (Object.keys(props.prod).filter((key) => key !== 'valor_unitario').reduce((oldType, type) =>
             Object.keys(props.prod[type]).reduce((oldSubtype, subtype) =>
                 parseInt(props.prod[type][subtype]) + oldSubtype, 0
             ) + oldType, 0
         ) * getNormPrice(props.prod.valor_unitario))) || 0
     const getTotalCat1 = () =>
-        (props.prod.dados && (Object.keys(props.prod.dados).reduce((oldType, type) => 
+        (props.prod.dados && (Object.keys(props.prod.dados).reduce((oldType, type) =>
             Object.keys(props.prod.dados[type]).reduce((oldSubtype, subtype) =>
                 parseInt(props.prod.dados[type][subtype]) + oldSubtype, 0
             ) + oldType, 0
         ) * getNormPrice(props.prod.valor_unitario))) || 0
     const getTotalCat2 = () =>
         (props.prod.dados && (Object.keys(props.prod.dados).reduce((oldSubtype, subtype) =>
-                (parseInt(props.prod.dados[subtype].quantidade) 
-                    * getNormPrice(props.prod.dados[subtype].valor_unitario)) 
+                (parseInt(props.prod.dados[subtype].quantidade)
+                    * getNormPrice(props.prod.dados[subtype].valor_unitario))
                     + oldSubtype, 0))) || 0
     const getTotalCat3 = () =>
-        (props.prod.dados && (Object.keys(props.prod.dados).reduce((oldSubtype, subtype) => 
+        (props.prod.dados && (Object.keys(props.prod.dados).reduce((oldSubtype, subtype) =>
             parseInt(props.prod.dados[subtype]) + oldSubtype, 0
         ) * getNormPrice(props.prod.valor_unitario))) || 0
     return (

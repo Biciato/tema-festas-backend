@@ -4,7 +4,7 @@ import toCurrency from "./resources/currency";
 import { Products } from "./resources/products";
 import './PriceComponent.css'
 
-export default function PriceComponent(props) {
+export const PriceComponent = props => {
     const getProdCategory = prodName => [0, 1, 2, 3].find(item => Products.categories[item][prodName])
     const getProdPrice = (prodName, cat) =>
         [getProdPriceCat0, getProdPriceCat1Or3, getProdPriceCat2, getProdPriceCat1Or3][cat](prodName, cat)

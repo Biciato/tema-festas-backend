@@ -1,13 +1,13 @@
 import React from "react";
-import ProductSelect from "./ProductSelect";
-import SizeSelect from "./SizeSelect";
-import TypeSelect from "./TypeSelect";
-import TotalComponent from "./TotalComponent";
+import { ProductSelect } from "./ProductSelect";
+import { SizeSelect } from "./SizeSelect";
+import { TypeSelect } from "./TypeSelect";
+import { TotalComponent } from "./TotalComponent";
 import { Products } from "./resources/products";
-import NewProductComponent from "./NewProductComponent";
-import HeaderComponent from "./HeaderComponent";
-import PriceComponent from "./PriceComponent";
-import SubtypeList from './SubtypeList'
+import { NewProductComponent } from "./NewProductComponent";
+import { HeaderComponent } from "./HeaderComponent";
+import { PriceComponent } from "./PriceComponent";
+import { SubtypeList } from './SubtypeList'
 import axios from "axios";
 import { ModalZeroComponent } from "./ModalZeroPriceComponent";
 
@@ -33,7 +33,7 @@ export default class ProductComponent extends React.Component {
             response.data === 'error'
                 ? window.location.assign('/clientes')
                 : axios.get('/get-prods').then((response) =>
-                    this.setState({prods: response.data})
+                    response.data && this.setState({prods: response.data})
                 )
         )
     }
@@ -204,7 +204,7 @@ export default class ProductComponent extends React.Component {
         this.setState({ prods })
     }
     render() {
-        if (Object.keys(this.state.prods).length > 0) {
+        if (this.state.prods && Object.keys(this.state.prods).length > 0) {
             axios.post('/set-prods', { prods: this.state.prods })
         }
         return (

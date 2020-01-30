@@ -1,44 +1,44 @@
 import React from 'react'
 
-export default function TotalQtyComponent(props) {
+export const TotalQtyComponent = props => {
     const getTotal = () => getTotalCat0() + getTotalCat1() + getTotalCat2() + getTotalCat3()
-    const getTotalCat0 = () => 
+    const getTotalCat0 = () =>
         (Object.keys(props.prods).some((prod) => props.prods[prod].tipo_categoria === 0)
             && Object.keys(props.prods)
                 .filter((prod) => props.prods[prod].tipo_categoria === 0)
-                .reduce((oldProd, prod) => 
-                    Object.keys(props.prods[prod].dados).reduce((oldSize, size) => 
+                .reduce((oldProd, prod) =>
+                    Object.keys(props.prods[prod].dados).reduce((oldSize, size) =>
                         Object.keys(props.prods[prod].dados[size])
                             .filter((key) => key !== 'valor_unitario')
                             .reduce((oldType, type) =>
-                                Object.keys(props.prods[prod].dados[size][type]).reduce((oldSubtype, subtype) => 
+                                Object.keys(props.prods[prod].dados[size][type]).reduce((oldSubtype, subtype) =>
                                     parseInt(props.prods[prod].dados[size][type][subtype]) + oldSubtype, 0
-                                ) + oldType, 0    
+                                ) + oldType, 0
                             ) + oldSize, 0
                     ) + oldProd, 0
-                )) || 0    
+                )) || 0
     const getTotalCat1 = () =>
         (Object.keys(props.prods).some((prod) => props.prods[prod].tipo_categoria === 1)
             && Object.keys(props.prods)
                 .filter((prod) => props.prods[prod].tipo_categoria === 1)
-                .reduce((oldProd, prod) => 
+                .reduce((oldProd, prod) =>
                     Object.keys(props.prods[prod].dados).reduce((oldType, type) =>
-                        Object.keys(props.prods[prod].dados[type]).reduce((oldSubtype, subtype) => 
+                        Object.keys(props.prods[prod].dados[type]).reduce((oldSubtype, subtype) =>
                             parseInt(props.prods[prod].dados[type][subtype]) + oldSubtype, 0
                         ) + oldType, 0
                     ) + oldProd, 0
-                )) || 0      
+                )) || 0
     const getTotalCat2 = () =>
         (Object.keys(props.prods).some((prod) => props.prods[prod].tipo_categoria === 2)
             && Object.keys(props.prods)
                 .filter((prod) => props.prods[prod].tipo_categoria === 2)
-                .reduce((oldProd, prod) => 
+                .reduce((oldProd, prod) =>
                     Object.keys(props.prods[prod].dados).reduce((oldSubtype, subtype) =>
                         parseInt(props.prods[prod].dados[subtype].quantidade) + oldSubtype, 0
                     ) + oldProd, 0
                 )) || 0
     const getTotalCat3 = () =>
-        (props.prods.Etiquetas && Object.keys(props.prods.Etiquetas.dados).reduce((oldSubtype, subtype) => 
+        (props.prods.Etiquetas && Object.keys(props.prods.Etiquetas.dados).reduce((oldSubtype, subtype) =>
             parseInt(props.prods.Etiquetas.dados[subtype]) + oldSubtype, 0
         )) || 0
     if (props.prods) {
@@ -58,5 +58,5 @@ export default function TotalQtyComponent(props) {
             </div>
         )
     } else { return null }
-    
+
 }

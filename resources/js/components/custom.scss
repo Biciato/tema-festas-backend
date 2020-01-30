@@ -15,3 +15,48 @@ html, body, #root {
     text-align: center;
 }
 
+.modal {
+    width: 90% !important;
+    left: 5% !important;
+    .modal-content {
+        .modal-header {
+            .modal-title {
+                #img-modal {
+                    width: 15%;
+                    margin: 0.2em;
+                    padding-bottom: 0.2em;
+                }
+            }
+        }
+        .modal-body {
+            p:first-child {
+                text-align: center;
+                width: 60%;
+                margin: 0.5em auto;
+            }
+            p:last-child {
+                text-align: center;
+                font-size: 12px;
+            }
+        }
+        .modal-footer {
+            button {
+                border-radius: 5px;
+                background-color: #328D3B;
+                color: white;
+                border: none;
+                width: 100%;
+                padding: 0.5em;
+                font-style: normal;
+                font-weight: bold;
+                font-size: 20px;
+                line-height: 27px;
+            }
+            button:last-child {
+                background-color: #E33333;
+            }
+        }
+    }
+}
+
+

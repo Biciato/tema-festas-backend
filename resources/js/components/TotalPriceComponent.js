@@ -1,50 +1,50 @@
 import React from 'react'
 
-export default function TotalPriceComponent(props) {
-    const getNormPrice = (price) => 
+export const TotalPriceComponent = props => {
+    const getNormPrice = (price) =>
         price ? parseFloat(price.replace("R$", "").replace(/\./g,'').replace(",", ".").trim()) : 0
     const getTotal = () => getTotalCat0() + getTotalCat1() + getTotalCat2() + getTotalCat3()
-    const getTotalCat0 = () => 
+    const getTotalCat0 = () =>
         (Object.keys(props.prods).some((prod) => props.prods[prod].tipo_categoria === 0)
             && Object.keys(props.prods)
                 .filter((prod) => props.prods[prod].tipo_categoria === 0)
-                .reduce((oldProd, prod) => 
-                    Object.keys(props.prods[prod].dados).reduce((oldSize, size) => 
+                .reduce((oldProd, prod) =>
+                    Object.keys(props.prods[prod].dados).reduce((oldSize, size) =>
                         (getNormPrice(props.prods[prod].dados[size].valor_unitario) *
                         Object.keys(props.prods[prod].dados[size])
                             .filter((key) => key !== 'valor_unitario')
                             .reduce((oldType, type) =>
-                                Object.keys(props.prods[prod].dados[size][type]).reduce((oldSubtype, subtype) => 
+                                Object.keys(props.prods[prod].dados[size][type]).reduce((oldSubtype, subtype) =>
                                     parseInt(props.prods[prod].dados[size][type][subtype]) + oldSubtype, 0
-                                ) + oldType, 0    
+                                ) + oldType, 0
                             )) + oldSize, 0
                     ) + oldProd, 0
-                )) || 0    
+                )) || 0
     const getTotalCat1 = () =>
         (Object.keys(props.prods).some((prod) => props.prods[prod].tipo_categoria === 1)
             && Object.keys(props.prods)
                 .filter((prod) => props.prods[prod].tipo_categoria === 1)
-                .reduce((oldProd, prod) => 
+                .reduce((oldProd, prod) =>
                     (getNormPrice(props.prods[prod].valor_unitario) *
                     Object.keys(props.prods[prod].dados).reduce((oldType, type) =>
-                        Object.keys(props.prods[prod].dados[type]).reduce((oldSubtype, subtype) => 
+                        Object.keys(props.prods[prod].dados[type]).reduce((oldSubtype, subtype) =>
                             parseInt(props.prods[prod].dados[type][subtype]) + oldSubtype, 0
                         ) + oldType, 0
                     )) + oldProd, 0
-                )) || 0      
+                )) || 0
     const getTotalCat2 = () =>
         (Object.keys(props.prods).some((prod) => props.prods[prod].tipo_categoria === 2)
             && Object.keys(props.prods)
                 .filter((prod) => props.prods[prod].tipo_categoria === 2)
-                .reduce((oldProd, prod) => 
+                .reduce((oldProd, prod) =>
                     Object.keys(props.prods[prod].dados).reduce((oldSubtype, subtype) =>
-                        (parseInt(props.prods[prod].dados[subtype].quantidade) 
-                            * getNormPrice(props.prods[prod].dados[subtype].valor_unitario)) 
+                        (parseInt(props.prods[prod].dados[subtype].quantidade)
+                            * getNormPrice(props.prods[prod].dados[subtype].valor_unitario))
                             + oldSubtype, 0
                     ) + oldProd, 0
                 )) || 0
     const getTotalCat3 = () =>
-        (props.prods.Etiquetas && (Object.keys(props.prods.Etiquetas.dados).reduce((oldSubtype, subtype) => 
+        (props.prods.Etiquetas && (Object.keys(props.prods.Etiquetas.dados).reduce((oldSubtype, subtype) =>
             parseInt(props.prods.Etiquetas.dados[subtype]) + oldSubtype, 0
         ) * getNormPrice(props.prods.Etiquetas.valor_unitario))) || 0
     if (props.prods) {
@@ -63,5 +63,5 @@ export default function TotalPriceComponent(props) {
                 </span>
             </div>
         )
-    } else { return null }    
+    } else { return null }
 }

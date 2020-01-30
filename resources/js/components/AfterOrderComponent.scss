@@ -1,0 +1,61 @@
+#aoc {
+    height: calc(100vh - 40px);
+    width: 100%;
+    color: white;
+    text-align: center;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 27px;
+
+    img {
+        width: 15%;
+        margin: 5em auto 1em 0;
+    }
+
+    p {
+        width: 65%;
+        margin: auto;
+    }
+
+    a {
+        color: #32A1DD;
+        background-color: white;
+    }
+
+    #back-span {
+        cursor: pointer;
+        color: red;
+        background-color: white;
+        padding: 0.5em 1em;
+        top: 0em;
+    }
+
+    .footer-after {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: 500px;
+        background-color:#32338D;
+        color:    white;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 20px;
+        line-height: 27px;
+        padding: 0.3em 1em;
+        margin: 0;
+        z-index: 1000;
+        text-align: center;
+    }
+}
+
+@media (min-width: 500px) {
+    #aoc {
+        .footer-after {
+            position: relative;
+            top: 5em;
+        }
+    }
+}
+
