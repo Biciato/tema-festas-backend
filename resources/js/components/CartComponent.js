@@ -84,8 +84,7 @@ export default class CartComponent extends React.Component {
         } else {
             let prods = this.state.prods;
             const updaters = [
-                () =>
-                    _.set(
+                () => _.set(
                         prods,
                         [
                             data[0],
@@ -96,20 +95,17 @@ export default class CartComponent extends React.Component {
                         ],
                         data[3].qty
                     ),
-                () =>
-                    _.set(
+                () => _.set(
                         prods,
                         [data[0], "dados", data[1], data[2].name],
                         data[2].qty
                     ),
-                () =>
-                    _.set(
+                () => _.set(
                         prods,
                         [data[0], "dados", data[1].name, "quantidade"],
                         data[1].qty
                     ),
-                () =>
-                    _.set(prods, [data[0], "dados", data[1].name], data[1].qty)
+                () => _.set(prods,[data[0],"dados",data[1].name],data[1].qty)
             ];
             updaters[getProdCategory(data[0])]();
             this.setState({ prods });
@@ -125,84 +121,62 @@ export default class CartComponent extends React.Component {
         return (
             <div>
                 <div style={{ display: this.state.showAfterOrder && "none" }}>
-                    <NewProductComponent
-                        arrow={true}
-                        totalPrice={this.state.totalPrice}
-                        totalQty={this.state.totalQty}
-                    />
-                    <HeaderComponent
-                        src="shopping-bag.svg"
-                        title="Seu Pedido"
-                    />
+                    <NewProductComponent arrow={true}
+                                            totalPrice={this.state.totalPrice}
+                                            totalQty={this.state.totalQty}/>
+                    <HeaderComponent src="shopping-bag.svg"
+                                        title="Seu Pedido"/>
                     {Object.keys(this.state.prods).map((item, idx) =>
                         this.state.prods[item].tipo_categoria === 0 ? (
-                            Object.keys(
-                                this.state.prods[item].dados
-                            ).map((size, idx) => (
-                                <ProdBlock
-                                    prod={this.state.prods[item].dados[size]}
-                                    prodName={item}
-                                    size={size}
-                                    idx={idx}
-                                    key={"prod-block-" + idx}
-                                    onPriceChange={this.handlePriceChange}
-                                    onSubtypeChange={this.handleSubtypeChange}
-                                />
+                            Object.keys(this.state.prods[item].dados)
+                                .map((size, idx) => (
+                                <ProdBlock idx={idx}
+                                        prod={this.state.prods[item].dados[size]}
+                                        prodName={item}
+                                        size={size}
+
+                                        key={"prod-block-" + idx}
+                                        onPriceChange={this.handlePriceChange}
+                                        onSubtypeChange={this.handleSubtypeChange}/>
                             ))
                         ) : (
-                            <ProdBlock
-                                prod={this.state.prods[item]}
-                                key={"prod-block-" + idx}
-                                idx={idx}
-                                prodName={item}
-                                onPriceChange={this.handlePriceChange}
-                                onSubtypeChange={this.handleSubtypeChange}
-                            />
+                            <ProdBlock prod={this.state.prods[item]}
+                                    key={"prod-block-" + idx}
+                                    idx={idx}
+                                    prodName={item}
+                                    onPriceChange={this.handlePriceChange}
+                                    onSubtypeChange={this.handleSubtypeChange}/>
                         )
                     )}
-                    <TotalQtyComponent
-                        prods={this.state.prods}
-                        key="total-qty-cpt"
-                    />
-                    <TotalPriceComponent
-                        prods={this.state.prods}
-                        key="total-price-cpt"
-                    />
-                    <Footer
-                        onMakeOrderClick={this.handleMakeOrderClick}
-                        key="footer"
-                    >
+                    <TotalQtyComponent prods={this.state.prods}
+                                        key="total-qty-cpt"/>
+                    <TotalPriceComponent prods={this.state.prods}
+                                            key="total-price-cpt"/>
+                    <Footer onMakeOrderClick={this.handleMakeOrderClick}
+                            key="footer">
                         {this.state.loader ? (
-                            <Loader
-                                type="ThreeDots"
-                                color="white"
-                                height={25}
-                                width={25}
-                                timeout={3000}
-                            />
-                        ) : (
-                            "Finalizar Pedido"
-                        )}
+                            <Loader type="ThreeDots"
+                                    color="white"
+                                    height={25}
+                                    width={25}
+                                    timeout={3000}/>
+                        ) : ( "Finalizar Pedido" )}
                     </Footer>
                 </div>
-                <AfterOrderComponent
-                    show={this.state.showAfterOrder}
-                    key="after-order-cpt"
-                    orderNumber={this.state.orderNumber}
-                    cdt={this.state.cdt}
-                />
-                <ModalZeroComponent
-                    show={this.state.zeroConstraint && true}
-                    type={
-                        this.state.zeroConstraint &&
-                        this.state.zeroConstraint.type
-                    }
-                    value={
-                        this.state.zeroConstraint &&
-                        this.state.zeroConstraint.value
-                    }
-                    onCloseModal={this.closeModal}
-                />
+                <AfterOrderComponent show={this.state.showAfterOrder}
+                                        key="after-order-cpt"
+                                        orderNumber={this.state.orderNumber}
+                                        cdt={this.state.cdt}/>
+                <ModalZeroComponent show={this.state.zeroConstraint && true}
+                                    type={
+                                        this.state.zeroConstraint &&
+                                        this.state.zeroConstraint.type
+                                    }
+                                    value={
+                                        this.state.zeroConstraint &&
+                                        this.state.zeroConstraint.value
+                                    }
+                                    onCloseModal={this.closeModal}/>
             </div>
         );
     }

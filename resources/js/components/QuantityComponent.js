@@ -11,7 +11,7 @@ export const QuantityComponent = props => {
     const handleQtyChange = e =>
         props.onQtyChange({
             name: props.subtype,
-            qty: e.target.value === ""
+            qty: ["", '0'].includes(e.target.value)
                     ? "0"
                     : e.target.value.replace(/\D/g, "").replace(/^[0]+/g, "")
         });
