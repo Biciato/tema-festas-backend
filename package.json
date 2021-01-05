@@ -20,7 +20,7 @@
         "@fortawesome/free-regular-svg-icons": "^5.11.2",
         "@fortawesome/free-solid-svg-icons": "^5.11.2",
         "@fortawesome/react-fontawesome": "^0.1.7",
-        "axios": "^0.19",
+        "axios": "^0.21",
         "babel-plugin-transform-class-properties": "^6.24.1",
         "babel-preset-env": "^1.7.0",
         "babel-preset-react": "^6.24.1",
